@@ -1,1 +1,9 @@
 include: .well-known
+
+defaults:
+  - scope:
+      path: ".well-known/webfinger"
+    values:
+      webrick:
+        headers:
+          Content-Type: application/jrd+json
