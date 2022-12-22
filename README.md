@@ -1,2 +1,2 @@
 # mrinalwadhwa.github.io
-Source code for mrinalwadhwa.com
+Source code for mrinal.com
