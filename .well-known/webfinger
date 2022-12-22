@@ -1,3 +1,8 @@
+---
+webrick:
+  headers:
+    Content-Type: application/jrd+json
+---
 {
   "subject":"acct:mrinal@hachyderm.io",
   "aliases":
