@@ -11,7 +11,7 @@ html {
 }
 
 body {
-    font-family: "adobe-garamond-pro", serif;
+    font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
     font-weight: 400;
     font-style: normal;
     font-size: 1em;
@@ -80,7 +80,7 @@ body {
 }
 
 .name {
-    font-family: "spring-lp", Georgia, serif;
+    font-family: "spring-lp", "Brush Script MT", "Snell Roundhand", cursive;
     font-size: 6.973em;
     font-weight: 400;
     font-style: italic;
@@ -99,7 +99,7 @@ body {
 }
 
 .lede {
-    font-family: "adobe-garamond-pro", Georgia, serif;
+    font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
     font-size: 2.641em;
     font-weight: 400;
     line-height: 1.25;
