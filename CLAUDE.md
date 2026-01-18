@@ -33,7 +33,7 @@ This is a static personal website for Mrinal Wadhwa at mrinal.com. It uses pure 
 4. **Update articles/index.html listing:**
    Add the same `<li>` inside `.article-list-page`, newest first.
 
-5. **Update feed/index.xml:**
+5. **Update follow/rss.xml:**
    Add a new `<item>` after the comment, newest first:
    ```xml
    <item>
@@ -65,7 +65,7 @@ This is a static personal website for Mrinal Wadhwa at mrinal.com. It uses pure 
 ## URL Structure
 
 - Articles: `/articles/post-slug/` (directory with index.html)
-- RSS feed: `/feed` (feed/index.xml)
+- RSS feed: `/follow/rss.xml`
 
 ## Styling
 
@@ -79,6 +79,6 @@ Each blog post can have custom CSS in `<style>` tags and custom JS in `<script>`
 - `/index.html` - Homepage with articles listing
 - `/articles/index.html` - Articles listing page
 - `/styles.css` - Global styles
-- `/feed/index.xml` - RSS feed
+- `/follow/rss.xml` - RSS feed
 - `/sitemap.xml` - Sitemap for search engines
 - `/articles/*/index.html` - Individual articles

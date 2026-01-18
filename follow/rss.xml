@@ -5,7 +5,7 @@
     <link>https://mrinal.com</link>
     <description>Mrinal Wadhwa is founder and CTO of Autonomy, a platform that gives you the ability to create AI products that can autonomously perform long and complex tasks.</description>
     <language>en-us</language>
-    <atom:link href="https://mrinal.com/feed" rel="self" type="application/rss+xml"/>
+    <atom:link href="https://mrinal.com/follow/rss.xml" rel="self" type="application/rss+xml"/>
 
     <!-- Add new items below this line, newest first -->
     <!-- Example item format:
