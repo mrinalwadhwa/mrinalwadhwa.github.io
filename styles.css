@@ -1,66 +1,178 @@
+/*
+ * Modular Scale: 1.625 (major sixth)
+ * Base: 1em (16px)
+ * Scale: 0.379em, 0.616em, 1em, 1.625em, 2.641em, 4.291em, 6.973em
+ */
+
 html {
-  font-size: 100%;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
 }
 
 body {
-  font: normal 1em/1.5em Georgia,Utopia,Palatino,"Palatino Linotype",serif;
-  color: #000;
-  margin: 1.5em
+    font-family: "adobe-garamond-pro", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1em;
+    line-height: 1.5;
+    color: #4a4a4a;
+    background-color: #f7f4ef;
+    margin: 0;
+    padding: 2.641em;
 }
 
 ::selection {
-  background: #db1010;
-  color: #fff;
-  text-shadow: none
+    background: #900;
+    color: #fff;
+    text-shadow: none;
+}
+
+.container {
+    max-width: 78em;
+    margin: 0 auto;
+    padding: 4.291em 2.641em;
+}
+
+.name {
+    font-family: "spring-lp", Georgia, serif;
+    font-size: 6.973em;
+    font-weight: 400;
+    font-style: italic;
+    text-align: center;
+    margin: 0 0 0.5em;
+    color: #333;
+    text-shadow:
+        -3px -3px 0 #fff,
+        3px -3px 0 #fff,
+        -3px 3px 0 #fff,
+        3px 3px 0 #fff,
+        -3px 0 0 #fff,
+        3px 0 0 #fff,
+        0 -3px 0 #fff,
+        0 3px 0 #fff;
+}
+
+.lede {
+    font-family: "adobe-garamond-pro", Georgia, serif;
+    font-size: 2.641em;
+    font-weight: 400;
+    line-height: 1.25;
+    text-align: center;
+    max-width: 20em;
+    margin: 0 auto 2.641em;
+    color: #333;
+}
+
+.content {
+    max-width: 60em;
+    margin: 0 auto;
+    column-count: 2;
+    column-gap: 2.641em;
+    font-size: 1.275em;
 }
 
 p {
-  width: 100%;
-  max-width: 33em;
-  -webkit-hyphens: auto;
-  -moz-hyphens: auto;
-  hyphens: auto;
-  margin: 0 0 1.5em
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    hyphens: none;
+    margin: 0 0 1em;
+    widows: 3;
+    orphans: 3;
+    text-wrap: pretty;
+}
+
+a {
+    color: #900;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+a:hover {
+    border-bottom-color: #900;
+}
+
+.links {
+    max-width: 52em;
+    margin: 2.641em auto 0;
+    padding-top: 2.641em;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}
+
+.links a {
+    display: inline-block;
+    margin: 0 1em 0.616em;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1em;
+    }
+
+    .container {
+        padding: 2.641em 1em;
+    }
+
+    .name {
+        font-size: 2.641em;
+        text-shadow:
+            -2px -2px 0 #fff,
+            2px -2px 0 #fff,
+            -2px 2px 0 #fff,
+            2px 2px 0 #fff,
+            -2px 0 0 #fff,
+            2px 0 0 #fff,
+            0 -2px 0 #fff,
+            0 2px 0 #fff;
+    }
+
+    .lede {
+        font-size: 1.625em;
+    }
+
+    .content {
+        column-count: 1;
+    }
 }
 
 .opening-phrase {
-  font-weight: 700;
-  font-variant: small-caps
+    font-weight: 700;
+    font-variant: small-caps;
 }
 
 .versal {
-  font-size: 3em;
-  line-height: 1em;
-  text-transform: uppercase;
-  font-weight: 700;
-  float: left;
-  margin: 0 .167em 0 0
+    font-size: 4.291em;
+    line-height: 1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    float: left;
+    margin: 0 0.379em 0 0;
 }
 
 h1,
 h2,
 h3 {
-  font-family: Baskerville,"Palatino Linotype",Palatino,Georgia,Utopia,serif;
-  font-weight: 400;
-  font-style: italic;
-  margin: 0
+    font-family: Baskerville, "Palatino Linotype", Palatino, Georgia, Utopia, serif;
+    font-weight: 400;
+    font-style: italic;
+    margin: 0;
 }
 
 h1 {
-  font-size: 2.25em;
-  line-height: 1.333em;
-  margin: 0 0 .667em
+    font-size: 2.641em;
+    line-height: 1.2;
+    margin: 0 0 0.616em;
 }
 
 h2 {
-  font-size: 1.5em;
-  line-height: 1em;
-  margin: 1em 0
+    font-size: 1.625em;
+    line-height: 1.2;
+    margin: 1em 0;
 }
 
 h3 {
-  font-size: 1em;
-  line-height: 1.5em
+    font-size: 1em;
+    line-height: 1.625;
 }
