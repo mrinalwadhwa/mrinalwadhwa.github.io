@@ -114,11 +114,120 @@
                 </p>
             </div>
 
+            <hr class="divider" />
+
+            <div class="video-carousel">
+                <button class="carousel-btn prev" aria-label="Previous video">&#8249;</button>
+                <div class="carousel-container">
+                    <div class="carousel-track">
+                        <div class="carousel-slide">
+                            <iframe
+                                src="https://www.youtube.com/embed/0Ifm-W2Frv0"
+                                title="Video 4"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                        <div class="carousel-slide">
+                            <iframe
+                                src="https://www.youtube.com/embed/-fPcRCgqluk"
+                                title="Video 5"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                        <div class="carousel-slide">
+                            <iframe
+                                src="https://www.youtube.com/embed/t9jTkEhcNUg"
+                                title="Video 7"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                        <div class="carousel-slide">
+                            <iframe
+                                src="https://www.youtube.com/embed/rkXnJkkvnks"
+                                title="Video 2"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                        <div class="carousel-slide">
+                            <iframe
+                                src="https://www.youtube.com/embed/ZJVcOy9QNp4"
+                                title="Video 6"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                        <div class="carousel-slide">
+                            <iframe
+                                src="https://www.youtube.com/embed/m_cyw8Mfjuw"
+                                title="Video 3"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                        <div class="carousel-slide">
+                            <iframe
+                                src="https://www.youtube.com/embed/SF1arse7B5M"
+                                title="Video 1"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-btn next" aria-label="Next video">&#8250;</button>
+            </div>
+
             <div class="links">
                 <a href="https://www.linkedin.com/in/mrinalwadhwa" rel="me">LinkedIn</a>
                 <a href="https://github.com/mrinalwadhwa" rel="me">Github</a>
                 <a href="https://twitter.com/mrinal" rel="me">Twitter</a>
             </div>
         </div>
+
+        <script>
+            (function () {
+                const container = document.querySelector(".carousel-container");
+                const slides = document.querySelectorAll(".carousel-slide");
+                const prevBtn = document.querySelector(".carousel-btn.prev");
+                const nextBtn = document.querySelector(".carousel-btn.next");
+
+                function getSlideWidth() {
+                    if (slides.length === 0) return 0;
+                    const track = document.querySelector(".carousel-track");
+                    return slides[0].offsetWidth + parseFloat(getComputedStyle(track).gap);
+                }
+
+                prevBtn.addEventListener("click", () => {
+                    container.scrollBy({ left: -getSlideWidth(), behavior: "smooth" });
+                });
+
+                nextBtn.addEventListener("click", () => {
+                    container.scrollBy({ left: getSlideWidth(), behavior: "smooth" });
+                });
+
+                // Convert vertical scroll to horizontal when hovering over carousel
+                container.addEventListener(
+                    "wheel",
+                    (e) => {
+                        if (e.deltaY !== 0) {
+                            e.preventDefault();
+                            container.scrollBy({ left: e.deltaY, behavior: "auto" });
+                        }
+                    },
+                    { passive: false },
+                );
+            })();
+        </script>
     </body>
 </html>
