@@ -39,9 +39,22 @@ body {
 }
 
 .nav a {
-    font-size: 1.275em;
+    font-family:
+        system-ui,
+        -apple-system,
+        sans-serif;
+    font-size: 1em;
     color: #900;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+}
+
+.icon {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
 }
 
 .nav a:hover {
@@ -222,12 +235,12 @@ a:hover {
     }
 
     .carousel-slide {
-        flex: 0 0 85%;
+        flex: 0 0 100%;
     }
 
     .carousel-track {
         gap: 1em;
-        padding: 0 7.5%;
+        padding: 0 4%;
     }
 
     .carousel-btn {
@@ -366,9 +379,16 @@ a:hover {
 }
 
 .links a {
-    font-size: 1.275em;
+    font-family:
+        system-ui,
+        -apple-system,
+        sans-serif;
+    font-size: 1em;
     color: #900;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
 }
 
 @media (max-width: 768px) {
