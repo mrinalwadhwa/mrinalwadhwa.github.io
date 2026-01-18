@@ -28,11 +28,42 @@ body {
     text-shadow: none;
 }
 
+/* Navigation */
+.nav {
+    text-align: center;
+    padding: 1em 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5em 2em;
+}
+
+.nav a {
+    font-size: 1.275em;
+    color: #900;
+    white-space: nowrap;
+}
+
+.nav a:hover {
+    border-bottom-color: #900;
+}
+
 .container {
     max-width: 78em;
     margin: 0 auto;
     padding: 4.291em 2.641em;
     overflow: visible;
+}
+
+.profile-photo {
+    display: block;
+    width: 10em;
+    height: 10em;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    margin: 0 auto 3.5em;
 }
 
 .name {
@@ -187,17 +218,139 @@ a:hover {
 @media (max-width: 768px) {
     .video-carousel {
         margin: 2.641em auto 1.625em;
+        padding: 0;
     }
 
     .carousel-slide {
-        flex: 0 0 100%;
+        flex: 0 0 85%;
+    }
+
+    .carousel-track {
+        gap: 1em;
+        padding: 0 7.5%;
     }
 
     .carousel-btn {
-        width: 2em;
-        height: 2em;
-        font-size: 0.875em;
+        display: none;
     }
+}
+
+/* Articles Listing */
+.articles-listing {
+    max-width: 52em;
+    margin: 2.641em auto;
+    text-align: center;
+}
+
+.articles-listing h2 {
+    margin-bottom: 1em;
+}
+
+.article-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.article-list li {
+    margin-bottom: 0.616em;
+}
+
+.article-list a {
+    font-size: 1.275em;
+}
+
+.article-list .article-date {
+    font-size: 0.875em;
+    color: #888;
+    margin-left: 0.5em;
+}
+
+.article-list-page {
+    max-width: 40em;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.article-list-page li {
+    margin-bottom: 1em;
+}
+
+.article-list-page .article-date {
+    display: block;
+    margin-left: 0;
+}
+
+/* Page Header */
+.page-header {
+    max-width: 40em;
+    margin: 0 auto 2.641em;
+}
+
+.page-meta {
+    font-size: 0.875em;
+    color: #888;
+    margin-bottom: 0.616em;
+}
+
+.page-meta a {
+    color: #888;
+}
+
+.page-meta a:hover {
+    color: #900;
+}
+
+.page-title {
+    font-family: "spring-lp", Georgia, serif;
+    font-size: 4.291em;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.1;
+    margin: 0;
+    color: #333;
+}
+
+/* Article */
+.article {
+    max-width: 40em;
+    margin: 0 auto;
+}
+
+.article-header {
+    margin-bottom: 2.641em;
+}
+
+.article-meta {
+    font-size: 0.875em;
+    color: #888;
+    margin-bottom: 0.616em;
+}
+
+.article-meta a {
+    color: #888;
+}
+
+.article-meta a:hover {
+    color: #900;
+}
+
+.article-title {
+    font-family: "spring-lp", Georgia, serif;
+    font-size: 4.291em;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.1;
+    margin: 0;
+    color: #333;
+}
+
+.article-content {
+    font-size: 1.275em;
+}
+
+.article-content h2 {
+    margin-top: 1.625em;
 }
 
 .links {
@@ -206,11 +359,16 @@ a:hover {
     padding-top: 2.641em;
     border-top: 1px solid #ddd;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5em 2em;
 }
 
 .links a {
-    display: inline-block;
-    margin: 0 1em 0.616em;
+    font-size: 1.275em;
+    color: #900;
+    white-space: nowrap;
 }
 
 @media (max-width: 768px) {
