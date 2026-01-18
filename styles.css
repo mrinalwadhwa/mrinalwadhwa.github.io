@@ -230,8 +230,11 @@ a:hover {
 
 @media (max-width: 768px) {
     .video-carousel {
-        margin: 2.641em auto 1.625em;
+        margin: 2.641em 0 1.625em;
+        margin-left: -1em;
+        margin-right: -1em;
         padding: 0;
+        width: calc(100% + 2em);
     }
 
     .carousel-slide {
@@ -239,8 +242,8 @@ a:hover {
     }
 
     .carousel-track {
-        gap: 1em;
-        padding: 0 4%;
+        gap: 0.5em;
+        padding: 0;
     }
 
     .carousel-btn {
