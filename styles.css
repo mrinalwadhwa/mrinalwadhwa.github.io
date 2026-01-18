@@ -23,8 +23,8 @@ body {
 }
 
 ::selection {
-    background: #900;
-    color: #fff;
+    background: rgba(0, 0, 0, 0.08);
+    color: inherit;
     text-shadow: none;
 }
 
