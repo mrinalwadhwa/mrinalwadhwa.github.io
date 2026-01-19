@@ -16,8 +16,8 @@ body {
     font-style: normal;
     font-size: 1em;
     line-height: 1.5;
-    color: #4a4a4a;
-    background-color: #f7f4ef;
+    color: #333;
+    background-color: #f5f4f0;
     margin: 0;
     padding: 2.641em;
 }
@@ -44,11 +44,12 @@ body {
         -apple-system,
         sans-serif;
     font-size: 1em;
-    color: #900;
+    color: #333;
     white-space: nowrap;
     display: flex;
     align-items: center;
     gap: 0.35em;
+    border-bottom: none;
 }
 
 .icon {
@@ -58,7 +59,7 @@ body {
 }
 
 .nav a:hover {
-    border-bottom-color: #900;
+    color: #900;
 }
 
 .container {
@@ -128,13 +129,16 @@ p {
 }
 
 a {
-    color: #900;
+    color: #333;
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease;
+    border-bottom: 1px solid #333;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease;
 }
 
 a:hover {
+    color: #900;
     border-bottom-color: #900;
 }
 
@@ -181,14 +185,14 @@ a:hover {
     width: 100%;
     height: 100%;
     border-radius: 8px;
-    border: 3px solid #e8e4dc;
+    border: 3px solid #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    filter: sepia(25%) saturate(80%) brightness(95%);
+    filter: grayscale(20%) brightness(90%);
     transition: filter 0.3s ease;
 }
 
 .carousel-slide iframe:hover {
-    filter: sepia(0%) saturate(100%) brightness(100%);
+    filter: grayscale(0%) brightness(100%);
 }
 
 .carousel-btn {
@@ -314,7 +318,7 @@ a:hover {
 }
 
 .page-meta a:hover {
-    color: #900;
+    color: #333;
 }
 
 .page-title {
@@ -348,7 +352,7 @@ a:hover {
 }
 
 .article-meta a:hover {
-    color: #900;
+    color: #333;
 }
 
 .article-title {
@@ -387,11 +391,16 @@ a:hover {
         -apple-system,
         sans-serif;
     font-size: 1em;
-    color: #900;
+    color: #333;
     white-space: nowrap;
     display: flex;
     align-items: center;
     gap: 0.35em;
+    border-bottom: none;
+}
+
+.links a:hover {
+    color: #900;
 }
 
 @media (max-width: 768px) {
@@ -431,12 +440,14 @@ a:hover {
 }
 
 .versal {
-    font-size: 4.291em;
-    line-height: 1em;
-    text-transform: uppercase;
-    font-weight: 700;
+    font-family: "spring-lp", "Brush Script MT", "Snell Roundhand", cursive;
+    font-size: 5em;
+    line-height: 0.75;
+    font-weight: 400;
+    font-style: italic;
     float: left;
-    margin: 0 0.379em 0 0;
+    margin: 0.1em 0.05em 0 -0.1em;
+    color: #333;
 }
 
 h1,
