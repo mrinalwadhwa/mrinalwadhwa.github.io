@@ -2,6 +2,10 @@
  * Modular Scale: 1.625 (major sixth)
  * Base: 1em (16px)
  * Scale: 0.379em, 0.616em, 1em, 1.625em, 2.641em, 4.291em, 6.973em
+ *
+ * Vertical Rhythm
+ * Base: 1.5em line-height (1 unit)
+ * All vertical spacing uses multiples: 0.75em (0.5u), 1.5em (1u), 3em (2u), 4.5em (3u)
  */
 
 html {
@@ -19,7 +23,7 @@ body {
     color: #333;
     background-color: #f5f4f0;
     margin: 0;
-    padding: 2.641em;
+    padding: 3em; /* 2 units */
 }
 
 ::selection {
@@ -31,11 +35,12 @@ body {
 /* Navigation */
 .nav {
     text-align: center;
-    padding: 1em 0;
+    padding: 0 0 1.5em; /* 1 unit bottom */
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 0.5em 2em;
+    gap: 0 1.5em; /* 1 unit horizontal */
+    line-height: 1.5;
 }
 
 .nav a {
@@ -44,11 +49,12 @@ body {
         -apple-system,
         sans-serif;
     font-size: 1em;
+    line-height: 1.5;
     color: #333;
     white-space: nowrap;
     display: flex;
     align-items: center;
-    gap: 0.35em;
+    gap: 0.375em;
     border-bottom: none;
 }
 
@@ -65,7 +71,7 @@ body {
 .container {
     max-width: 78em;
     margin: 0 auto;
-    padding: 4.291em 2.641em;
+    padding: 3em; /* 2 units */
     overflow: visible;
 }
 
@@ -77,7 +83,22 @@ body {
     border: 4px solid #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     object-fit: cover;
-    margin: 0 auto 3.5em;
+    margin: 0 auto;
+}
+
+/* Wrapper to contain profile photo on rhythm */
+.profile-photo-wrapper {
+    height: 12em; /* 8 units - contains 10em photo on rhythm */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.name-wrapper {
+    height: 12em; /* 8 units - contains display font on rhythm */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .name {
@@ -86,7 +107,8 @@ body {
     font-weight: 400;
     font-style: italic;
     text-align: center;
-    margin: 0 0 0.5em;
+    line-height: 1;
+    margin: 0;
     color: #333;
     text-shadow:
         -3px -3px 0 #fff,
@@ -99,14 +121,22 @@ body {
         0 3px 0 #fff;
 }
 
+.lede-wrapper {
+    padding-top: 1.5em; /* 1 unit above */
+    padding-bottom: 6em; /* 4 units below */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .lede {
     font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
     font-size: 2.641em;
     font-weight: 400;
-    line-height: 1.25;
+    line-height: 1.136; /* 3em / 2.641em = ~1.136 to hit 3em (2 units) per line */
     text-align: center;
     max-width: 20em;
-    margin: 0 auto 2.641em;
+    margin: 0 auto;
     color: #333;
 }
 
@@ -114,15 +144,24 @@ body {
     max-width: 60em;
     margin: 0 auto;
     column-count: 2;
-    column-gap: 2.641em;
+    column-gap: 3em; /* 2 units */
     font-size: 1.275em;
+    line-height: 1.568628; /* 2em / 1.275em to get 2em per line (3 lines = 4 units) */
+}
+
+.content p {
+    margin: 0 0 1.176471em; /* 1.5em / 1.275 to get 1.5em (1 unit) in base units */
+}
+
+.content p:last-child {
+    margin-bottom: 1.568628em; /* 2em in base units - completes rhythm cycle */
 }
 
 p {
     -webkit-hyphens: none;
     -moz-hyphens: none;
     hyphens: none;
-    margin: 0 0 1em;
+    margin: 0 0 1.5em; /* 1 unit */
     widows: 3;
     orphans: 3;
     text-wrap: pretty;
@@ -144,20 +183,26 @@ a:hover {
 
 .divider {
     max-width: 52em;
-    margin: 2.641em auto;
+    margin: 0 auto;
+    margin-top: calc(1.5em - 1px); /* 1 unit minus border */
+    margin-bottom: 1.5em; /* 1 unit */
     border: none;
     border-top: 1px solid #ddd;
+    height: 0;
+    padding: 0;
 }
 
 /* Video Carousel */
 .video-carousel {
     max-width: 100vw;
-    margin: 4.291em 0 2.641em;
+    margin: 0;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
-    padding: 0 4.291em;
+    padding: 1.5em 3em; /* 1 unit vertical */
     position: relative;
     box-sizing: border-box;
+    height: 24em; /* 16 units - contains videos on rhythm */
+    overflow: hidden;
 }
 
 .carousel-container {
@@ -165,6 +210,7 @@ a:hover {
     overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    height: 21em; /* 14 units - video area */
 }
 
 .carousel-container::-webkit-scrollbar {
@@ -173,12 +219,13 @@ a:hover {
 
 .carousel-track {
     display: flex;
-    gap: 2.641em;
+    gap: 3em; /* 2 units */
+    height: 100%;
 }
 
 .carousel-slide {
-    flex: 0 0 calc((100% - 5.282em) / 3);
-    aspect-ratio: 16 / 9;
+    flex: 0 0 calc((100% - 6em) / 3); /* account for 2 gaps of 3em */
+    height: 100%;
 }
 
 .carousel-slide iframe {
@@ -202,8 +249,8 @@ a:hover {
     background: rgba(0, 0, 0, 0.3);
     color: #fff;
     border: none;
-    width: 2.641em;
-    height: 4.291em;
+    width: 3em; /* 2 units */
+    height: 4.5em; /* 3 units */
     border-radius: 4px;
     font-size: 1em;
     cursor: pointer;
@@ -228,17 +275,22 @@ a:hover {
 
 @media (max-width: 1200px) {
     .carousel-slide {
-        flex: 0 0 calc((100% - 2.641em) / 2);
+        flex: 0 0 calc((100% - 3em) / 2); /* account for 1 gap of 3em */
     }
 }
 
 @media (max-width: 768px) {
     .video-carousel {
-        margin: 2.641em 0 1.625em;
-        margin-left: -1em;
-        margin-right: -1em;
-        padding: 0;
-        width: calc(100% + 2em);
+        margin: 0;
+        margin-left: -0.75em;
+        margin-right: -0.75em;
+        padding: 1.5em 0; /* 1 unit vertical */
+        width: calc(100% + 1.5em);
+        height: 15em; /* 10 units */
+    }
+
+    .carousel-container {
+        height: 12em; /* 8 units */
     }
 
     .carousel-slide {
@@ -246,7 +298,7 @@ a:hover {
     }
 
     .carousel-track {
-        gap: 0.5em;
+        gap: 0.75em; /* 0.5 units */
         padding: 0;
     }
 
@@ -258,32 +310,39 @@ a:hover {
 /* Articles Listing */
 .articles-listing {
     max-width: 52em;
-    margin: 2.641em auto;
+    margin: 0 auto;
+    padding: 0;
     text-align: center;
 }
 
 .articles-listing h2 {
-    margin-bottom: 1em;
+    margin: 0 0 1.5em; /* 2.25em in base = 1.5 units, total h2 block = 4.5em (3 units) */
+    line-height: 1.5;
 }
 
 .article-list {
     list-style: none;
     padding: 0;
+    padding-bottom: 1.5em; /* 1 unit */
     margin: 0;
+    line-height: 1.5;
 }
 
 .article-list li {
-    margin-bottom: 0.616em;
+    margin: 0;
+    line-height: 1.5;
 }
 
 .article-list a {
-    font-size: 1.275em;
+    font-size: 1em;
+    line-height: 1.5;
 }
 
 .article-list .article-date {
-    font-size: 0.875em;
+    font-size: 1em;
     color: #888;
-    margin-left: 0.5em;
+    margin-left: 0.75em; /* 0.5 units */
+    line-height: 1.5;
 }
 
 .article-list-page {
@@ -293,7 +352,7 @@ a:hover {
 }
 
 .article-list-page li {
-    margin-bottom: 1em;
+    margin-bottom: 1.5em; /* 1 unit */
 }
 
 .article-list-page .article-date {
@@ -304,13 +363,14 @@ a:hover {
 /* Page Header */
 .page-header {
     max-width: 40em;
-    margin: 0 auto 2.641em;
+    margin: 0 auto 3em; /* 2 units */
 }
 
 .page-meta {
     font-size: 0.875em;
     color: #888;
-    margin-bottom: 0.616em;
+    margin-bottom: 0.75em; /* 0.5 units */
+    line-height: 1.5;
 }
 
 .page-meta a {
@@ -338,13 +398,14 @@ a:hover {
 }
 
 .article-header {
-    margin-bottom: 2.641em;
+    margin-bottom: 3em; /* 2 units */
 }
 
 .article-meta {
     font-size: 0.875em;
     color: #888;
-    margin-bottom: 0.616em;
+    margin-bottom: 0.75em; /* 0.5 units */
+    line-height: 1.5;
 }
 
 .article-meta a {
@@ -367,22 +428,26 @@ a:hover {
 
 .article-content {
     font-size: 1.275em;
+    line-height: 1.5;
 }
 
 .article-content h2 {
     margin-top: 1.625em;
+    margin-bottom: 0.75em; /* 0.5 units */
 }
 
 .links {
     max-width: 52em;
-    margin: 2.641em auto 0;
-    padding-top: 2.641em;
+    margin: 0 auto;
+    padding: 0;
+    padding-top: calc(1.5em - 1px); /* 1 unit minus border */
     border-top: 1px solid #ddd;
     text-align: center;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 0.5em 2em;
+    gap: 0 1.5em; /* 1 unit horizontal */
+    line-height: 1.5;
 }
 
 .links a {
@@ -391,11 +456,12 @@ a:hover {
         -apple-system,
         sans-serif;
     font-size: 1em;
+    line-height: 1.5;
     color: #333;
     white-space: nowrap;
     display: flex;
     align-items: center;
-    gap: 0.35em;
+    gap: 0.375em;
     border-bottom: none;
 }
 
@@ -405,15 +471,16 @@ a:hover {
 
 @media (max-width: 768px) {
     body {
-        padding: 1em;
+        padding: 1.5em; /* 1 unit */
     }
 
     .container {
-        padding: 2.641em 1em;
+        padding: 3em 1.5em; /* 2 units / 1 unit */
     }
 
     .name {
-        font-size: 2.641em;
+        font-size: 4.291em;
+        line-height: 1;
         text-shadow:
             -2px -2px 0 #fff,
             2px -2px 0 #fff,
@@ -427,6 +494,7 @@ a:hover {
 
     .lede {
         font-size: 1.625em;
+        line-height: 1.25;
     }
 
     .content {
@@ -441,12 +509,12 @@ a:hover {
 
 .versal {
     font-family: "spring-lp", "Brush Script MT", "Snell Roundhand", cursive;
-    font-size: 5em;
-    line-height: 0.75;
+    font-size: 3em; /* 2 units */
+    line-height: 1;
     font-weight: 400;
     font-style: italic;
     float: left;
-    margin: 0.1em 0.05em 0 -0.1em;
+    margin: 0 0.125em 0 0;
     color: #333;
 }
 
@@ -460,18 +528,33 @@ h3 {
 }
 
 h1 {
-    font-size: 2.641em;
-    line-height: 1.2;
-    margin: 0 0 0.616em;
+    font-size: 1.5em; /* 1 unit */
+    line-height: 1.5; /* 2.25em = 1.5 units */
+    margin: 0 0 0.5em; /* 0.75em / 1.5 = 0.5em = 0.5 units in context */
 }
 
 h2 {
-    font-size: 1.625em;
-    line-height: 1.2;
-    margin: 1em 0;
+    font-size: 1.5em; /* 1 unit */
+    line-height: 1.5; /* 2.25em = 1.5 units */
+    margin: 1em 0 0.5em; /* 1 unit / 0.5 units in context */
 }
 
 h3 {
     font-size: 1em;
-    line-height: 1.625;
+    line-height: 1.5;
+    margin: 1.5em 0 0.75em; /* 1 unit / 0.5 units */
+}
+
+/* Baseline Grid Debug Tool - Toggle with 'g' key */
+.baseline-grid-visible {
+    background-image: linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(1.5em - 1px),
+        rgba(0, 150, 100, 0.25) calc(1.5em - 1px),
+        rgba(0, 150, 100, 0.25) 1.5em
+    );
+    background-size: 100% 1.5em;
+    background-position: 0 0;
+    background-attachment: local;
 }

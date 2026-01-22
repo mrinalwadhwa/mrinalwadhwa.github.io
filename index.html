@@ -96,13 +96,19 @@
         </nav>
 
         <div class="container">
-            <img src="/images/mrinal.jpeg" alt="Mrinal Wadhwa" class="profile-photo" />
-            <h1 class="name">Mrinal Wadhwa</h1>
+            <div class="profile-photo-wrapper">
+                <img src="/images/mrinal.jpeg" alt="Mrinal Wadhwa" class="profile-photo" />
+            </div>
+            <div class="name-wrapper">
+                <h1 class="name">Mrinal Wadhwa</h1>
+            </div>
 
-            <p class="lede">
-                I’m founder and CTO of <a href="https://autonomy.computer">Autonomy</a>, a platform that gives you the
-                ability to create products that can autonomously perform long and complex tasks.
-            </p>
+            <div class="lede-wrapper">
+                <p class="lede">
+                    I&#8217;m founder and CTO of <a href="https://autonomy.computer">Autonomy</a>, a platform that gives
+                    you the ability to create products that can autonomously perform long and complex tasks.
+                </p>
+            </div>
 
             <div class="content">
                 <p>
@@ -229,16 +235,14 @@
                 <button class="carousel-btn next" aria-label="Next video">&#8250;</button>
             </div>
 
-            <!--
             <hr class="divider" />
 
             <section id="articles" class="articles-listing">
                 <h2>Articles</h2>
                 <ul class="article-list">
-                    <!-- Add new articles below this line, newest first -- >
+                    <!-- Add new articles below this line, newest first -->
                 </ul>
             </section>
-            -->
 
             <div class="links">
                 <a href="/follow/rss.xml"
@@ -305,6 +309,13 @@
                     { passive: false },
                 );
             })();
+
+            // Baseline grid debug tool - press 'g' to toggle
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "g" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                    document.body.classList.toggle("baseline-grid-visible");
+                }
+            });
         </script>
     </body>
 </html>
