@@ -69,13 +69,28 @@
             .title-kicker {
                 font-family: system-ui, -apple-system, sans-serif;
                 font-size: 0.875em;
-                letter-spacing: 0.02em;
+                letter-spacing: 0.12em;
                 text-transform: uppercase;
                 color: #666;
                 margin: 0 0 0.75em;
             }
 
-            /* Try alternate display styles by toggling a class */
+            /* Condensed all-caps heading inspired by the reference image */
+            .article-title.alt-condensed {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    "Arial Narrow",
+                    "Helvetica Neue Condensed Bold",
+                    Arial,
+                    sans-serif;
+                font-weight: 900;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                line-height: 0.95;
+            }
+
+            /* Other alternates */
             .article-title.alt-slab {
                 font-family: Georgia, "Times New Roman", Times, serif;
                 font-weight: 800;
@@ -273,7 +288,7 @@
                         <div class="body-col">
                             <div class="body-header">
                                 <p class="title-kicker">Controlled iteration</p>
-                                <h1 class="article-title alt-italic">How to make<br />agents succeed</h1>
+                                <h1 class="article-title alt-condensed">How to make<br />agents succeed</h1>
                             </div>
 
                             <div class="body-two-cols">
