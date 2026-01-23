@@ -3,30 +3,30 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>How to make agents succeed – Mrinal Wadhwa</title>
+        <title>How to make agents that succeed – Mrinal Wadhwa</title>
         <meta
             name="description"
-            content="Controlled iteration is the only way to ship reliable, probabilistic AI agents. Here is a concrete process to build evals, prevent regressions, and choose models with confidence."
+            content="Controlled iteration is the only way to ship a reliable autonomous product and actually improve it over time."
         />
         <meta name="author" content="Mrinal Wadhwa" />
-        <link rel="canonical" href="https://mrinal.com/articles/how-to-make-agents-succeed/" />
+        <link rel="canonical" href="https://mrinal.com/articles/how-to-make-agents-that-succeed/" />
 
         <!-- Open Graph -->
-        <meta property="og:title" content="How to make agents succeed – Mrinal Wadhwa" />
+        <meta property="og:title" content="How to make agents that succeed – Mrinal Wadhwa" />
         <meta
             property="og:description"
-            content="Controlled iteration is the only way to ship reliable, probabilistic AI agents. Here is a concrete process to build evals, prevent regressions, and choose models with confidence."
+            content="Controlled iteration is the only way to ship a reliable autonomous product and actually improve it over time."
         />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://mrinal.com/articles/how-to-make-agents-succeed/" />
+        <meta property="og:url" content="https://mrinal.com/articles/how-to-make-agents-that-succeed/" />
 
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@mrinal" />
-        <meta name="twitter:title" content="How to make agents succeed – Mrinal Wadhwa" />
+        <meta name="twitter:title" content="How to make agents that succeed – Mrinal Wadhwa" />
         <meta
             name="twitter:description"
-            content="Controlled iteration is the only way to ship reliable, probabilistic AI agents. Here is a concrete process to build evals, prevent regressions, and choose models with confidence."
+            content="Controlled iteration is the only way to ship a reliable autonomous product and actually improve it over time."
         />
 
         <link
@@ -40,6 +40,23 @@
 
         <!-- Post-specific styles (optional) -->
         <style>
+            /* Divider aligned to the text (right) column width, not the full three-col span */
+            .body-col .divider.columns-divider {
+                max-width: none;
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .discussion-link {
+                margin: 0.588235em 0 0; /* 0.5 baseline unit */
+                line-height: 1.5;
+                text-align: right;
+            }
+
+            .discussion-link a {
+                border-bottom: 1px solid #333;
+            }
             /* Wider page + 3-column layout:
                c1 = video
                c2/c3 = body text in two columns */
@@ -65,14 +82,16 @@
             }
 
             /* A small kicker to mirror the reference's typographic hierarchy */
-            .title-kicker {
-                font-family: "adobe-garamond-pro", Georgia, serif;
-                font-size: 0.875em;
-                line-height: 1.714286; /* 1.5em / 0.875em = 1.714286 to hit 1.5em baseline */
-                letter-spacing: 0.12em;
+            .body-header p.title-kicker {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+                font-size: 1.5em;
+                line-height: 1.568628; /* 2 lines = 2 baseline units */
+                letter-spacing: 0.08em;
                 text-transform: uppercase;
                 color: #666;
-                margin: 0; /* spacing comes from title block to keep units clean */
+                margin: 0 0 0.784314em; /* 1.176471em / 1.5 = 1 baseline unit gap before title */
             }
 
             .article-title {
@@ -80,9 +99,8 @@
                 font-weight: 700;
                 font-style: normal;
                 text-transform: uppercase;
-                letter-spacing: 0.06em;
                 font-size: 4.291em; /* 4.291em on the modular scale */
-                line-height: 1.048699; /* 4.5em / 4.291em = 3u per line */
+                line-height: 0.822515; /* 3.529412em / 4.291em = 0.822515 to hit 3 baseline units */
                 margin: 0;
             }
 
@@ -128,19 +146,20 @@
             .body-col {
                 display: grid;
                 grid-template-rows: auto 1fr;
-                gap: 1.5em;
+                gap: 0;
                 min-width: 0;
             }
 
             .body-header {
-                padding-top: 0;
                 grid-column: 1 / -1;
+                margin: 0 0 2.352941em; /* 2 baseline units */
             }
 
             .video-col {
                 position: sticky;
                 top: 1.5em;
                 align-self: start;
+                margin-top: 9.411765em; /* 8 baseline units */
             }
 
             .video-frame {
@@ -203,18 +222,12 @@
 
             .body-header {
                 column-span: all;
-                padding-top: 0; /* snap title block to grid */
-                margin: 0 0 1.5em; /* 1u */
-            }
-
-            /* Ensure the full title block (kicker + title) lands on the baseline */
-            .body-header .article-title {
-                margin-bottom: 1.5em; /* 1u */
             }
 
             .body-two-cols p {
+                line-height: 1.568627; /* 2em / 1.275em per line (3 lines = 4 units) */
+                margin: 0 0 1.176471em; /* 1 baseline unit */
                 break-inside: avoid;
-                margin-top: 0;
             }
 
             @media (max-width: 1100px) {
@@ -262,12 +275,6 @@
                                     allowfullscreen
                                 ></iframe>
                             </div>
-                            <p class="video-meta">
-                                Original:
-                                <a href="https://youtube.com/shorts/3X1kDgQGGtI?si=2cAko5rxXmDldffn"
-                                    >https://youtube.com/shorts/3X1kDgQGGtI</a
-                                >
-                            </p>
                             <p class="right-meta"><a href="/">Mrinal Wadhwa</a> · January 23, 2026</p>
                         </div>
 
@@ -294,56 +301,81 @@
                                 </p>
 
                                 <p>
-                                    For example, one Autonomy customer, a fintech, recently shipped Agents that analyze
-                                    bank statements and other documents submitted with a business loan application.
-                                    Their Agents use large language models to extract key data points from those
-                                    documents. Their Agents also do precise math on the extracted data (for example,
+                                    For example, one <a href="https://autonomy.computer">Autonomy</a> customer, a
+                                    fintech, recently shipped agents that analyze bank statements and other documents
+                                    submitted with a business loan application.
+                                </p>
+
+                                <p>
+                                    Their agents use large language models to extract key data points from those
+                                    documents. Their agents also do precise math on the extracted data (for example,
                                     calculate the total payroll spend) by autonomously invoking tools written in Python.
                                 </p>
 
                                 <p>
-                                    Initially, when they tried the first few documents, extraction wasn’t always
+                                    Initially, when they tried the first few documents, extraction wasn't always
                                     correct. The agents would sometimes hallucinate the wrong tool call, so the computed
-                                    values were wrong. They also weren’t sure which language model to use. Did they
-                                    really need the newest, most expensive models, or could a cheaper one work just as
-                                    well?
+                                    values were wrong.
+                                </p>
+
+                                <p>
+                                    They also weren't sure which language model to use. Did they really need the newest,
+                                    most expensive models, or could a cheaper one work just as well?
                                 </p>
 
                                 <p>
                                     And this is how all AI products begin. To make progress, you need a systematic
-                                    approach: one document at a time. This fintech started with the most capable
-                                    language model and an initial development dataset of 30 documents. For each
-                                    document, they manually analyzed it, labeled the correct output, and then refined
-                                    the agent’s prompts and tool descriptions to ensure the output matched the labeled
-                                    expected result.
+                                    approach: one document at a time.
+                                </p>
+
+                                <p>
+                                    This fintech started with the most capable language model and an initial development
+                                    dataset of 30 documents. For each document, they manually analyzed it, labeled the
+                                    correct output, and then refined the agent's prompts and tool descriptions to ensure
+                                    the output matched the labeled expected result.
                                 </p>
 
                                 <p>
                                     Once they got one document to work, they added it to their CI-driven automated
                                     evaluation suite. That way, as they moved on to the next document, the automated
-                                    checks ensured they weren’t breaking what was already working for previous
-                                    documents. Since agent outputs are probabilistic, each evaluation produced a metric
-                                    (for example, a success percentage) rather than a simple pass/fail. Each document
-                                    was checked multiple times to compute those percentages, which let them handle
+                                    checks ensured they weren't breaking what was already working for previous
+                                    documents.
+                                </p>
+
+                                <p>
+                                    Since agent outputs are probabilistic, each evaluation produced a metric (for
+                                    example, a success percentage) rather than a simple pass/fail. Each document was
+                                    checked multiple times to compute those percentages, which let them handle
                                     variability and still measure when things were stable, degrading, or improving.
                                 </p>
 
                                 <p>
                                     They defined success thresholds (for example, 95% extraction accuracy and 99%
                                     tool-call success). Once all 30 documents were passing these thresholds, they made
-                                    the agents live. In production, they gathered traces of how the agents behaved on
-                                    real-world documents, found new document types that caused issues, and then iterated
-                                    on prompts and inputs again to fix those. Because they had that automated evaluation
-                                    suite, it ensured prior behavior never broke.
+                                    the agents live.
                                 </p>
 
                                 <p>
-                                    Controlled, iterative refinement is what separates successful autonomous products
-                                    from failed experiments and demo-ware. With an automated evals, you can also
-                                    confidently experiment with cheaper or latest models, knowing the tests will catch
-                                    any regressions.
+                                    In production, they gathered traces of how the agents behaved on real-world
+                                    documents, found new document types that caused issues, and then iterated on prompts
+                                    and inputs again to fix those. Because they had that automated evaluation suite, it
+                                    ensured prior behavior never broke.
+                                </p>
+
+                                <p>
+                                    With automated evals, you can also confidently experiment with cheaper or latest
+                                    models, knowing the tests will catch regressions. To make agents succeed, embrace
+                                    this step by step scientific method.
                                 </p>
                             </div>
+                            <hr class="divider columns-divider" />
+                            <p class="discussion-link">
+                                <a
+                                    href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fmrinal.com%2Farticles%2Fhow-to-make-agents-that-succeed%2F&t=How%20to%20make%20agents%20that%20succeed"
+                                >
+                                    Discuss on Hacker News
+                                </a>
+                            </p>
                         </div>
                     </div>
                 </div>
