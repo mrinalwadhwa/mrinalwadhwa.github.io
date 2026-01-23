@@ -49,39 +49,69 @@
             }
 
             /* Heading treatment inspired by the reference:
-               heavy, stacked, editorial, with tight leading */
+               serif display, stacked, editorial, with tight leading */
             .article-header {
                 max-width: none;
-                margin-bottom: 1.5em;
+                margin-bottom: 0;
             }
 
             .article-title {
-                font-family:
-                    system-ui,
-                    -apple-system,
-                    "adobe-garamond-pro",
-                    Georgia,
-                    serif;
-                font-weight: 850;
-                letter-spacing: -0.03em;
+                font-family: "adobe-garamond-pro", Georgia, serif;
+                font-weight: 700;
+                letter-spacing: -0.025em;
                 line-height: 0.92;
-                font-size: 5.2em;
-                margin: 0.2em 0 0.2em;
-                max-width: 12ch;
+                font-size: 4.291em;
+                margin: 0;
+                max-width: 14ch;
+            }
+
+            /* A small kicker to mirror the reference's typographic hierarchy */
+            .title-kicker {
+                font-family: system-ui, -apple-system, sans-serif;
+                font-size: 0.875em;
+                letter-spacing: 0.02em;
+                text-transform: uppercase;
+                color: #666;
+                margin: 0 0 0.75em;
+            }
+
+            /* Try alternate display styles by toggling a class */
+            .article-title.alt-slab {
+                font-family: Georgia, "Times New Roman", Times, serif;
+                font-weight: 800;
+                letter-spacing: -0.03em;
+            }
+
+            .article-title.alt-italic {
+                font-family: "spring-lp", Georgia, serif;
+                font-weight: 400;
+                font-style: italic;
+                letter-spacing: -0.01em;
+                line-height: 1.02;
             }
 
             @media (max-width: 1100px) {
                 .article-title {
-                    font-size: 4.2em;
-                    max-width: 14ch;
+                    font-size: 3.5em;
+                    max-width: 16ch;
+                }
+            }
+
+            @media (max-width: 900px) {
+                .title-kicker {
+                    text-align: center;
+                }
+
+                .article-title {
+                    max-width: none;
+                    text-align: center;
                 }
             }
 
             @media (max-width: 768px) {
                 .article-title {
-                    font-size: 3em;
+                    font-size: 2.641em;
                     line-height: 0.98;
-                    max-width: none;
                 }
             }
 
@@ -90,13 +120,25 @@
                 grid-template-columns: 18em 1fr;
                 gap: 3em; /* match homepage column gap */
                 align-items: start;
-                margin-top: 3em;
+                margin-top: 1.5em;
 
                 /* Let the layout go full-bleed within the site container */
                 max-width: none;
                 width: calc(100vw - 6em);
                 margin-left: calc(50% - 50vw + 3em);
                 margin-right: calc(50% - 50vw + 3em);
+            }
+
+            /* Put title next to the video: a mini header row above the two text columns */
+            .body-col {
+                display: grid;
+                grid-template-rows: auto 1fr;
+                gap: 1.5em;
+                min-width: 0;
+            }
+
+            .body-header {
+                padding-top: 0.25em;
             }
 
             .video-col {
@@ -179,7 +221,6 @@
             <article class="article wide-layout">
                 <header class="article-header">
                     <p class="article-meta"><a href="/">Mrinal Wadhwa</a> · January 23, 2026</p>
-                    <h1 class="article-title">How to make<br />agents succeed</h1>
                 </header>
 
                 <div class="article-content">
@@ -201,12 +242,18 @@
                             </p>
                         </div>
 
-                        <div class="body-two-cols">
-                            <p>
-                                Most software teams don’t have a lot of automated tests, and they get away with it
-                                because traditional software is deterministic. If it works once, it’ll keep working the
-                                same way, and just eyeballing behavior before releases can feel good enough.
-                            </p>
+                        <div class="body-col">
+                            <div class="body-header">
+                                <p class="title-kicker">Controlled iteration</p>
+                                <h1 class="article-title alt-italic">How to make<br />agents succeed</h1>
+                            </div>
+
+                            <div class="body-two-cols">
+                                <p>
+                                    Most software teams don’t have a lot of automated tests, and they get away with it
+                                    because traditional software is deterministic. If it works once, it’ll keep working the
+                                    same way, and just eyeballing behavior before releases can feel good enough.
+                                </p>
 
                             <p>
                                 But AI products are different. They’re probabilistic, so their behavior can shift in
@@ -265,6 +312,8 @@
                                 failed experiments and demo-ware. With an automated evals, you can also confidently
                                 experiment with cheaper or latest models, knowing the tests will catch any regressions.
                             </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
