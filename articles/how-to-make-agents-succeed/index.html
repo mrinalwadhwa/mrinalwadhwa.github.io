@@ -40,68 +40,36 @@
 
         <!-- Post-specific styles (optional) -->
         <style>
-            /* Poster-style hero: video on the left, title and intro on the right */
-            .poster {
-                max-width: 60em;
+            /* Wider page + 3-column layout:
+               c1 = video
+               c2/c3 = body text in two columns */
+            .wide-layout {
+                max-width: 78em;
                 margin: 0 auto;
             }
 
-            .poster-hero {
-                position: relative;
-                background: #f5f4f0;
-                border-radius: 10px;
-                padding: 3em;
-                margin: 0 0 3em;
-                overflow: hidden;
-            }
-
-            /* Subtle paper/print texture */
-            .poster-hero::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background-image:
-                    radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                    radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(0, 0, 0, 0.05), transparent 30%);
-                background-size:
-                    28px 28px,
-                    18px 18px,
-                    100% 100%;
-                background-position:
-                    0 0,
-                    10px 12px,
-                    0 0;
-                opacity: 0.18;
-                pointer-events: none;
-            }
-
-            .poster-hero::after {
-                content: "";
-                position: absolute;
-                inset: 0;
-                box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-                border-radius: 10px;
-                pointer-events: none;
-            }
-
-            .poster-grid {
-                position: relative;
+            .three-col {
                 display: grid;
-                grid-template-columns: 1.05fr 0.95fr;
+                grid-template-columns: 26em 1fr;
                 gap: 3em;
-                align-items: center;
+                align-items: start;
+                margin-top: 3em;
             }
 
-            .poster-media {
-                position: relative;
+            .video-col {
+                position: sticky;
+                top: 1.5em;
+                align-self: start;
+            }
+
+            .video-frame {
                 border-radius: 8px;
-                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
                 overflow: hidden;
                 background: #000;
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
             }
 
-            .poster-media iframe {
+            .video-frame iframe {
                 width: 100%;
                 aspect-ratio: 9 / 16;
                 height: auto;
@@ -110,90 +78,50 @@
                 background: #000;
             }
 
-            .poster-type {
-                position: relative;
-                padding-top: 0.75em;
-            }
-
-            .poster-kicker {
-                font-family: "spring-lp", Georgia, serif;
-                font-size: 1.625em;
-                font-style: italic;
-                text-align: center;
-                margin: 0 0 0.25em;
-                color: #b8562f;
-                letter-spacing: 0.01em;
-            }
-
-            .poster-title {
-                font-family:
-                    system-ui,
-                    -apple-system,
-                    sans-serif;
-                font-weight: 800;
-                text-transform: uppercase;
-                letter-spacing: 0.03em;
-                line-height: 1.05;
-                text-align: center;
-                margin: 0 0 0.75em;
-                font-size: 2.641em;
-            }
-
-            .poster-columns {
-                column-count: 2;
-                column-gap: 2.641em;
-                font-size: 1.125em;
-                line-height: 1.5;
-            }
-
-            .poster-columns p {
-                margin: 0 0 1.5em;
-            }
-
-            .poster-columns p:last-child {
-                margin-bottom: 0;
-            }
-
             .video-meta {
                 font-size: 0.875em;
                 color: #666;
                 margin-top: 0.75em;
-                text-align: center;
+                text-align: left;
             }
 
             .video-meta a {
                 color: inherit;
             }
 
-            /* Two-column body layout */
-            .two-column-body {
+            .body-two-cols {
                 column-count: 2;
                 column-gap: 3em;
+                column-fill: balance;
             }
 
-            .two-column-body p {
+            .body-two-cols p {
                 break-inside: avoid;
+                margin-top: 0;
+            }
+
+            @media (max-width: 1100px) {
+                .three-col {
+                    grid-template-columns: 22em 1fr;
+                    gap: 2.641em;
+                }
             }
 
             @media (max-width: 900px) {
-                .poster-hero {
-                    padding: 1.5em;
-                }
-
-                .poster-grid {
+                .three-col {
                     grid-template-columns: 1fr;
                     gap: 1.5em;
                 }
 
-                .poster-columns {
-                    column-count: 1;
+                .video-col {
+                    position: static;
                 }
 
-                .poster-title {
-                    font-size: 2em;
+                .video-meta {
+                    text-align: center;
                 }
 
-                .two-column-body {
+                .body-two-cols {
                     column-count: 1;
                 }
             }
@@ -201,113 +129,96 @@
     </head>
     <body>
         <div class="container">
-            <article class="article poster">
+            <article class="article wide-layout">
                 <header class="article-header">
                     <p class="article-meta"><a href="/">Mrinal Wadhwa</a> · January 23, 2026</p>
+                    <h1 class="article-title">How to make agents succeed</h1>
                 </header>
 
                 <div class="article-content">
-                    <section class="poster-hero" aria-label="Poster-style introduction">
-                        <div class="poster-grid">
-                            <div>
-                                <div class="poster-media">
-                                    <iframe
-                                        src="https://www.youtube.com/embed/3X1kDgQGGtI"
-                                        title="YouTube Short: 3X1kDgQGGtI"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        allowfullscreen
-                                    ></iframe>
-                                </div>
-                                <p class="video-meta">
-                                    Original:
-                                    <a href="https://youtube.com/shorts/3X1kDgQGGtI?si=2cAko5rxXmDldffn"
-                                        >https://youtube.com/shorts/3X1kDgQGGtI</a
-                                    >
-                                </p>
+                    <div class="three-col">
+                        <div class="video-col">
+                            <div class="video-frame">
+                                <iframe
+                                    src="https://www.youtube.com/embed/3X1kDgQGGtI"
+                                    title="YouTube Short: 3X1kDgQGGtI"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen
+                                ></iframe>
                             </div>
-
-                            <div class="poster-type">
-                                <p class="poster-kicker">How to make</p>
-                                <h1 class="poster-title">Agents succeed</h1>
-                                <div class="poster-columns">
-                                    <p>
-                                        Most software teams don’t have a lot of automated tests. They get away with it
-                                        because traditional software is deterministic. If it works once, it’ll keep
-                                        working the same way.
-                                    </p>
-                                    <p>
-                                        AI products are different. They’re probabilistic. Their behavior can shift in
-                                        unexpected ways every time you use them.
-                                    </p>
-                                </div>
-                            </div>
+                            <p class="video-meta">
+                                Original:
+                                <a href="https://youtube.com/shorts/3X1kDgQGGtI?si=2cAko5rxXmDldffn"
+                                    >https://youtube.com/shorts/3X1kDgQGGtI</a
+                                >
+                            </p>
                         </div>
-                    </section>
 
-                    <div class="two-column-body">
-                        <p>
-                            Most software teams don’t have a lot of automated tests, and they get away with it because
-                            traditional software is deterministic. If it works once, it’ll keep working the same way,
-                            and just eyeballing behavior before releases can feel good enough.
-                        </p>
+                        <div class="body-two-cols">
+                            <p>
+                                Most software teams don’t have a lot of automated tests, and they get away with it
+                                because traditional software is deterministic. If it works once, it’ll keep working the
+                                same way, and just eyeballing behavior before releases can feel good enough.
+                            </p>
 
-                        <p>
-                            But AI products are different. They’re probabilistic — their behavior can shift in
-                            unexpected ways every time you use them.
-                        </p>
+                            <p>
+                                But AI products are different. They’re probabilistic — their behavior can shift in
+                                unexpected ways every time you use them.
+                            </p>
 
-                        <p>
-                            Controlled iteration is the only way to ship a reliable autonomous product and actually
-                            improve it over time.
-                        </p>
+                            <p>
+                                Controlled iteration is the only way to ship a reliable autonomous product and actually
+                                improve it over time.
+                            </p>
 
-                        <p>
-                            For example, one Autonomy customer, a fintech, recently shipped Agents that analyze bank
-                            statements and other documents submitted with a business loan application. Their Agents use
-                            large language models to extract key data points from those documents. Their Agents also do
-                            precise math on the extracted data — like calculate the total payroll spend — by
-                            autonomously invoking tools written in Python.
-                        </p>
+                            <p>
+                                For example, one Autonomy customer, a fintech, recently shipped Agents that analyze bank
+                                statements and other documents submitted with a business loan application. Their Agents
+                                use large language models to extract key data points from those documents. Their Agents
+                                also do precise math on the extracted data — like calculate the total payroll spend — by
+                                autonomously invoking tools written in Python.
+                            </p>
 
-                        <p>
-                            Initially, when they tried the first few documents, extraction wasn’t always correct. The
-                            agents would sometimes hallucinate the wrong tool call, so the computed values were wrong.
-                            They also weren’t sure which language model to use — did they really need the newest, most
-                            expensive models, or could a cheaper one work just as well?
-                        </p>
+                            <p>
+                                Initially, when they tried the first few documents, extraction wasn’t always correct.
+                                The agents would sometimes hallucinate the wrong tool call, so the computed values were
+                                wrong. They also weren’t sure which language model to use — did they really need the
+                                newest, most expensive models, or could a cheaper one work just as well?
+                            </p>
 
-                        <p>
-                            And this is how all AI products begin. To make progress, you need a systematic approach: one
-                            document at a time. This fintech started with the most capable language model and an initial
-                            development dataset of 30 documents. For each document, they manually analyzed it, labeled
-                            the correct output, and then refined the agent’s prompts and tool descriptions to ensure the
-                            output matched the labeled expected result.
-                        </p>
+                            <p>
+                                And this is how all AI products begin. To make progress, you need a systematic approach:
+                                one document at a time. This fintech started with the most capable language model and an
+                                initial development dataset of 30 documents. For each document, they manually analyzed
+                                it, labeled the correct output, and then refined the agent’s prompts and tool
+                                descriptions to ensure the output matched the labeled expected result.
+                            </p>
 
-                        <p>
-                            Once they got one document to work, they added it to their CI-driven automated evaluation
-                            suite. That way, as they moved on to the next document, the automated checks ensured they
-                            weren’t breaking what was already working for previous documents. Since agent outputs are
-                            probabilistic, each evaluation produced a metric — like a success percentage — rather than a
-                            simple pass/fail. Each document was checked multiple times to compute those percentages,
-                            which let them handle variability and still measure when things were stable, degrading, or
-                            improving.
-                        </p>
+                            <p>
+                                Once they got one document to work, they added it to their CI-driven automated
+                                evaluation suite. That way, as they moved on to the next document, the automated checks
+                                ensured they weren’t breaking what was already working for previous documents. Since
+                                agent outputs are probabilistic, each evaluation produced a metric — like a success
+                                percentage — rather than a simple pass/fail. Each document was checked multiple times to
+                                compute those percentages, which let them handle variability and still measure when
+                                things were stable, degrading, or improving.
+                            </p>
 
-                        <p>
-                            They defined success thresholds — for example, 95% extraction accuracy and 99% tool-call
-                            success. Once all 30 documents were passing these thresholds, they made the agents live. In
-                            production, they gathered traces of how the agents behaved on real-world documents, found
-                            new document types that caused issues, and then iterated on prompts and inputs again to fix
-                            those. Because they had that automated evaluation suite, it ensured prior behavior never
-                            broke.
-                        </p>
+                            <p>
+                                They defined success thresholds — for example, 95% extraction accuracy and 99% tool-call
+                                success. Once all 30 documents were passing these thresholds, they made the agents live.
+                                In production, they gathered traces of how the agents behaved on real-world documents,
+                                found new document types that caused issues, and then iterated on prompts and inputs
+                                again to fix those. Because they had that automated evaluation suite, it ensured prior
+                                behavior never broke.
+                            </p>
 
-                        <p>
-                            Controlled, iterative refinement is what separates successful autonomous products from
-                            failed experiments and demo-ware. With an automated evals, you can also confidently
-                            experiment with cheaper or latest models, knowing the tests will catch any regressions.
-                        </p>
+                            <p>
+                                Controlled, iterative refinement is what separates successful autonomous products from
+                                failed experiments and demo-ware. With an automated evals, you can also confidently
+                                experiment with cheaper or latest models, knowing the tests will catch any regressions.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </article>
