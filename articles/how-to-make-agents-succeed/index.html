@@ -48,30 +48,20 @@
                 margin: 0 auto;
             }
 
-            /* Heading treatment inspired by the reference:
-               serif display, stacked, editorial, with tight leading */
+            /* Title and kicker aligned to baseline grid */
             .article-header {
-                max-width: none;
-                margin-bottom: 0;
+                display: none;
             }
 
             .right-meta {
                 font-size: 0.875em;
+                line-height: 1.5;
                 color: #888;
-                margin: 0.75em 0 0;
+                margin: 0.75em 0 0; /* 0.5u */
             }
 
             .right-meta a {
                 color: inherit;
-            }
-
-            .article-title {
-                font-family: "tgn-soft-round-comp", sans-serif;
-                font-weight: 700;
-                font-style: normal;
-                text-transform: uppercase;
-                letter-spacing: 0.06em;
-                line-height: 0.95;
             }
 
             /* A small kicker to mirror the reference's typographic hierarchy */
@@ -81,31 +71,28 @@
                     -apple-system,
                     sans-serif;
                 font-size: 0.875em;
+                line-height: 1.5;
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
                 color: #666;
-                margin: 0 0 0.75em;
+                margin: 0 0 0.75em; /* 0.5u */
             }
 
-            /* Other alternates */
-            .article-title.alt-slab {
-                font-family: Georgia, "Times New Roman", Times, serif;
-                font-weight: 800;
-                letter-spacing: -0.03em;
-            }
-
-            .article-title.alt-italic {
-                font-family: "spring-lp", Georgia, serif;
-                font-weight: 400;
-                font-style: italic;
-                letter-spacing: -0.01em;
-                line-height: 1.02;
+            .article-title {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 700;
+                font-style: normal;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                font-size: 4.291em; /* 4.291em on the modular scale */
+                line-height: 0.699; /* 3em / 4.291em = 2u per line */
+                margin: 0;
             }
 
             @media (max-width: 1100px) {
                 .article-title {
                     font-size: 3.5em;
-                    max-width: 16ch;
+                    line-height: 0.857143; /* 3em / 3.5em */
                 }
             }
 
@@ -115,7 +102,6 @@
                 }
 
                 .article-title {
-                    max-width: none;
                     text-align: center;
                 }
             }
@@ -123,7 +109,7 @@
             @media (max-width: 768px) {
                 .article-title {
                     font-size: 2.641em;
-                    line-height: 0.98;
+                    line-height: 0.757576; /* 2em / 2.641em */
                 }
             }
 
@@ -263,8 +249,6 @@
     <body>
         <div class="container">
             <article class="article wide-layout">
-                <header class="article-header"></header>
-
                 <div class="article-content">
                     <div class="three-col">
                         <div class="video-col">
