@@ -172,7 +172,7 @@
                             </p>
 
                             <p>
-                                But AI products are different. They’re probabilistic — their behavior can shift in
+                                But AI products are different. They’re probabilistic, so their behavior can shift in
                                 unexpected ways every time you use them.
                             </p>
 
@@ -185,14 +185,14 @@
                                 For example, one Autonomy customer, a fintech, recently shipped Agents that analyze bank
                                 statements and other documents submitted with a business loan application. Their Agents
                                 use large language models to extract key data points from those documents. Their Agents
-                                also do precise math on the extracted data — like calculate the total payroll spend — by
-                                autonomously invoking tools written in Python.
+                                also do precise math on the extracted data (for example, calculate the total payroll
+                                spend) by autonomously invoking tools written in Python.
                             </p>
 
                             <p>
                                 Initially, when they tried the first few documents, extraction wasn’t always correct.
                                 The agents would sometimes hallucinate the wrong tool call, so the computed values were
-                                wrong. They also weren’t sure which language model to use — did they really need the
+                                wrong. They also weren’t sure which language model to use. Did they really need the
                                 newest, most expensive models, or could a cheaper one work just as well?
                             </p>
 
@@ -208,19 +208,19 @@
                                 Once they got one document to work, they added it to their CI-driven automated
                                 evaluation suite. That way, as they moved on to the next document, the automated checks
                                 ensured they weren’t breaking what was already working for previous documents. Since
-                                agent outputs are probabilistic, each evaluation produced a metric — like a success
-                                percentage — rather than a simple pass/fail. Each document was checked multiple times to
-                                compute those percentages, which let them handle variability and still measure when
-                                things were stable, degrading, or improving.
+                                agent outputs are probabilistic, each evaluation produced a metric (for example, a
+                                success percentage) rather than a simple pass/fail. Each document was checked multiple
+                                times to compute those percentages, which let them handle variability and still measure
+                                when things were stable, degrading, or improving.
                             </p>
 
                             <p>
-                                They defined success thresholds — for example, 95% extraction accuracy and 99% tool-call
-                                success. Once all 30 documents were passing these thresholds, they made the agents live.
-                                In production, they gathered traces of how the agents behaved on real-world documents,
-                                found new document types that caused issues, and then iterated on prompts and inputs
-                                again to fix those. Because they had that automated evaluation suite, it ensured prior
-                                behavior never broke.
+                                They defined success thresholds (for example, 95% extraction accuracy and 99% tool-call
+                                success). Once all 30 documents were passing these thresholds, they made the agents
+                                live. In production, they gathered traces of how the agents behaved on real-world
+                                documents, found new document types that caused issues, and then iterated on prompts and
+                                inputs again to fix those. Because they had that automated evaluation suite, it ensured
+                                prior behavior never broke.
                             </p>
 
                             <p>
