@@ -204,7 +204,7 @@
                 font-size: 0.75em;
                 line-height: 1.3;
                 color: #666;
-                margin-top: 0.5em;
+                margin-top: 0.75em;
                 text-align: left;
             }
 
@@ -366,7 +366,12 @@
 
         <!-- Post-specific scripts (optional) -->
         <script>
-            // Add any post-specific JavaScript here
+            // Baseline grid debug tool - press 'g' to toggle
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "g" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                    document.body.classList.toggle("baseline-grid-visible");
+                }
+            });
         </script>
     </body>
 </html>
