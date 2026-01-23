@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>How to make agents succeed – Mrinal Wadhwa</title>
+        <meta
+            name="description"
+            content="Controlled iteration is the only way to ship reliable, probabilistic AI agents. Here is a concrete process to build evals, prevent regressions, and choose models with confidence."
+        />
+        <meta name="author" content="Mrinal Wadhwa" />
+        <link rel="canonical" href="https://mrinal.com/articles/how-to-make-agents-succeed/" />
+
+        <!-- Open Graph -->
+        <meta property="og:title" content="How to make agents succeed – Mrinal Wadhwa" />
+        <meta
+            property="og:description"
+            content="Controlled iteration is the only way to ship reliable, probabilistic AI agents. Here is a concrete process to build evals, prevent regressions, and choose models with confidence."
+        />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://mrinal.com/articles/how-to-make-agents-succeed/" />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@mrinal" />
+        <meta name="twitter:title" content="How to make agents succeed – Mrinal Wadhwa" />
+        <meta
+            name="twitter:description"
+            content="Controlled iteration is the only way to ship reliable, probabilistic AI agents. Here is a concrete process to build evals, prevent regressions, and choose models with confidence."
+        />
+
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Mrinal Wadhwa"
+            href="https://mrinal.com/follow/rss.xml"
+        />
+        <link rel="stylesheet" href="https://use.typekit.net/biy2rlh.css" />
+        <link rel="stylesheet" type="text/css" href="/styles.css" />
+
+        <!-- Post-specific styles (optional) -->
+        <style>
+            .video-embed {
+                max-width: 30em;
+                margin: 0 auto 3em;
+            }
+
+            .video-embed iframe {
+                width: 100%;
+                aspect-ratio: 9 / 16;
+                height: auto;
+                border: 0;
+                border-radius: 8px;
+                background: #000;
+            }
+
+            .video-meta {
+                font-size: 0.875em;
+                color: #666;
+                margin-top: 0.75em;
+                text-align: center;
+            }
+
+            .video-meta a {
+                color: inherit;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <article class="article">
+                <header class="article-header">
+                    <p class="article-meta"><a href="/">Mrinal Wadhwa</a> · January 23, 2026</p>
+                    <h1 class="article-title">How to make agents succeed</h1>
+                </header>
+
+                <div class="article-content">
+                    <p>How to make agents succeed.</p>
+
+                    <div class="video-embed">
+                        <iframe
+                            src="https://www.youtube.com/embed/3X1kDgQGGtI"
+                            title="YouTube Short: 3X1kDgQGGtI"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                        ></iframe>
+                        <p class="video-meta">
+                            Original:
+                            <a href="https://youtube.com/shorts/3X1kDgQGGtI?si=2cAko5rxXmDldffn"
+                                >https://youtube.com/shorts/3X1kDgQGGtI</a
+                            >
+                        </p>
+                    </div>
+
+                    <p>
+                        Most software teams don’t have a lot of automated tests, and they get away with it because
+                        traditional software is deterministic. If it works once, it’ll keep working the same way, and
+                        just eyeballing behavior before releases can feel good enough.
+                    </p>
+
+                    <p>
+                        But AI products are different. They’re probabilistic — their behavior can shift in unexpected
+                        ways every time you use them.
+                    </p>
+
+                    <p>
+                        Controlled iteration is the only way to ship a reliable autonomous product and actually improve
+                        it over time.
+                    </p>
+
+                    <p>
+                        For example, one Autonomy customer, a fintech, recently shipped Agents that analyze bank
+                        statements and other documents submitted with a business loan application. Their Agents use
+                        large language models to extract key data points from those documents. Their Agents also do
+                        precise math on the extracted data — like calculate the total payroll spend — by autonomously
+                        invoking tools written in Python.
+                    </p>
+
+                    <p>
+                        Initially, when they tried the first few documents, extraction wasn’t always correct. The agents
+                        would sometimes hallucinate the wrong tool call, so the computed values were wrong. They also
+                        weren’t sure which language model to use — did they really need the newest, most expensive
+                        models, or could a cheaper one work just as well?
+                    </p>
+
+                    <p>
+                        And this is how all AI products begin. To make progress, you need a systematic approach: one
+                        document at a time. This fintech started with the most capable language model and an initial
+                        development dataset of 30 documents. For each document, they manually analyzed it, labeled the
+                        correct output, and then refined the agent’s prompts and tool descriptions to ensure the output
+                        matched the labeled expected result.
+                    </p>
+
+                    <p>
+                        Once they got one document to work, they added it to their CI-driven automated evaluation suite.
+                        That way, as they moved on to the next document, the automated checks ensured they weren’t
+                        breaking what was already working for previous documents. Since agent outputs are probabilistic,
+                        each evaluation produced a metric — like a success percentage — rather than a simple pass/fail.
+                        Each document was checked multiple times to compute those percentages, which let them handle
+                        variability and still measure when things were stable, degrading, or improving.
+                    </p>
+
+                    <p>
+                        They defined success thresholds — for example, 95% extraction accuracy and 99% tool-call
+                        success. Once all 30 documents were passing these thresholds, they made the agents live. In
+                        production, they gathered traces of how the agents behaved on real-world documents, found new
+                        document types that caused issues, and then iterated on prompts and inputs again to fix those.
+                        Because they had that automated evaluation suite, it ensured prior behavior never broke.
+                    </p>
+
+                    <p>
+                        Controlled, iterative refinement is what separates successful autonomous products from failed
+                        experiments and demo-ware. With an automated evals, you can also confidently experiment with
+                        cheaper or latest models, knowing the tests will catch any regressions.
+                    </p>
+                </div>
+            </article>
+        </div>
+
+        <!-- Post-specific scripts (optional) -->
+        <script>
+            // Add any post-specific JavaScript here
+        </script>
+    </body>
+</html>

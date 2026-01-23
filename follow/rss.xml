@@ -8,6 +8,14 @@
     <atom:link href="https://mrinal.com/follow/rss.xml" rel="self" type="application/rss+xml"/>
 
     <!-- Add new items below this line, newest first -->
+    <item>
+      <title>How to make agents succeed</title>
+      <link>https://mrinal.com/articles/how-to-make-agents-succeed/</link>
+      <guid>https://mrinal.com/articles/how-to-make-agents-succeed/</guid>
+      <pubDate>Fri, 23 Jan 2026 00:00:00 GMT</pubDate>
+      <description>Controlled iteration is the only way to ship reliable, probabilistic AI agents. Here is a concrete process to build evals, prevent regressions, and choose models with confidence.</description>
+    </item>
+
     <!-- Example item format:
     <item>
       <title>Post Title</title>
@@ -17,6 +25,7 @@
       <description>Brief description of the post.</description>
     </item>
     -->
+
 
   </channel>
 </rss>
