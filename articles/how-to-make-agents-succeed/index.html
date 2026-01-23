@@ -155,13 +155,22 @@
                 box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
             }
 
+            /* Match homepage carousel hover behavior: grayscale + dim until hover */
             .video-frame iframe {
                 width: 100%;
                 aspect-ratio: 9 / 16;
                 height: auto;
-                border: 0;
+                border: 3px solid #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
                 display: block;
                 background: #000;
+                filter: grayscale(20%) brightness(90%);
+                transition: filter 0.3s ease;
+            }
+
+            .video-frame:hover iframe {
+                filter: grayscale(0%) brightness(100%);
             }
 
             /* Homepage-like overlay affordance */
@@ -171,6 +180,11 @@
                 inset: 0;
                 background: rgba(0, 0, 0, 0.08);
                 pointer-events: none;
+                transition: background 0.3s ease;
+            }
+
+            .video-frame:hover::after {
+                background: rgba(0, 0, 0, 0);
             }
 
             .video-overlay {
