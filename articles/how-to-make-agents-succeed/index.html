@@ -55,6 +55,16 @@
                 margin-bottom: 0;
             }
 
+            .right-meta {
+                font-size: 0.875em;
+                color: #888;
+                margin: 0 0 0.75em;
+            }
+
+            .right-meta a {
+                color: inherit;
+            }
+
             .article-title {
                 font-family: "tgn-soft-round-comp", sans-serif;
                 font-weight: 700;
@@ -140,7 +150,7 @@
             }
 
             .body-header {
-                padding-top: 0.25em;
+                padding-top: 0;
                 grid-column: 1 / -1;
             }
 
@@ -210,7 +220,7 @@
 
             .body-header {
                 column-span: all;
-                padding-top: 0.25em;
+                padding-top: 0;
                 margin: 0 0 1.5em;
             }
 
@@ -253,9 +263,7 @@
     <body>
         <div class="container">
             <article class="article wide-layout">
-                <header class="article-header">
-                    <p class="article-meta"><a href="/">Mrinal Wadhwa</a> · January 23, 2026</p>
-                </header>
+                <header class="article-header"></header>
 
                 <div class="article-content">
                     <div class="three-col">
@@ -279,6 +287,7 @@
                         <div class="body-col">
                             <div class="body-two-cols">
                                 <div class="body-header">
+                                    <p class="right-meta"><a href="/">Mrinal Wadhwa</a> · January 23, 2026</p>
                                     <p class="title-kicker">How to make</p>
                                     <h1 class="article-title">Agents that succeed</h1>
                                 </div>
