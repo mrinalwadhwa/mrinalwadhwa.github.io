@@ -187,36 +187,7 @@
                 background: rgba(0, 0, 0, 0);
             }
 
-            .video-overlay {
-                position: absolute;
-                inset: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                pointer-events: none;
-            }
 
-            .video-overlay .play {
-                width: 4.5em;
-                height: 4.5em;
-                border-radius: 999px;
-                background: rgba(255, 255, 255, 0.92);
-                box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .video-overlay .play::before {
-                content: "";
-                display: block;
-                width: 0;
-                height: 0;
-                border-style: solid;
-                border-width: 0.85em 0 0.85em 1.3em;
-                border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
-                margin-left: 0.15em;
-            }
 
             .video-meta {
                 font-size: 0.75em;
@@ -289,9 +260,7 @@
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowfullscreen
                                 ></iframe>
-                                <div class="video-overlay" aria-hidden="true">
-                                    <div class="play"></div>
-                                </div>
+
                             </div>
                             <p class="video-meta">
                                 Original:
