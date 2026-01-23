@@ -44,13 +44,13 @@
                c1 = video
                c2/c3 = body text in two columns */
             .wide-layout {
-                max-width: 78em;
+                max-width: 96em;
                 margin: 0 auto;
             }
 
             .three-col {
                 display: grid;
-                grid-template-columns: 18em minmax(0, 60em);
+                grid-template-columns: 18em minmax(0, 72em);
                 gap: 3em; /* match homepage column gap */
                 align-items: start;
                 margin-top: 3em;
@@ -102,7 +102,7 @@
 
             @media (max-width: 1100px) {
                 .three-col {
-                    grid-template-columns: 16em minmax(0, 60em);
+                    grid-template-columns: 16em minmax(0, 72em);
                     gap: 3em;
                 }
             }
