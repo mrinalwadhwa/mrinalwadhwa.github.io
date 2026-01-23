@@ -153,6 +153,37 @@ print(f'line-height: {line_height:.6f}')
 - Margin collapsing causing unexpected spacing
 - Rounding errors accumulating across many lines - use precise decimal values
 
+## Generating OG Images for Social Sharing
+
+Use the `agent-browser` CLI to generate Open Graph images (1200×630) for article previews on Reddit, Twitter, etc.
+
+### Setup
+```bash
+export PATH="$HOME/.npm-packages/bin:$PATH"
+```
+
+### Generate an OG image for an article
+```bash
+agent-browser open "https://mrinal.com/articles/your-post-slug/"
+agent-browser set viewport 1200 630
+agent-browser eval "<JS to adjust layout for screenshot>"
+agent-browser screenshot articles/your-post-slug/og.png
+```
+
+The JS will vary per article layout. Typically you'll want to hide non-essential elements and expand the main content to fill the 1200×630 viewport.
+
+### Add meta tags to the article's index.html
+```html
+<!-- In Open Graph section -->
+<meta property="og:image" content="https://mrinal.com/articles/your-post-slug/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- In Twitter Card section -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://mrinal.com/articles/your-post-slug/og.png" />
+```
+
 ## Key Files
 
 - `/index.html` - Homepage with articles listing
