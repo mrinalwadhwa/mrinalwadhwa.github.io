@@ -75,7 +75,7 @@
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
                 color: #666;
-                margin: 0 0 1.5em; /* 1u */
+                margin: 0; /* spacing comes from title block to keep units clean */
             }
 
             .article-title {
@@ -85,7 +85,7 @@
                 text-transform: uppercase;
                 letter-spacing: 0.06em;
                 font-size: 4.291em; /* 4.291em on the modular scale */
-                line-height: 1; /* avoid glyph clipping; align block using margins */
+                line-height: 1.048699; /* 4.5em / 4.291em = 3u per line */
                 margin: 0;
             }
 
@@ -208,6 +208,11 @@
                 column-span: all;
                 padding-top: 0; /* snap title block to grid */
                 margin: 0 0 1.5em; /* 1u */
+            }
+
+            /* Ensure the full title block (kicker + title) lands on the baseline */
+            .body-header .article-title {
+                margin-bottom: 1.5em; /* 1u */
             }
 
             .body-two-cols p {
