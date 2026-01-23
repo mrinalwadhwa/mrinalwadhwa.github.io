@@ -85,14 +85,14 @@
                 text-transform: uppercase;
                 letter-spacing: 0.06em;
                 font-size: 4.291em; /* 4.291em on the modular scale */
-                line-height: 0.699; /* 3em / 4.291em = 2u per line */
+                line-height: 1; /* avoid glyph clipping; align block using margins */
                 margin: 0;
             }
 
             @media (max-width: 1100px) {
                 .article-title {
                     font-size: 3.5em;
-                    line-height: 0.857143; /* 3em / 3.5em */
+                    line-height: 1;
                 }
             }
 
@@ -109,7 +109,7 @@
             @media (max-width: 768px) {
                 .article-title {
                     font-size: 2.641em;
-                    line-height: 0.757576; /* 2em / 2.641em */
+                    line-height: 1;
                 }
             }
 
@@ -206,8 +206,8 @@
 
             .body-header {
                 column-span: all;
-                padding-top: 0;
-                margin: 0 0 1.5em;
+                padding-top: 0.75em; /* 0.5u: snap title block down to grid */
+                margin: 0 0 1.5em; /* 1u */
             }
 
             .body-two-cols p {
