@@ -40,8 +40,121 @@
 
         <!-- Post-specific styles (optional) -->
         <style>
+            /* Poster-style hero inspired by the reference image */
+            .poster {
+                max-width: 60em;
+                margin: 0 auto;
+            }
+
+            .poster-hero {
+                position: relative;
+                background: #f5f4f0;
+                border-radius: 10px;
+                padding: 3em;
+                margin: 0 0 3em;
+                overflow: hidden;
+            }
+
+            /* Subtle paper/print texture */
+            .poster-hero::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background-image:
+                    radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                    radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 0, 0, 0.05), transparent 30%);
+                background-size:
+                    28px 28px,
+                    18px 18px,
+                    100% 100%;
+                background-position:
+                    0 0,
+                    10px 12px,
+                    0 0;
+                opacity: 0.18;
+                pointer-events: none;
+            }
+
+            .poster-hero::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+                border-radius: 10px;
+                pointer-events: none;
+            }
+
+            .poster-grid {
+                position: relative;
+                display: grid;
+                grid-template-columns: 1.15fr 1fr;
+                gap: 3em;
+                align-items: center;
+            }
+
+            .poster-art {
+                position: relative;
+                aspect-ratio: 16 / 10;
+                background: linear-gradient(135deg, #d7e0df, #f5f4f0 55%, #ead9c9);
+                border-radius: 8px;
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+                transform: rotate(-2deg);
+                overflow: hidden;
+            }
+
+            .poster-art svg {
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+
+            .poster-type {
+                position: relative;
+                padding-top: 0.75em;
+            }
+
+            .poster-kicker {
+                font-family: "spring-lp", Georgia, serif;
+                font-size: 1.625em;
+                font-style: italic;
+                text-align: center;
+                margin: 0 0 0.25em;
+                color: #b8562f;
+                letter-spacing: 0.01em;
+            }
+
+            .poster-title {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                line-height: 1.05;
+                text-align: center;
+                margin: 0 0 0.75em;
+                font-size: 2.641em;
+            }
+
+            .poster-columns {
+                column-count: 2;
+                column-gap: 2.641em;
+                font-size: 1.125em;
+                line-height: 1.5;
+            }
+
+            .poster-columns p {
+                margin: 0 0 1.5em;
+            }
+
+            .poster-columns p:last-child {
+                margin-bottom: 0;
+            }
+
             .video-embed {
-                max-width: 30em;
+                max-width: 26em;
                 margin: 0 auto 3em;
             }
 
@@ -52,6 +165,7 @@
                 border: 0;
                 border-radius: 8px;
                 background: #000;
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
             }
 
             .video-meta {
@@ -64,18 +178,106 @@
             .video-meta a {
                 color: inherit;
             }
+
+            @media (max-width: 900px) {
+                .poster-hero {
+                    padding: 1.5em;
+                }
+
+                .poster-grid {
+                    grid-template-columns: 1fr;
+                    gap: 1.5em;
+                }
+
+                .poster-art {
+                    transform: none;
+                }
+
+                .poster-columns {
+                    column-count: 1;
+                }
+
+                .poster-title {
+                    font-size: 2em;
+                }
+            }
         </style>
     </head>
     <body>
         <div class="container">
-            <article class="article">
+            <article class="article poster">
                 <header class="article-header">
                     <p class="article-meta"><a href="/">Mrinal Wadhwa</a> · January 23, 2026</p>
-                    <h1 class="article-title">How to make agents succeed</h1>
                 </header>
 
                 <div class="article-content">
-                    <p>How to make agents succeed.</p>
+                    <section class="poster-hero" aria-label="Poster-style introduction">
+                        <div class="poster-grid">
+                            <div class="poster-art" aria-hidden="true">
+                                <svg viewBox="0 0 800 500" role="img" aria-label="">
+                                    <defs>
+                                        <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0" stop-color="#cfe0dc" />
+                                            <stop offset="0.55" stop-color="#f5f4f0" />
+                                            <stop offset="1" stop-color="#e9d8c8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <rect x="0" y="0" width="800" height="500" fill="url(#bg1)" />
+                                    <path
+                                        d="M90 420 C130 340, 190 270, 280 240 C360 214, 460 230, 520 280 C600 345, 650 360, 710 350 L710 500 L90 500 Z"
+                                        fill="#2f3a3a"
+                                        opacity="0.12"
+                                    />
+                                    <path
+                                        d="M120 380 C170 310, 220 260, 300 240 C410 212, 520 260, 620 330 C680 370, 720 385, 760 378"
+                                        fill="none"
+                                        stroke="#2f3a3a"
+                                        stroke-width="12"
+                                        opacity="0.10"
+                                    />
+                                    <path
+                                        d="M140 360 C180 300, 240 250, 320 235 C420 215, 520 260, 600 320"
+                                        fill="none"
+                                        stroke="#b8562f"
+                                        stroke-width="10"
+                                        opacity="0.28"
+                                    />
+                                    <circle cx="520" cy="220" r="58" fill="#ffffff" opacity="0.65" />
+                                    <circle cx="560" cy="255" r="42" fill="#ffffff" opacity="0.55" />
+                                    <rect
+                                        x="180"
+                                        y="140"
+                                        width="260"
+                                        height="150"
+                                        rx="10"
+                                        fill="#ffffff"
+                                        opacity="0.35"
+                                    />
+                                    <path
+                                        d="M210 260 C240 210, 280 180, 330 170 C370 162, 410 168, 440 184 L440 280 L210 280 Z"
+                                        fill="#1e2a2a"
+                                        opacity="0.20"
+                                    />
+                                </svg>
+                            </div>
+
+                            <div class="poster-type">
+                                <p class="poster-kicker">How to make</p>
+                                <h1 class="poster-title">Agents succeed</h1>
+                                <div class="poster-columns">
+                                    <p>
+                                        Most software teams don’t have a lot of automated tests. They get away with it
+                                        because traditional software is deterministic. If it works once, it’ll keep
+                                        working the same way.
+                                    </p>
+                                    <p>
+                                        AI products are different. They’re probabilistic. Their behavior can shift in
+                                        unexpected ways every time you use them.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     <div class="video-embed">
                         <iframe
