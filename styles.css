@@ -331,6 +331,7 @@ a:hover {
 .article-list li {
     margin: 0;
     line-height: 1.5;
+    text-align: right;
 }
 
 .article-list a {
