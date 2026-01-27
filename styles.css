@@ -331,19 +331,22 @@ a:hover {
 .article-list li {
     margin: 0;
     line-height: 1.5;
-    text-align: right;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 0.75em; /* 0.5 units horizontal */
 }
 
 .article-list a {
     font-size: 1em;
     line-height: 1.5;
+    text-align: right;
 }
 
 .article-list .article-date {
     font-size: 1em;
     color: #888;
-    margin-left: 0.75em; /* 0.5 units */
     line-height: 1.5;
+    text-align: left;
 }
 
 .article-list-page {
