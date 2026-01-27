@@ -21,7 +21,15 @@ This is a static personal website for Mrinal Wadhwa at mrinal.com. It uses pure 
    - `.article-title` - The article title
    - `.article-content` - Your content
 
-3. **Update index.html articles listing:**
+3. **Create a markdown version** at `articles/your-post-slug/index.md` with the article's plain text content (no HTML). This is used by `llms.txt` for LLM-readable access.
+
+4. **Update llms.txt:**
+   Add a new entry under `## Pages`:
+   ```
+   - [Article Title](/articles/your-post-slug/index.md)
+   ```
+
+5. **Update index.html articles listing:**
    Add a new `<li>` inside `.article-list`, newest first:
    ```html
    <li>
@@ -30,10 +38,10 @@ This is a static personal website for Mrinal Wadhwa at mrinal.com. It uses pure 
    </li>
    ```
 
-4. **Update articles/index.html listing:**
+6. **Update articles/index.html listing:**
    Add the same `<li>` inside `.article-list-page`, newest first.
 
-5. **Update follow/rss.xml:**
+7. **Update follow/rss.xml:**
    Add a new `<item>` after the comment, newest first:
    ```xml
    <item>
@@ -45,7 +53,7 @@ This is a static personal website for Mrinal Wadhwa at mrinal.com. It uses pure 
    </item>
    ```
 
-6. **Update sitemap.xml:**
+8. **Update sitemap.xml:**
    Add a new `<url>` entry:
    ```xml
    <url>
@@ -184,11 +192,24 @@ The JS will vary per article layout. Typically you'll want to hide non-essential
 <meta name="twitter:image" content="https://mrinal.com/articles/your-post-slug/og.png" />
 ```
 
+## Markdown Versions and llms.txt
+
+Every content page has a corresponding `.md` file alongside its `index.html`. These markdown files provide LLM-readable plain text versions of the site content.
+
+- Keep markdown versions in sync with their HTML counterparts. When editing an article's HTML, update its `index.md` to match.
+- When adding or removing pages, update `/llms.txt` to reflect the current set of markdown files.
+- `/llms.txt` lists all markdown pages and serves as the entry point for LLM access to site content.
+
 ## Key Files
 
 - `/index.html` - Homepage with articles listing
+- `/index.md` - Homepage markdown version
 - `/articles/index.html` - Articles listing page
+- `/articles/index.md` - Articles listing markdown version
 - `/styles.css` - Global styles
+- `/scripts/` - JavaScript files
 - `/follow/rss.xml` - RSS feed
 - `/sitemap.xml` - Sitemap for search engines
+- `/llms.txt` - LLM-readable index of all markdown pages
 - `/articles/*/index.html` - Individual articles
+- `/articles/*/index.md` - Article markdown versions

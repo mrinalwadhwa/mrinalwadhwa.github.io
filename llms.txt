@@ -1,0 +1,10 @@
+# Mrinal Wadhwa
+
+> Founder and CTO of Autonomy, a platform to create AI products that can autonomously perform long and complex tasks.
+
+## Pages
+
+- [Home](/index.md)
+- [Articles](/articles/index.md)
+- [Agent Swarms, like the one Cursor created](/articles/agent-swarms-like-the-one-cursor-created/index.md)
+- [How to make agents that succeed](/articles/how-to-make-agents-that-succeed/index.md)
