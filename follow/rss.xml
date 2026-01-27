@@ -9,6 +9,13 @@
 
     <!-- Add new items below this line, newest first -->
     <item>
+      <title>Agent Swarms, like the one Cursor created</title>
+      <link>https://mrinal.com/articles/agent-swarms-like-the-one-cursor-created/</link>
+      <guid>https://mrinal.com/articles/agent-swarms-like-the-one-cursor-created/</guid>
+      <pubDate>Sat, 25 Jan 2026 00:00:00 GMT</pubDate>
+      <description>Deep autonomous work requires infrastructure, not just frameworks or harnesses. A demo of distributed AI agents reviewing Vue.js core.</description>
+    </item>
+    <item>
       <title>How to make agents that succeed</title>
       <link>https://mrinal.com/articles/how-to-make-agents-that-succeed/</link>
       <guid>https://mrinal.com/articles/how-to-make-agents-that-succeed/</guid>

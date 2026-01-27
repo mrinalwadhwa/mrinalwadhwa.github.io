@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Agent Swarms, like the one Cursor created – Mrinal Wadhwa</title>
+        <meta
+            name="description"
+            content="Deep autonomous work requires infrastructure, not just frameworks or harnesses. A demo of distributed AI agents reviewing Vue.js core."
+        />
+        <meta name="author" content="Mrinal Wadhwa" />
+        <link rel="canonical" href="https://mrinal.com/articles/agent-swarms-like-the-one-cursor-created/" />
+
+        <!-- Open Graph -->
+        <meta property="og:title" content="Agent Swarms, like the one Cursor created – Mrinal Wadhwa" />
+        <meta
+            property="og:description"
+            content="Deep autonomous work requires infrastructure, not just frameworks or harnesses. A demo of distributed AI agents reviewing Vue.js core."
+        />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://mrinal.com/articles/agent-swarms-like-the-one-cursor-created/" />
+        <meta property="og:image" content="https://img.youtube.com/vi/N9zZKyz9W38/maxresdefault.jpg" />
+        <meta property="og:image:width" content="1280" />
+        <meta property="og:image:height" content="720" />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@mrinal" />
+        <meta name="twitter:title" content="Agent Swarms, like the one Cursor created – Mrinal Wadhwa" />
+        <meta
+            name="twitter:description"
+            content="Deep autonomous work requires infrastructure, not just frameworks or harnesses. A demo of distributed AI agents reviewing Vue.js core."
+        />
+        <meta name="twitter:image" content="https://img.youtube.com/vi/N9zZKyz9W38/maxresdefault.jpg" />
+
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Mrinal Wadhwa"
+            href="https://mrinal.com/follow/rss.xml"
+        />
+        <link rel="stylesheet" href="https://use.typekit.net/biy2rlh.css" />
+        <link rel="stylesheet" type="text/css" href="/styles.css" />
+        <link rel="stylesheet" type="text/css" href="/scripts/lite-yt-embed.css" />
+        <script src="/scripts/lite-yt-embed.js" defer></script>
+
+        <!-- Post-specific styles -->
+        <style>
+            body {
+                background: #000;
+                color: #e0e0e0;
+            }
+
+            ::selection {
+                background: #4a90d9;
+                color: #fff;
+            }
+
+            .container {
+                background: #000;
+            }
+
+            .intro-content {
+                margin-bottom: 1.5em;
+            }
+
+            .video-section {
+                margin-bottom: 3em;
+            }
+
+            lite-youtube {
+                max-width: 100%;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            }
+
+            /* Use the same .content class from styles.css but override colors */
+            .content {
+                color: #ccc;
+            }
+
+            .content a {
+                color: #fff;
+                border-bottom: 1px solid #666;
+            }
+
+            .content a:hover {
+                border-bottom-color: #fff;
+            }
+
+            .content code {
+                background: #1a1a1a;
+                padding: 0.2em 0.4em;
+                border-radius: 4px;
+                font-size: 0.85em;
+                color: #e0e0e0;
+            }
+
+            pre {
+                background: #0a0a0a;
+                border-radius: 0;
+                padding: calc(1.5rem - 1px) 3rem;
+                overflow-x: auto;
+                margin: 3rem -3rem 3rem;
+                font-size: 1em;
+                line-height: 1.5rem;
+                color: #abb2bf;
+                border: 1px solid #fff;
+            }
+
+            pre code {
+                background: none;
+                padding: 0;
+                border-radius: 0;
+                font-size: inherit;
+                color: inherit;
+            }
+
+            /* Syntax highlighting */
+            .kw {
+                color: #c678dd;
+            } /* keywords: class, async, def, await, for, in */
+            .fn {
+                color: #e5c07b;
+            } /* functions/methods */
+            .st {
+                color: #98c379;
+            } /* strings */
+            .va {
+                color: #e06c75;
+            } /* variables/parameters */
+            .op {
+                color: #abb2bf;
+            } /* operators/punctuation */
+            .cm {
+                color: #5c6370;
+                font-style: italic;
+            } /* comments */
+            .nb {
+                color: #61afef;
+            } /* builtins/types */
+
+            .video-meta {
+                font-size: 0.875em;
+                line-height: 1.714;
+                color: #666;
+                margin: 0 0 1.5em;
+                text-align: center;
+            }
+
+            .video-meta a {
+                color: #888;
+            }
+
+            .body-header {
+                text-align: center;
+                margin-bottom: 4.5em;
+            }
+
+            .body-header p.title-kicker {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+                font-size: 1.5em;
+                line-height: 1.5;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: #666;
+                margin: 0;
+                position: relative;
+                top: 0.375em;
+            }
+
+            .article-title {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 700;
+                font-style: normal;
+                text-transform: uppercase;
+                font-size: 4.291em;
+                line-height: 0.9;
+                margin: 0;
+                color: #fff;
+            }
+
+            @media (max-width: 768px) {
+                .article-title {
+                    font-size: 2.641em;
+                    line-height: 1;
+                }
+            }
+
+            .divider.columns-divider {
+                border-color: #333;
+                margin: 2em 0;
+                max-width: 60em;
+            }
+
+            .references {
+                max-width: 60em;
+                font-size: 0.875em;
+                color: #666;
+                padding-left: 1.5em;
+                margin: 1.5em 0;
+            }
+
+            .references a {
+                color: #888;
+            }
+
+            .references a:hover {
+                color: #fff;
+            }
+
+            .discussion-link {
+                margin: 1em 0 0;
+                line-height: 1.5;
+                text-align: right;
+                max-width: 60em;
+            }
+
+            .discussion-link a {
+                color: #888;
+                border-bottom: 1px solid #444;
+            }
+
+            .discussion-link a:hover {
+                color: #fff;
+                border-bottom-color: #fff;
+            }
+
+            @media (max-width: 900px) {
+                .container {
+                    padding: 1.5em;
+                }
+
+                .content {
+                    column-count: 1;
+                }
+
+                pre {
+                    margin-left: -1.5rem;
+                    margin-right: -1.5rem;
+                    padding-left: 1.5rem;
+                    padding-right: 1.5rem;
+                }
+            }
+
+            /* Override for baseline grid visibility on dark background */
+            .baseline-grid-visible .container {
+                background: transparent;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="body-header">
+                <p class="video-meta"><a href="/">Mrinal Wadhwa</a> · January 25, 2026</p>
+                <h1 class="article-title">Agent Swarms</h1>
+                <p class="title-kicker">like the one Cursor created</p>
+            </div>
+
+            <div class="content intro-content">
+                <p>
+                    Cursor made headlines last week for using a swarm of AI agents to build a web browser. The swarm ran
+                    uninterrupted for a week, producing three million lines of code and the resulting browser
+                    <a href="https://x.com/mntruell/status/2012825801381580880" target="_blank" rel="noopener"
+                        >&ldquo;kind of worked&rdquo;</a
+                    >.
+                </p>
+
+                <p>
+                    It was a first glimpse of a pattern that applies beyond generating code. Swarms of agents that
+                    thwart security attacks in realtime, drive regulatory submissions for drug approvals, sift through
+                    thousands of documents to build a legal case. Problems too complex for a single agent.
+                </p>
+
+                <p>
+                    Last night, I used <a href="https://autonomy.computer">Autonomy</a> to build a swarm of deep code
+                    review agents that assess a codebase in parallel. Each file gets a quick scan. Flagged files get
+                    four specialized reviewers: security, quality, complexity, and documentation. High-risk findings
+                    spawn sub-reviewers. Imported dependencies get pulled in and reviewed the same way.
+                </p>
+
+                <p>
+                    The video below is a time-lapse of a swarm that grows to 5,136 agents as it conducts a deep review
+                    of vue.js core. Each circle is an agent. The force-directed graph expands as new agents are spawned.
+                </p>
+            </div>
+
+            <div class="video-section">
+                <lite-youtube
+                    videoid="N9zZKyz9W38"
+                    playlabel="Play: Agent Swarms, like the one Cursor created"
+                    params="modestbranding=1&rel=0"
+                ></lite-youtube>
+            </div>
+
+            <div class="content">
+                <p>
+                    Agents built in the last two years can only handle a few autonomous turns. Deep autonomous work over
+                    a long horizon needs more: a filesystem to use as a workspace, progress files to create plans that
+                    bridge context windows, structured notes that persist outside the context window, a sandboxed shell
+                    to run command line tools, and sub-agents that handle focused tasks with clean context.
+                </p>
+
+                <p>
+                    Harnesses like Claude Code and Autonomy close this gap for a single agent: filesystem tools, memory
+                    compaction, shell access, sub-agent delegation. With these capabilities, a single agent can stay
+                    focused and take thousands of autonomous steps.
+                </p>
+
+                <p>
+                    But Cursor didn&rsquo;t use one agent. They used hundreds, working in parallel for days. Going from
+                    one agent to a swarm demands more than a harness of python code. Agents need to run in parallel
+                    without blocking, create new agents dynamically, discover each other across machines, pass messages,
+                    maintain isolated workspaces, and collaborate over secure channels. That takes infrastructure.
+                </p>
+            </div>
+
+            <pre><code><span class="cm"># Discover runner machines and distribute work</span>
+<span class="va">runners</span> = <span class="kw">await</span> <span class="nb">Zone</span>.<span class="fn">nodes</span>(node, filter=<span class="st">"runner"</span>)
+<span class="va">batches</span> = <span class="fn">split_list_into_n_parts</span>(files, <span class="nb">len</span>(runners))
+
+<span class="kw">for</span> runner, batch <span class="kw">in</span> <span class="nb">zip</span>(runners, batches):
+    <span class="kw">await</span> runner.<span class="fn">start_worker</span>(<span class="st">"reviewer"</span>, <span class="nb">FileReviewWorker</span>())
+    <span class="va">mailbox</span> = <span class="kw">await</span> node.<span class="fn">send</span>(<span class="st">"reviewer"</span>, request, node=runner.name)
+
+<span class="cm">...</span>
+
+<span class="cm"># Each worker spawns agents with an isolated filesystem, a sandboxed shell, the ability to spawn sub-agents</span>
+<span class="kw">class</span> <span class="nb">FileReviewWorker</span>:
+    <span class="kw">async def</span> <span class="fn">review_file</span>(<span class="va">self</span>, <span class="va">file_info</span>, <span class="va">reviewers</span>):
+        <span class="va">agent</span> = <span class="kw">await</span> <span class="nb">Agent</span>.<span class="fn">start</span>(
+            node=<span class="va">self</span>.node,
+            instructions=<span class="st">"Review this file for security and quality ..."</span>,
+            model=<span class="nb">Model</span>(<span class="st">"claude-opus-4-5"</span>),
+            tools=[<span class="nb">FilesystemTools</span>(), <span class="nb">ShellTools</span>(), <span class="cm">...</span>],
+            subagents={
+                <span class="st">"security"</span>: {
+                    <span class="st">"instructions"</span>: <span class="st">"Deep assessment of security vulnerabilities ..."</span>,
+                    <span class="st">"model"</span>: <span class="nb">Model</span>(<span class="st">"claude-opus-4-5"</span>),
+                    <span class="st">"tools"</span>: [<span class="nb">FilesystemTools</span>(), <span class="nb">ShellTools</span>(), <span class="cm">...</span>],
+                },
+                <span class="st">"quality"</span>: {
+                    <span class="st">"instructions"</span>: <span class="st">"Deep assessment of code quality ..."</span>,
+                    <span class="st">"model"</span>: <span class="nb">Model</span>(<span class="st">"claude-opus-4-5"</span>),
+                    <span class="st">"tools"</span>: [<span class="nb">FilesystemTools</span>(), <span class="nb">ShellTools</span>(), <span class="cm">...</span>],
+                },
+            },
+        )
+        <span class="cm">...</span></code></pre>
+
+            <div class="content">
+                <p>
+                    Agents spend most of their life I/O-bound, waiting on tools or models. In Autonomy, each agent is a
+                    concurrent actor with isolated state. The runtime schedules an actor only when it has a message to
+                    process, so thousands of agents can run in parallel on a single machine.
+                </p>
+
+                <p>
+                    Autonomy lets apps spin up new machines on demand and automatically connects them over secure
+                    channels. Agents can spawn other agents on any machine and discover each other. In our code review
+                    swarm, a simple for loop distributed work to over 5,000 agents across five containers.
+                </p>
+
+                <p>
+                    Building swarms into a product requires this complete infrastructure. And a product doesn&rsquo;t
+                    run one swarm. It runs a swarm for each user and for each task that user delegates. The
+                    infrastructure problem only grows.
+                </p>
+
+                <p>
+                    AI agent products developed in the last two years will soon see challengers that throw coordinated
+                    swarms of long-horizon agents at problems too complex for a single agent.
+                </p>
+            </div>
+
+            <hr class="divider columns-divider" />
+
+            <p class="discussion-link">
+                <a
+                    href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fmrinal.com%2Farticles%2Fagent-swarms-like-the-one-cursor-created%2F&t=Agent%20Swarms%2C%20like%20the%20one%20Cursor%20created"
+                >
+                    Discuss on Hacker News
+                </a>
+            </p>
+        </div>
+
+        <script>
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "g" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                    document.body.classList.toggle("baseline-grid-visible");
+                }
+            });
+        </script>
+    </body>
+</html>
