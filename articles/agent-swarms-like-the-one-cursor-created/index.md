@@ -82,7 +82,8 @@ swarm. It runs a swarm for each user and for each task that user delegates. The 
 problem only grows.
 
 AI agent products developed in the last two years will soon see challengers that throw
-coordinated swarms of long-horizon agents at problems too complex for a single agent.
+coordinated swarms of long-horizon agents to perform better and tackle use cases that were
+previously too difficult.
 
 
 
