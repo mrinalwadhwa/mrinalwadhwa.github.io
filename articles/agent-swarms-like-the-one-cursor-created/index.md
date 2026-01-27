@@ -6,8 +6,8 @@ It was a first glimpse of a pattern that applies beyond generating code. Swarms 
 thwart security attacks in realtime, drive regulatory submissions for drug approvals, sift through
 thousands of documents to build a legal case. Problems too complex for a single agent.
 
-Last night, I used [Autonomy](https://autonomy.computer) to build a swarm of deep code review
-agents that assess a codebase in parallel. Each file gets a quick scan. Flagged files get four
+Last night, I used [Autonomy](https://autonomy.computer) to build a swarm of deep [code review
+agents](https://github.com/build-trust/autonomy/tree/main/examples/code-review/011) that assess a codebase in parallel. Each file gets a quick scan. Flagged files get four
 specialized reviewers: security, quality, complexity, and documentation. High-risk findings spawn
 sub-reviewers. Imported dependencies get pulled in and reviewed the same way.
 
@@ -15,6 +15,9 @@ The video below is a time-lapse of a swarm that grows to 5,136 agents as it cond
 of vue.js core. Each circle is an agent. The force-directed graph expands as new agents are spawned.
 
 [Video](https://www.youtube.com/watch?v=N9zZKyz9W38)
+
+Checkout the [source code](https://github.com/build-trust/autonomy/tree/main/examples/code-review/011) on GitHub
+and try the [live code-review app](https://a9eb812238f753132652ae09963a05e9-example011.cluster.autonomy.computer/).
 
 Agents built in the last two years can only handle a few autonomous turns. Deep autonomous work over
 a long horizon needs more: a filesystem to use as a workspace, progress files to create plans that
@@ -80,4 +83,6 @@ problem only grows.
 
 AI agent products developed in the last two years will soon see challengers that throw
 coordinated swarms of long-horizon agents at problems too complex for a single agent.
+
+
 
