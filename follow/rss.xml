@@ -13,7 +13,7 @@
       <link>https://mrinal.com/articles/agent-identities/</link>
       <guid>https://mrinal.com/articles/agent-identities/</guid>
       <pubDate>Sun, 08 Feb 2026 00:00:00 GMT</pubDate>
-      <description>Agent identity from first principles. Why autonomous AI agents need cryptographic identity, secrets management, credentials, secure channels, and access control.</description>
+      <description>Agents autonomously decompose tasks and delegate to sub-agents. To collaborate, they need identities. That is the only way to authenticate requests, authorize actions, and attribute decisions.</description>
     </item>
     <item>
       <title>Agent Swarms, like the one Cursor created</title>
