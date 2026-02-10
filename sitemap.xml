@@ -14,6 +14,12 @@
     </url>
     <!-- Add new articles below this line -->
     <url>
+        <loc>https://mrinal.com/articles/agent-identities/</loc>
+        <lastmod>2026-02-08</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
         <loc>https://mrinal.com/articles/agent-swarms-like-the-one-cursor-created/</loc>
         <lastmod>2026-01-25</lastmod>
         <changefreq>monthly</changefreq>

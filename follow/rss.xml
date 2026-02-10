@@ -9,6 +9,13 @@
 
     <!-- Add new items below this line, newest first -->
     <item>
+      <title>Agent Identities</title>
+      <link>https://mrinal.com/articles/agent-identities/</link>
+      <guid>https://mrinal.com/articles/agent-identities/</guid>
+      <pubDate>Sun, 08 Feb 2026 00:00:00 GMT</pubDate>
+      <description>Agent identity from first principles. Why autonomous AI agents need cryptographic identity, secrets management, credentials, secure channels, and access control.</description>
+    </item>
+    <item>
       <title>Agent Swarms, like the one Cursor created</title>
       <link>https://mrinal.com/articles/agent-swarms-like-the-one-cursor-created/</link>
       <guid>https://mrinal.com/articles/agent-swarms-like-the-one-cursor-created/</guid>
