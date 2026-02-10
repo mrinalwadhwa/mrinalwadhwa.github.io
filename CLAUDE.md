@@ -75,6 +75,10 @@ This is a static personal website for Mrinal Wadhwa at mrinal.com. It uses pure 
 - Articles: `/articles/post-slug/` (directory with index.html)
 - RSS feed: `/follow/rss.xml`
 
+## Writing Style
+
+- Never use em-dashes. Use commas, periods, semicolons, or restructure the sentence instead.
+
 ## Styling
 
 The site uses a modular scale with ratio 1.625:

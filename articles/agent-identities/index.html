@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Agent Identities – Mrinal Wadhwa</title>
+        <meta
+            name="description"
+            content="Agent identity from first principles. Seven layers of trust infrastructure: identity, secrets, credentials, secure channels, access control, observability, and data isolation."
+        />
+        <meta name="author" content="Mrinal Wadhwa" />
+        <link rel="canonical" href="https://mrinal.com/articles/agent-identities/" />
+
+        <!-- Open Graph -->
+        <meta property="og:title" content="Agent Identities – Mrinal Wadhwa" />
+        <meta
+            property="og:description"
+            content="A deep dive into the identity infrastructure that autonomous AI agents need: cryptographic identity, credentials, secure channels, and access control."
+        />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://mrinal.com/articles/agent-identities/" />
+        <meta property="og:image" content="https://mrinal.com/articles/agent-identities/og.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@mrinal" />
+        <meta name="twitter:title" content="Agent Identities – Mrinal Wadhwa" />
+        <meta
+            name="twitter:description"
+            content="A deep dive into the identity infrastructure that autonomous AI agents need: cryptographic identity, credentials, secure channels, and access control."
+        />
+        <meta name="twitter:image" content="https://mrinal.com/articles/agent-identities/og.png" />
+
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Mrinal Wadhwa"
+            href="https://mrinal.com/follow/rss.xml"
+        />
+        <link rel="stylesheet" href="https://use.typekit.net/biy2rlh.css" />
+        <link rel="stylesheet" type="text/css" href="/styles.css" />
+
+        <style>
+            body {
+                background: #fff;
+                color: #222;
+                overflow-x: hidden;
+            }
+
+            ::selection {
+                background: #4a90d9;
+                color: #fff;
+            }
+
+            .container {
+                background: #fff;
+                margin-left: 0;
+            }
+
+            .content {
+                color: #333;
+            }
+
+            .content strong {
+                font-weight: normal;
+                font-variant: small-caps;
+                letter-spacing: 0.05em;
+                border-bottom: 1px solid #999;
+            }
+
+            .content a {
+                color: #000;
+                text-decoration: none;
+                border-bottom: 1px solid #999;
+            }
+
+            .content a:hover {
+                border-bottom-color: #000;
+            }
+
+            .body-header {
+                text-align: center;
+                margin-bottom: 4.5em;
+            }
+
+            .body-header p.title-kicker {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+                font-size: 1.5em;
+                line-height: 1.5;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: #888;
+                margin: 0;
+                position: relative;
+                top: 0.375em;
+            }
+
+            .article-title {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 700;
+                font-style: normal;
+                text-transform: uppercase;
+                font-size: 4.291em;
+                line-height: 0.9;
+                margin: 0;
+                color: #000;
+            }
+
+            @media (max-width: 768px) {
+                .article-title {
+                    font-size: 2.641em;
+                    line-height: 1;
+                }
+            }
+
+            .article-meta {
+                font-size: 1em;
+                line-height: 1.5;
+                color: #888;
+                margin: 1.5em 0;
+                text-align: center;
+            }
+
+            .article-meta a {
+                color: #888;
+            }
+
+            .section-heading {
+                column-span: all;
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-weight: 400;
+                font-style: italic;
+                font-size: 1.3205em;
+                line-height: 1.781856; /* 2 baseline units: 48px / 26.9382px */
+                margin: 0.389781em 0 0.649635em; /* top: 10px baseline on grid; bottom: 18px body text phase-aligned */
+                color: #000;
+            }
+
+            .section-heading-inline {
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-weight: 400;
+                font-style: italic;
+                font-size: 1.3205em;
+                line-height: 1.781856; /* 2 baseline units */
+                margin: calc(0.610928em + 1px) 0 calc(1.176471em + 2px); /* top margin aligns baseline to grid */
+                color: #000;
+            }
+
+            .demo-gif,
+            .diagram {
+                margin: 1.5em 0 calc(1.5em - 6px);
+                margin-right: calc(-50vw + 50% - 1em);
+                display: flex;
+                align-items: flex-start;
+                gap: 1em;
+                break-inside: avoid;
+            }
+
+            @media (max-width: 1300px) {
+                .demo-gif,
+                .diagram {
+                    flex-direction: column;
+                    margin-right: 0;
+                    align-items: flex-start;
+                    margin-bottom: calc(1.5em - 6px);
+                }
+
+                .demo-gif img,
+                .diagram img {
+                    border-radius: 8px;
+                }
+
+                .demo-gif-caption,
+                .diagram-caption {
+                    max-width: 100%;
+                    padding-top: 0.588235em; /* 0.75em in content context = 0.5 baseline units */
+                    margin-top: 0;
+                }
+            }
+
+            .demo-gif img,
+            .diagram img {
+                height: 20em; /* 17 baseline units = 25.5em base / 1.275 content font-size */
+                width: auto;
+                object-fit: contain;
+                border-radius: 8px;
+            }
+
+            .demo-gif-caption,
+            .diagram-caption {
+                font-size: 0.75em;
+                color: #666;
+                line-height: 1.5;
+                text-align: left;
+                max-width: 14em;
+                padding-top: 7px;
+            }
+
+            .demo-gif-caption a,
+            .diagram-caption a {
+                color: #666;
+                border-bottom: 1px solid #bbb;
+            }
+
+            .demo-gif-caption a:hover,
+            .diagram-caption a:hover {
+                color: #000;
+                border-bottom-color: #000;
+            }
+
+            @media (max-width: 900px) {
+                .demo-gif,
+                .diagram {
+                    flex-direction: row;
+                    margin-right: calc(-50vw + 50%);
+                }
+
+                .demo-gif img,
+                .diagram img {
+                    border-radius: 8px 0 0 8px;
+                }
+
+                .demo-gif-caption,
+                .diagram-caption {
+                    padding-top: 7px;
+                }
+            }
+
+            .columns-divider {
+                margin-top: 1.5em; /* 1 unit above */
+                border-bottom: 1px solid #ddd;
+                margin-bottom: calc(3em - 1px); /* 2 units below for 1 line gap */
+            }
+
+            .discussion-link {
+                margin: 0.588235em 0 0;
+                line-height: 1.5;
+                text-align: right;
+                font-size: 1.275em;
+                color: #333;
+            }
+
+            .discussion-link a {
+                color: #333;
+                border-bottom: 1px solid #bbb;
+            }
+
+            .discussion-link a:hover {
+                color: #000;
+                border-bottom-color: #000;
+            }
+
+            @media (max-width: 900px) {
+                .container {
+                    padding: 1.5em;
+                }
+
+                .content {
+                    column-count: 1;
+                }
+            }
+
+            .baseline-grid-visible .container {
+                background: transparent;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="/" class="home-link" aria-label="Home"
+            ><svg class="icon" viewBox="0 0 576 512" fill="currentColor">
+                <path
+                    d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 0 160c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-160-32 0c-18 0-32-14.3-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 11 15 11 24z"
+                /></svg
+        ></a>
+        <div class="container">
+            <div class="body-header">
+                <p class="article-meta"><a href="/">Mrinal Wadhwa</a> &middot; February 8, 2026</p>
+                <h1 class="article-title">Agent Identities</h1>
+                <p class="title-kicker">from first principles</p>
+            </div>
+
+            <div class="content" style="margin-bottom: -4px">
+                <p>
+                    For over two decades, my work has kept circling back to one really hard problem:
+                    <em>how do machines prove they can be trusted?</em>
+                </p>
+
+                <p>
+                    By the late 2000s, WebPKI and TLS were finally maturing, and communication on the Internet was
+                    starting to become reasonably trustworthy. In 2008, I implemented TLS 1.2 in ActionScript. It was my
+                    first deep dive into security protocols.
+                </p>
+
+                <p>
+                    The next few years, I continued to hand-roll authentication into applications until OAuth 2.0 +
+                    OpenID Connect made it possible to offload auth to a third party like Okta or Auth0.
+                </p>
+
+                <p>
+                    Then in 2014, I started designing a system of thousands of sensors and controllers embedded in city
+                    infrastructure, ports, and more worldwide. It ran critical city operations, so security and trust
+                    were foundational. But the established web-app centric primitives didn&rsquo;t quite fit this world
+                    of constrained devices
+                    <span style="border-bottom: 1px solid #999">operating autonomously</span> over unsafe networks.
+                </p>
+
+                <p>
+                    Trust in the entire WebPKI was too broad and unsafe when a device only ever talked to one or two
+                    services. Guarantees of TLS broke when data traversed multiple transport layer hops. There was no
+                    human or screen available for OAuth flows. API tokens were a bad option: 10k devices meant 10k
+                    shared secrets to provision, rotate, revoke, and keep safe.
+                </p>
+
+                <p>
+                    None of these primitives fit, but many connected products shoe-horned them in anyway, often in
+                    predictably unsafe ways.
+                </p>
+
+                <p style="break-before: column">
+                    The internet paid the price: a series of botnet attacks that weaponized millions of
+                    <a
+                        href="https://www.wired.com/2016/12/botnet-broke-internet-isnt-going-away/"
+                        target="_blank"
+                        rel="noopener"
+                        >insecure devices</a
+                    >
+                    and
+                    <a
+                        href="https://www.wired.com/story/mirai-botnet-minecraft-scam-brought-down-the-internet/"
+                        target="_blank"
+                        rel="noopener"
+                        >knocked much of the internet offline</a
+                    >.
+                </p>
+
+                <p>
+                    By 2018, there were already some driverless cars on the streets of San Francisco, and it was obvious
+                    to me that the trust challenges I had dealt with in the world of small autonomous devices would soon
+                    be faced by many more, much larger autonomous systems.
+                </p>
+
+                <p>
+                    This led me to build
+                    <a href="https://github.com/build-trust/ockam" target="_blank" rel="noopener">Ockam</a>, an
+                    open-source Rust library and protocols to create cryptographic identities, establish mutual trust,
+                    and encrypt communication end-to-end across distributed systems.
+                </p>
+
+                <p>
+                    As Ockam became popular, we worked closely with several major platform providers and I got an inside
+                    look at how even very large organizations still relied on weak boundaries and primitives like IP
+                    allow-lists to &ldquo;secure&rdquo; communication across services, clouds, and companies.
+                </p>
+
+                <p>
+                    In late 2024, the concrete form factor of the autonomous systems I had imagined finally became
+                    obvious: <em>autonomous agents driven by large language&nbsp;models.</em>
+                </p>
+
+                <p>
+                    In the year since, as I worked on building
+                    <a href="https://autonomy.computer" target="_blank" rel="noopener">Autonomy</a> on top of Ockam, the
+                    wider industry has begun to recognize the gaps and invest in agent&nbsp;identity.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content" style="margin-bottom: -11px">
+                <h2 class="section-heading">Do agents need their own identities?</h2>
+                <p>
+                    There is a reasonable case that agents are just another type of application and don&rsquo;t need new
+                    identity infrastructure.
+                </p>
+
+                <p>But agents don&rsquo;t behave like traditional software.</p>
+
+                <p>
+                    <strong>Attribution.</strong> Traditional software follows a pre-programmed set of steps. Agents on
+                    the other hand autonomously pick and decompose each step: &ldquo;resolve this complaint&rdquo;
+                    becomes access order history, check inventory, issue a refund, update shipping. The rep never
+                    authorized those specific actions, but with only her identity in the system, she takes the blame
+                    when something goes wrong.
+                </p>
+
+                <p>
+                    <strong>Distinct capabilities.</strong> Agents often need permissions the invoking user
+                    doesn&rsquo;t have. A support agent needs refund authority. The rep who invokes it does not. She
+                    shouldn&rsquo;t. And some agents don&rsquo;t act for any specific user at all. An onboarding agent
+                    acts on behalf of a company, not the HR manager who configured it. A contract reviewer acts on
+                    behalf of a firm, not the paralegal who invoked it.
+                </p>
+
+                <p style="break-inside: avoid">
+                    <strong>Delegation.</strong> Agents delegate to sub-agents. We need to identify every sub-agent to
+                    know who has access to what, who did what, and what information they acted on. Existing IAM,
+                    designed for humans, can&rsquo;t keep up: thousands of agents spawned in seconds, each needing
+                    secrets and&nbsp;credentials.
+                </p>
+
+                <div class="demo-gif">
+                    <img
+                        src="graph_of_code_review_agents4.gif"
+                        alt="A swarm of code review agents analyzing vue.js core"
+                    />
+                    <div class="demo-gif-caption">
+                        <p>A swarm of 5,000+ agents in Autonomy conducting a deep code review.</p>
+                        <p>
+                            More on that in
+                            <a href="/articles/agent-swarms-like-the-one-cursor-created/">Agent Swarms</a>.
+                        </p>
+                    </div>
+                </div>
+
+                <p>
+                    To collaborate, autonomous agents need identities. That is the only way to authenticate requests,
+                    authorize actions, and attribute decisions.
+                </p>
+
+                <p>
+                    Collaborating swarms of autonomous agents need infrastructure to provision identities, manage
+                    secrets, issue credentials, create secure communication channels, and build mutual trust.
+                </p>
+
+                <p>
+                    The rest of this article walks through what this infrastructure looks like and how each layer adds
+                    guarantees to earn trust.
+                </p>
+            </div>
+
+            <div class="columns-divider" style="margin-top: 3em"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Who is this agent?</h2>
+
+                <p>
+                    To trust an agent, we need to authenticate who it is, authorize what it does, and attribute what it
+                    decides. All three require the agent to hold a private key and produce cryptographic proof.
+                </p>
+
+                <p>
+                    <strong>Authentication.</strong> An agent calls a payments API. HTTPS verifies the API&rsquo;s
+                    domain and encrypts the connection. But the agent authenticates by sending an API token in a request
+                    header. That token identifies an account, not an agent. That token is almost always shared across
+                    every agent in the system, set once as an environment variable. If it leaked or was exfiltrated, the
+                    holder is indistinguishable from a legitimate agent.
+                </p>
+
+                <p>
+                    OAuth access tokens are no better. The token says the authorization server approved these scopes at
+                    some point. OpenID Connect adds a subject identifier, but the proof comes from the identity
+                    provider, not the agent. The agent presents someone else&rsquo;s assertion, not its own.
+                </p>
+
+                <p>
+                    <strong>Attribution.</strong> A month later, an audit asks: which agent accessed this
+                    customer&rsquo;s financial records, acting on whose behalf, for what reason? The log says API token
+                    <em>sk-proj-abc123</em> performed a read on record #4471. That token is shared across 30 agents.
+                    Which one? The log cannot say. And even if it could, the log entry is text in a database. It can be
+                    edited. It can be fabricated. There is no cryptographic binding between the action and the actor. No
+                    signature. No proof.
+                </p>
+
+                <p>
+                    <strong>Proof.</strong> But a cryptographic key pair solves both problems. The agent holds a private
+                    key it never reveals. It proves identity by signing a challenge. It proves actions by signing each
+                    one. The signature is verifiable by anyone who knows the corresponding public key. It cannot be
+                    forged or&nbsp;repudiated.
+                </p>
+
+                <p>
+                    <strong>Identifiers.</strong> Each agent needs its own identifier. A good one starts with a key
+                    pair: a private key and a corresponding public key. The identifier is tied to this public key, so no
+                    one without the private key can sign as this identity, and anyone with the public key can check the
+                    signature. Ockam Identifiers, X.509 certificates, and DIDs all work like&nbsp;this.
+                </p>
+
+                <p>
+                    <strong>Provisioning.</strong> The way Let&rsquo;s Encrypt automates certificate provisioning for
+                    web domains. Agents need something similar to provision identities, but at a different scale:
+                    thousands of agents, created in seconds, with no operator in the loop. In Autonomy, every agent
+                    creates its own cryptographic identity in&nbsp;milliseconds.
+                </p>
+
+                <p>
+                    <strong>Rotation.</strong> Keys get compromised. Keys expire. If rotating a key changes the
+                    identifier, every credential, audit trail, and trust relationship built on it breaks. WebPKI handles
+                    this by binding keys to a stable domain name. Workload identity frameworks solve this with an
+                    identifier assigned by the infrastructure. In Ockam, the identifier is a hash of the first change in
+                    a cryptographic change history. Rotating a key appends a new signed change, and the identifier stays
+                    the&nbsp;same.
+                </p>
+
+                <div class="diagram">
+                    <img
+                        src="ockam-identity.png"
+                        alt="Ockam identity change history diagram showing how the identifier is derived from the first change hash and how key rotation appends new signed changes"
+                    />
+                    <div class="diagram-caption">
+                        <p>
+                            One approach: Ockam&rsquo;s change history. The identifier is the hash of the first change.
+                            Rotating keys appends a new signed change.
+                        </p>
+                    </div>
+                </div>
+
+                <p>
+                    <strong>Location.</strong> WebPKI ties identity to a public domain name. Workload identity
+                    frameworks tie it to an environment, like a Kubernetes cluster. Agents aren&rsquo;t servers with
+                    domain names. They operate across clusters, clouds, and&nbsp;devices.
+                </p>
+
+                <p>
+                    The identifier is the anchor. Credentials reference it. Secure channels verify it. Access policies
+                    evaluate it. Audit logs record&nbsp;it.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Where do the secrets live?</h2>
+
+                <p>
+                    An agent needs two kinds of secrets.
+                    <span style="border-bottom: 1px solid #999">Cryptographic private keys:</span> its identity keys,
+                    signing keys, ssh keys. And
+                    <span style="border-bottom: 1px solid #999">bearer credentials:</span> API tokens, database
+                    passwords, OAuth access tokens. Both need protection.
+                </p>
+
+                <p>
+                    Storing secrets where an agent can read them is riskier than with traditional software. Traditional
+                    software follows a fixed code path. Exfiltrating a secret requires exploiting a vulnerability.
+                    Agents act on externally provided inputs, are prone to injection, and can be manipulated into
+                    revealing secrets that they can&nbsp;read.
+                </p>
+
+                <p>
+                    The most common practice is to store bearer tokens in environment variables or files. A Stripe
+                    token, an OpenAI token, a database password, all readable by every agent in the system. If any agent
+                    is compromised, every credential is exposed. Even when every agent calls the same API, they all
+                    share one token. No way to audit which agent made which&nbsp;call.
+                </p>
+
+                <p>
+                    If each agent has its own cryptographic identity, secrets don&rsquo;t have to be shared. The agent
+                    proves its identity and a broker exchanges that proof for a
+                    <span style="border-bottom: 1px solid #999">short-lived, scoped token</span>. If the agent is
+                    compromised, the attacker gets a token that expires in minutes. The long-lived secret never left the
+                    broker. The billing agent gets its own Stripe token. The support agent gets a different one, scoped
+                    to refunds. Autonomy supports this with
+                    <span style="border-bottom: 1px solid #999">leased secrets</span>: short-lived credentials bound to
+                    a specific agent&rsquo;s identity, issued on demand, revoked when the identity is&nbsp;revoked.
+                </p>
+
+                <p>
+                    Identity keys are secrets too. If the agent can read its own private key, it can be manipulated into
+                    revealing it. Agent identities have to be bootstrapped in a way that private keys are
+                    <span style="border-bottom: 1px solid #999">never readable by agents</span>.
+                </p>
+
+                <p>
+                    In Autonomy, a provisioner generates an identity&rsquo;s primary signing key inside a KMS or an HSM.
+                    The key never exists outside that strict boundary. The provisioner gives an Autonomy node access to
+                    use the key along with an enrollment ticket: a one-time token that the node presents to enroll with
+                    authority and receive its initial credentials. Each agent identity is issued credentials by this
+                    initial node&nbsp;identity.
+                </p>
+
+                <p>
+                    Keep identity keys in hardware. Keep bearer credentials behind a broker. A compromised agent should
+                    have nothing long-lived to&nbsp;reveal.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">What can this agent do, and on whose behalf?</h2>
+
+                <p>
+                    An authenticated identity tells us who an agent is. An authenticated credential tells us what it can
+                    do and on whose behalf. There are two kinds: bearer credentials and cryptographic&nbsp;credentials.
+                </p>
+
+                <p>
+                    <strong>Bearer Credentials</strong> are secrets like API tokens and database passwords. Agents need
+                    them because existing systems run on them. The agent should never read the raw secret. We need
+                    infrastructure to broker short-lived tokens scoped to a specific agent and its&nbsp;needs.
+                </p>
+
+                <p>
+                    <strong>Cryptographic Credentials</strong> are signed attestations about the attributes of a
+                    specific identity. An authority signs a statement about a subject, with attributes and expiration
+                    timestamps. The credential is bound to the subject&rsquo;s cryptographic identifier and carries
+                    attributes as key-value pairs: role, scope, delegation context. It is
+                    <span style="border-bottom: 1px solid #999">self-verifiable</span>: the signature proves
+                    authenticity without calling the issuer. Unlike bearer credentials, it is
+                    <span style="border-bottom: 1px solid #999">not a secret</span>. Ockam credentials and W3C
+                    Verifiable Credentials work this&nbsp;way.
+                </p>
+
+                <p>
+                    <strong>Delegation.</strong> An agent&rsquo;s identity tells us that it performed an action. A
+                    cryptographic credential tells us whether it was authorized to do it, and by whom. Not just
+                    <em>this agent should have access to order history</em> but
+                    <em
+                        >this agent should have access because a specific customer delegated that authority to resolve
+                        this complaint</em
+                    >. In Autonomy, every identity is a credential issuer, which is what enables delegation. When an
+                    agent delegates to another agent, the credential captures who delegated to whom, for what purpose,
+                    and for how long. Each delegation can only reduce authority, never amplify&nbsp;it.
+                </p>
+
+                <p>
+                    Credential attributes are defined at authorization time, but agent behavior evolves at execution
+                    time. A user says <em>onboard this new employee</em>. The agent interprets that as: create accounts,
+                    assign permissions, schedule training, order equipment. The attributes granted said
+                    <em>employee onboarding</em>, but the agent&rsquo;s actual behavior has gone further. Fine-grained
+                    attributes can constrain what an agent does, but someone (human or agent) must anticipate and
+                    enumerate every action ahead of time. The more autonomous the agent, the harder that&nbsp;becomes.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <p>
+                    An agent can now prove who it is, protect its secrets, and present credentials for what it can do.
+                    We have not yet addressed how agents communicate safely, how to constrain what they do and what data
+                    they see, or how to trace who did what and&nbsp;why.
+                </p>
+
+                <p>
+                    <strong>Secure channels.</strong> A TLS certificate authenticates a domain; a bearer token
+                    authenticates an account. Agents run behind private cloud networks, across company boundaries, on
+                    personal laptops, rarely with a public domain name or a publicly reachable endpoint. Communication
+                    between agents needs to traverse these network boundaries, mutually authenticate the actual agents,
+                    end-to-end encrypt through intermediaries, and provide forward&nbsp;secrecy.
+                </p>
+
+                <p>
+                    <strong>Access control.</strong> A credential asserts an agent&rsquo;s attributes. Access control
+                    evaluates those attributes at each boundary: should this agent perform this action, access this
+                    data, right now? Making role-based access control granular enough for agents leads to role
+                    explosion: the roles multiply as
+                    <span style="white-space: nowrap">agent type &times; user &times; task &times; data scope</span>.
+                    Agents need dedicated infrastructure to evaluate attribute-based policies on every incoming request,
+                    defined centrally, with a deny-all&nbsp;default.
+                </p>
+
+                <p>
+                    <strong>Observability and accountability.</strong> Agents need decision traces that capture not just
+                    what they did but why: what context the agent saw, what policies applied, under whose authority it
+                    acted. Cryptographic identity makes each action and decision attributable to a specific agent. Over
+                    time, past decisions and exceptions become context that improves an agent&rsquo;s
+                    future&nbsp;decisions.
+                </p>
+
+                <p>
+                    Each layer depends on the ones below it. Identity makes credentials possible. Credentials make
+                    secure channels meaningful. Secure channels make access control enforceable. Pull out any layer and
+                    the ones above it&nbsp;collapse.
+                </p>
+
+                <p>
+                    <em>I will dig deeper into each of these layers in a future&nbsp;update.</em>
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <p class="discussion-link">
+                <a
+                    href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fmrinal.com%2Farticles%2Fagent-identities%2F&t=Agent%20Identities"
+                >
+                    Discuss on Hacker News
+                </a>
+            </p>
+        </div>
+
+        <script>
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "g" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                    document.body.classList.toggle("baseline-grid-visible");
+                }
+            });
+        </script>
+    </body>
+</html>
