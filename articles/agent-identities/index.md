@@ -1,6 +1,4 @@
-# Agent Identities
-
-*from first principles*
+# Agent Identities, from first principles
 
 For over two decades, my work has kept circling back to one really hard problem: *how do machines prove they can be trusted?*
 
