@@ -285,26 +285,26 @@
 
             <div class="content" style="margin-bottom: -4px">
                 <p>
-                    For over two decades, my work has kept circling back to one really hard problem:
+                    For over two decades, my work has kept circling back to one hard problem:
                     <em>how do machines prove they can be trusted?</em>
                 </p>
 
                 <p>
                     By the late 2000s, WebPKI and TLS were finally maturing, and communication on the Internet was
-                    starting to become reasonably trustworthy. In 2008, I implemented TLS 1.2 in ActionScript. It was my
-                    first deep dive into security protocols.
+                    becoming trustworthy. In 2008, I implemented TLS 1.2 in ActionScript. It was my first deep dive into
+                    security protocols.
                 </p>
 
                 <p>
-                    The next few years, I continued to hand-roll authentication into applications until OAuth 2.0 +
-                    OpenID Connect made it possible to offload auth to a third party like Okta or Auth0.
+                    Over the next few years, I kept hand-rolling authentication into every application, until OAuth 2.0
+                    and OpenID Connect made it possible to offload auth to Okta or Auth0.
                 </p>
 
                 <p>
                     Then in 2014, I started designing a system of thousands of sensors and controllers embedded in city
-                    infrastructure, ports, and more worldwide. It ran critical city operations, so security and trust
-                    were foundational. But the established web-app centric primitives didn&rsquo;t quite fit this world
-                    of constrained devices
+                    infrastructure and ports worldwide. It ran critical city operations, so security and trust were
+                    foundational. But the established web-app-centric primitives didn&rsquo;t fit this world of
+                    constrained devices
                     <span style="border-bottom: 1px solid #999">operating autonomously</span> over unsafe networks.
                 </p>
 
@@ -312,7 +312,7 @@
                     Trust in the entire WebPKI was too broad and unsafe when a device only ever talked to one or two
                     services. Guarantees of TLS broke when data traversed multiple transport layer hops. There was no
                     human or screen available for OAuth flows. API tokens were a bad option: 10k devices meant 10k
-                    shared secrets to provision, rotate, revoke, and keep safe.
+                    shared secrets to provision, rotate, revoke, and never leak.
                 </p>
 
                 <p>
@@ -338,33 +338,33 @@
                 </p>
 
                 <p>
-                    By 2018, there were already some driverless cars on the streets of San Francisco, and it was obvious
-                    to me that the trust challenges I had dealt with in the world of small autonomous devices would soon
-                    be faced by many more, much larger autonomous systems.
+                    By 2018, a handful of driverless test vehicles were on the streets of San Francisco, and I could see
+                    where this was heading: the same trust challenges I'd faced with small autonomous devices, but in
+                    much larger autonomous systems that didn't fully exist yet.
                 </p>
 
                 <p>
-                    This led me to build
-                    <a href="https://github.com/build-trust/ockam" target="_blank" rel="noopener">Ockam</a>, an
+                    So I built
+                    <a href="https://github.com/build-trust/ockam" target="_blank" rel="noopener">Ockam</a>: an
                     open-source Rust library and protocols to create cryptographic identities, establish mutual trust,
                     and encrypt communication end-to-end across distributed systems.
                 </p>
 
                 <p>
-                    As Ockam became popular, we worked closely with several major platform providers and I got an inside
-                    look at how even very large organizations still relied on weak boundaries and primitives like IP
-                    allow-lists to &ldquo;secure&rdquo; communication across services, clouds, and companies.
+                    As Ockam grew, we worked with major platform providers. What I saw surprised me: even large
+                    organizations still relied on IP allow-lists and other weak primitives to &ldquo;secure&rdquo;
+                    communication across services, clouds, and companies.
                 </p>
 
                 <p>
-                    In late 2024, the concrete form factor of the autonomous systems I had imagined finally became
-                    obvious: <em>autonomous agents driven by large language&nbsp;models.</em>
+                    In late 2024, the form those autonomous systems would take became clear:
+                    <em>collaborating swarms of agents driven by large language&nbsp;models.</em>
                 </p>
 
                 <p>
-                    In the year since, as I worked on building
+                    In the year since, as I built
                     <a href="https://autonomy.computer" target="_blank" rel="noopener">Autonomy</a> on top of Ockam, the
-                    wider industry has begun to recognize the gaps and invest in agent&nbsp;identity.
+                    wider industry is starting to see the gaps and invest in agent&nbsp;identity.
                 </p>
             </div>
 
@@ -373,31 +373,29 @@
             <div class="content" style="margin-bottom: -11px">
                 <h2 class="section-heading">Do agents need their own identities?</h2>
                 <p>
-                    There is a reasonable case that agents are just another type of application and don&rsquo;t need new
-                    identity infrastructure.
+                    You could argue that agents are just another type of application and don&rsquo;t need new identity
+                    infrastructure.
                 </p>
 
-                <p>But agents don&rsquo;t behave like traditional software.</p>
+                <p>But agents don&rsquo;t behave like traditional software. Three things break.</p>
 
                 <p>
-                    <strong>Attribution.</strong> Traditional software follows a pre-programmed set of steps. Agents on
-                    the other hand autonomously pick and decompose each step: &ldquo;resolve this complaint&rdquo;
-                    becomes access order history, check inventory, issue a refund, update shipping. The rep never
-                    authorized those specific actions, but with only her identity in the system, she takes the blame
-                    when something goes wrong.
+                    <strong>Attribution.</strong> Traditional software follows pre-programmed steps. Agents autonomously
+                    decompose and pick their own. &ldquo;Resolve this complaint&rdquo; becomes: access order history,
+                    check inventory, issue a refund, update shipping. The rep never authorized those specific actions,
+                    but with only her identity in the system, she takes the blame when something goes wrong.
                 </p>
 
                 <p>
                     <strong>Distinct capabilities.</strong> Agents often need permissions the invoking user
                     doesn&rsquo;t have. A support agent needs refund authority. The rep who invokes it does not. She
                     shouldn&rsquo;t. And some agents don&rsquo;t act for any specific user at all. An onboarding agent
-                    acts on behalf of a company, not the HR manager who configured it. A contract reviewer acts on
-                    behalf of a firm, not the paralegal who invoked it.
+                    acts on behalf of a company, not the HR manager who configured it.
                 </p>
 
                 <p style="break-inside: avoid">
-                    <strong>Delegation.</strong> Agents delegate to sub-agents. We need to identify every sub-agent to
-                    know who has access to what, who did what, and what information they acted on. Existing IAM,
+                    <strong>Delegation.</strong> Agents delegate to sub-agents. Every sub-agent needs its own identity,
+                    or we lose track of who has access to what, who did what, and what they acted on. Existing IAM,
                     designed for humans, can&rsquo;t keep up: thousands of agents spawned in seconds, each needing
                     secrets and&nbsp;credentials.
                 </p>
@@ -417,19 +415,16 @@
                 </div>
 
                 <p>
-                    To collaborate, autonomous agents need identities. That is the only way to authenticate requests,
-                    authorize actions, and attribute decisions.
+                    Without their own identities, agents can&rsquo;t authenticate requests, authorize actions, or
+                    attribute decisions.
                 </p>
 
                 <p>
-                    Collaborating swarms of autonomous agents need infrastructure to provision identities, manage
-                    secrets, issue credentials, create secure communication channels, and build mutual trust.
+                    A swarm of collaborating agents needs infrastructure for all of this: provision identities, manage
+                    secrets, issue credentials, open secure channels, and build mutual trust.
                 </p>
 
-                <p>
-                    The rest of this article walks through what this infrastructure looks like and how each layer adds
-                    guarantees to earn trust.
-                </p>
+                <p>The rest of this article walks through what this infrastructure looks like, layer by layer.</p>
             </div>
 
             <div class="columns-divider" style="margin-top: 3em"></div>
@@ -439,15 +434,15 @@
 
                 <p>
                     To trust an agent, we need to authenticate who it is, authorize what it does, and attribute what it
-                    decides. All three require the agent to hold a private key and produce cryptographic proof.
+                    decides. For all three, the agent must hold a private key and produce cryptographic proof.
                 </p>
 
                 <p>
                     <strong>Authentication.</strong> An agent calls a payments API. HTTPS verifies the API&rsquo;s
                     domain and encrypts the connection. But the agent authenticates by sending an API token in a request
                     header. That token identifies an account, not an agent. That token is almost always shared across
-                    every agent in the system, set once as an environment variable. If it leaked or was exfiltrated, the
-                    holder is indistinguishable from a legitimate agent.
+                    every agent in the system, set once as an environment variable. If it leaks, the attacker looks
+                    exactly like a legitimate agent.
                 </p>
 
                 <p>
@@ -461,27 +456,26 @@
                     customer&rsquo;s financial records, acting on whose behalf, for what reason? The log says API token
                     <em>sk-proj-abc123</em> performed a read on record #4471. That token is shared across 30 agents.
                     Which one? The log cannot say. And even if it could, the log entry is text in a database. It can be
-                    edited. It can be fabricated. There is no cryptographic binding between the action and the actor. No
-                    signature. No proof.
+                    edited. It can be fabricated. Nothing cryptographically binds the action to the actor. No signature.
+                    No proof.
                 </p>
 
                 <p>
                     <strong>Proof.</strong> But a cryptographic key pair solves both problems. The agent holds a private
                     key it never reveals. It proves identity by signing a challenge. It proves actions by signing each
-                    one. The signature is verifiable by anyone who knows the corresponding public key. It cannot be
-                    forged or&nbsp;repudiated.
+                    one. Anyone with the public key can verify the signature. It cannot be forged or&nbsp;repudiated.
                 </p>
 
                 <p>
                     <strong>Identifiers.</strong> Each agent needs its own identifier. A good one starts with a key
-                    pair: a private key and a corresponding public key. The identifier is tied to this public key, so no
-                    one without the private key can sign as this identity, and anyone with the public key can check the
+                    pair: a private key and a corresponding public key. The identifier is tied to the public key. Only
+                    the holder of the private key can sign as this identity; anyone with the public key can verify the
                     signature. Ockam Identifiers, X.509 certificates, and DIDs all work like&nbsp;this.
                 </p>
 
                 <p>
-                    <strong>Provisioning.</strong> The way Let&rsquo;s Encrypt automates certificate provisioning for
-                    web domains. Agents need something similar to provision identities, but at a different scale:
+                    <strong>Provisioning.</strong> Think of how Let&rsquo;s Encrypt automates certificate provisioning
+                    for web domains. Agents need something similar to provision identities, but at a different scale:
                     thousands of agents, created in seconds, with no operator in the loop. In Autonomy, every agent
                     creates its own cryptographic identity in&nbsp;milliseconds.
                 </p>
@@ -515,8 +509,8 @@
                 </p>
 
                 <p>
-                    The identifier is the anchor. Credentials reference it. Secure channels verify it. Access policies
-                    evaluate it. Audit logs record&nbsp;it.
+                    The identifier is the anchor. Everything else in the system hangs off it: credentials reference it,
+                    secure channels verify it, access policies evaluate it, audit logs record&nbsp;it.
                 </p>
             </div>
 
@@ -530,21 +524,20 @@
                     <span style="border-bottom: 1px solid #999">Cryptographic private keys:</span> its identity keys,
                     signing keys, ssh keys. And
                     <span style="border-bottom: 1px solid #999">bearer credentials:</span> API tokens, database
-                    passwords, OAuth access tokens. Both need protection.
+                    passwords, OAuth access tokens.
                 </p>
 
                 <p>
-                    Storing secrets where an agent can read them is riskier than with traditional software. Traditional
-                    software follows a fixed code path. Exfiltrating a secret requires exploiting a vulnerability.
-                    Agents act on externally provided inputs, are prone to injection, and can be manipulated into
-                    revealing secrets that they can&nbsp;read.
+                    Traditional software follows a fixed code path. Exfiltrating a secret requires exploiting a
+                    vulnerability. Agents are different. They take instructions from external inputs and are prone to
+                    injection. If an agent can read a secret, an attacker can talk it into revealing that&nbsp;secret.
                 </p>
 
                 <p>
-                    The most common practice is to store bearer tokens in environment variables or files. A Stripe
-                    token, an OpenAI token, a database password, all readable by every agent in the system. If any agent
-                    is compromised, every credential is exposed. Even when every agent calls the same API, they all
-                    share one token. No way to audit which agent made which&nbsp;call.
+                    In practice, teams store bearer tokens in environment variables or files. A Stripe token, an OpenAI
+                    token, a database password, all readable by every agent in the system. If any agent is compromised,
+                    every credential is exposed. Even when every agent calls the same API, they all share one token. No
+                    way to audit which agent made which&nbsp;call.
                 </p>
 
                 <p>
@@ -560,16 +553,15 @@
 
                 <p>
                     Identity keys are secrets too. If the agent can read its own private key, it can be manipulated into
-                    revealing it. Agent identities have to be bootstrapped in a way that private keys are
+                    revealing it. Agent identities must be bootstrapped in a way that private keys are
                     <span style="border-bottom: 1px solid #999">never readable by agents</span>.
                 </p>
 
                 <p>
                     In Autonomy, a provisioner generates an identity&rsquo;s primary signing key inside a KMS or an HSM.
                     The key never exists outside that strict boundary. The provisioner gives an Autonomy node access to
-                    use the key along with an enrollment ticket: a one-time token that the node presents to enroll with
-                    authority and receive its initial credentials. Each agent identity is issued credentials by this
-                    initial node&nbsp;identity.
+                    use the key, and an enrollment ticket. The ticket is a one-time token the node presents to receive
+                    its initial credentials. This initial node identity then issues credentials to each&nbsp;agent.
                 </p>
 
                 <p>
@@ -584,23 +576,22 @@
                 <h2 class="section-heading">What can this agent do, and on whose behalf?</h2>
 
                 <p>
-                    An authenticated identity tells us who an agent is. An authenticated credential tells us what it can
-                    do and on whose behalf. There are two kinds: bearer credentials and cryptographic&nbsp;credentials.
+                    An authenticated identity tells us who. An authenticated credential tells us what, and on whose
+                    behalf. There are two kinds: bearer credentials and cryptographic&nbsp;credentials.
                 </p>
 
                 <p>
                     <strong>Bearer Credentials</strong> are secrets like API tokens and database passwords. Agents need
-                    them because existing systems run on them. The agent should never read the raw secret. We need
+                    them because existing systems run on them. The agent should never see the raw secret. We need
                     infrastructure to broker short-lived tokens scoped to a specific agent and its&nbsp;needs.
                 </p>
 
                 <p>
-                    <strong>Cryptographic Credentials</strong> are signed attestations about the attributes of a
-                    specific identity. An authority signs a statement about a subject, with attributes and expiration
-                    timestamps. The credential is bound to the subject&rsquo;s cryptographic identifier and carries
-                    attributes as key-value pairs: role, scope, delegation context. It is
-                    <span style="border-bottom: 1px solid #999">self-verifiable</span>: the signature proves
-                    authenticity without calling the issuer. Unlike bearer credentials, it is
+                    <strong>Cryptographic Credentials</strong> are signed statements: an authority attests that a
+                    specific identity has certain attributes. The credential is bound to the subject&rsquo;s
+                    cryptographic identifier and carries attributes as key-value pairs: role, scope, delegation context,
+                    expiration. It is <span style="border-bottom: 1px solid #999">self-verifiable</span>: the signature
+                    proves authenticity without calling the issuer. Unlike bearer credentials, it is
                     <span style="border-bottom: 1px solid #999">not a secret</span>. Ockam credentials and W3C
                     Verifiable Credentials work this&nbsp;way.
                 </p>
@@ -612,7 +603,7 @@
                     <em
                         >this agent should have access because a specific customer delegated that authority to resolve
                         this complaint</em
-                    >. In Autonomy, every identity is a credential issuer, which is what enables delegation. When an
+                    >. In Autonomy, every identity can issue credentials. That&rsquo;s what enables delegation. When an
                     agent delegates to another agent, the credential captures who delegated to whom, for what purpose,
                     and for how long. Each delegation can only reduce authority, never amplify&nbsp;it.
                 </p>
@@ -621,9 +612,9 @@
                     Credential attributes are defined at authorization time, but agent behavior evolves at execution
                     time. A user says <em>onboard this new employee</em>. The agent interprets that as: create accounts,
                     assign permissions, schedule training, order equipment. The attributes granted said
-                    <em>employee onboarding</em>, but the agent&rsquo;s actual behavior has gone further. Fine-grained
-                    attributes can constrain what an agent does, but someone (human or agent) must anticipate and
-                    enumerate every action ahead of time. The more autonomous the agent, the harder that&nbsp;becomes.
+                    <em>employee onboarding</em>. The agent has gone well beyond that. Fine-grained attributes can
+                    constrain what an agent does, but someone (human or agent) must anticipate and enumerate every
+                    action ahead of time. The more autonomous the agent, the harder that&nbsp;becomes.
                 </p>
             </div>
 
@@ -650,26 +641,25 @@
                     data, right now? Making role-based access control granular enough for agents leads to role
                     explosion: the roles multiply as
                     <span style="white-space: nowrap">agent type &times; user &times; task &times; data scope</span>.
-                    Agents need dedicated infrastructure to evaluate attribute-based policies on every incoming request,
-                    defined centrally, with a deny-all&nbsp;default.
+                    Agents need infrastructure to evaluate attribute-based policies on every request. Policies are
+                    defined and managed centrally. The default policy: deny&nbsp;all.
                 </p>
 
                 <p>
                     <strong>Observability and accountability.</strong> Agents need decision traces that capture not just
                     what they did but why: what context the agent saw, what policies applied, under whose authority it
-                    acted. Cryptographic identity makes each action and decision attributable to a specific agent. Over
-                    time, past decisions and exceptions become context that improves an agent&rsquo;s
-                    future&nbsp;decisions.
+                    acted. Cryptographic identity makes every action attributable to a specific agent. Over time, past
+                    decisions and exceptions become context that improves an agent&rsquo;s future&nbsp;decisions.
                 </p>
 
                 <p>
-                    Each layer depends on the ones below it. Identity makes credentials possible. Credentials make
-                    secure channels meaningful. Secure channels make access control enforceable. Pull out any layer and
-                    the ones above it&nbsp;collapse.
+                    The stack is load-bearing. Identity makes credentials possible; credentials make secure channels
+                    meaningful; secure channels make access control enforceable. A weakness in any layer compromises the
+                    ones above&nbsp;it.
                 </p>
 
                 <p>
-                    <em>I will dig deeper into each of these layers in a future&nbsp;update.</em>
+                    <em>I&rsquo;ll dig deeper into each of these layers in a future&nbsp;update.</em>
                 </p>
             </div>
 
