@@ -38,7 +38,7 @@ dependable, secure, and highly scalable.
 
 ## Articles
 
-- [Agent Identities](/articles/agent-identities/index.md): Agents autonomously decompose tasks and delegate to sub-agents. To collaborate, they need identities. That is the only way to authenticate requests, authorize actions, and attribute decisions.
+- [Agent Identities, everything you need to know](/articles/agent-identities/index.md): Agents have raised the stakes: they take autonomous actions. Without cryptographic identity, we can't authenticate requests, authorize actions, or attribute decisions.
 - [Agent Swarms, like the one Cursor created](/articles/agent-swarms-like-the-one-cursor-created/index.md): Deep autonomous work requires infrastructure, not just frameworks or harnesses. A demo of distributed AI agents reviewing Vue.js core.
 - [How to make agents that succeed](/articles/how-to-make-agents-that-succeed/index.md): Controlled iteration is the only way to ship a reliable autonomous product and actually improve it over time.
 

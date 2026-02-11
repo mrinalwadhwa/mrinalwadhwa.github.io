@@ -9,11 +9,11 @@
 
     <!-- Add new items below this line, newest first -->
     <item>
-      <title>Agent Identities</title>
+      <title>Agent Identities, everything you need to know</title>
       <link>https://mrinal.com/articles/agent-identities/</link>
       <guid>https://mrinal.com/articles/agent-identities/</guid>
       <pubDate>Sun, 08 Feb 2026 00:00:00 GMT</pubDate>
-      <description>Agents autonomously decompose tasks and delegate to sub-agents. To collaborate, they need identities. That is the only way to authenticate requests, authorize actions, and attribute decisions.</description>
+      <description>Agents have raised the stakes: they take autonomous actions. Without cryptographic identity, we can't authenticate requests, authorize actions, or attribute decisions.</description>
     </item>
     <item>
       <title>Agent Swarms, like the one Cursor created</title>

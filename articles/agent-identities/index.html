@@ -3,19 +3,19 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Agent Identities, from first principles – Mrinal Wadhwa</title>
+        <title>Agent Identities, everything you need to know – Mrinal Wadhwa</title>
         <meta
             name="description"
-            content="Agents autonomously decompose tasks and delegate to sub-agents. To collaborate, they need identities. That is the only way to authenticate requests, authorize actions, and attribute decisions."
+            content="Agents have raised the stakes: they take autonomous actions. Without cryptographic identity, we can't authenticate requests, authorize actions, or attribute decisions."
         />
         <meta name="author" content="Mrinal Wadhwa" />
         <link rel="canonical" href="https://mrinal.com/articles/agent-identities/" />
 
         <!-- Open Graph -->
-        <meta property="og:title" content="Agent Identities, from first principles – Mrinal Wadhwa" />
+        <meta property="og:title" content="Agent Identities, everything you need to know – Mrinal Wadhwa" />
         <meta
             property="og:description"
-            content="Agents autonomously decompose tasks and delegate to sub-agents. To collaborate, they need identities. That is the only way to authenticate requests, authorize actions, and attribute decisions."
+            content="Agents have raised the stakes: they take autonomous actions. Without cryptographic identity, we can't authenticate requests, authorize actions, or attribute decisions."
         />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://mrinal.com/articles/agent-identities/" />
@@ -26,10 +26,10 @@
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@mrinal" />
-        <meta name="twitter:title" content="Agent Identities, from first principles – Mrinal Wadhwa" />
+        <meta name="twitter:title" content="Agent Identities, everything you need to know – Mrinal Wadhwa" />
         <meta
             name="twitter:description"
-            content="Agents autonomously decompose tasks and delegate to sub-agents. To collaborate, they need identities. That is the only way to authenticate requests, authorize actions, and attribute decisions."
+            content="Agents have raised the stakes: they take autonomous actions. Without cryptographic identity, we can't authenticate requests, authorize actions, or attribute decisions."
         />
         <meta name="twitter:image" content="https://mrinal.com/articles/agent-identities/og.png" />
 
@@ -81,8 +81,11 @@
             }
 
             .body-header {
-                text-align: center;
+                text-align: left;
                 margin-bottom: 4.5em;
+                max-width: 76.5em; /* 60em * 1.275 to match .content's computed width */
+                margin-left: auto;
+                margin-right: auto;
             }
 
             .body-header p.title-kicker {
@@ -122,7 +125,7 @@
                 line-height: 1.5;
                 color: #888;
                 margin: 1.5em 0;
-                text-align: center;
+                text-align: left;
             }
 
             .article-meta a {
@@ -230,6 +233,28 @@
                 }
             }
 
+            .content p.lead {
+                column-span: all;
+                font-size: 1.5em;
+                line-height: 1.333333; /* 2em / 1.5em to maintain rhythm */
+                margin-bottom: calc(1.333333em + 4px); /* 2em in base units / 1.5 + grid alignment */
+                text-align: left;
+                max-width: 28em;
+            }
+
+            .content p.lead + p.lead {
+                margin-top: -1em; /* Reduce space between consecutive leads */
+            }
+
+            @media (max-width: 900px) {
+                .content p.lead {
+                    font-size: 1.3em;
+                    line-height: 1.538462; /* 2em / 1.3em */
+                    margin-bottom: calc(1.538462em + 12px);
+                    text-align: left;
+                }
+            }
+
             .columns-divider {
                 margin-top: 1.5em; /* 1 unit above */
                 border-bottom: 1px solid #ddd;
@@ -280,15 +305,17 @@
             <div class="body-header">
                 <p class="article-meta"><a href="/">Mrinal Wadhwa</a> &middot; February 8, 2026</p>
                 <h1 class="article-title">Agent Identities</h1>
-                <p class="title-kicker">from first principles</p>
+                <p class="title-kicker">everything you need to know</p>
             </div>
 
-            <div class="content" style="margin-bottom: -4px">
-                <p>
+            <div class="content" style="margin-bottom: -12px">
+                <p class="lead">
                     For over two decades, my work has kept circling back to one hard problem:
-                    <em>how do machines prove they can be trusted?</em> Autonomous agents have raised the stakes:
-                    without cryptographic identity, we can&rsquo;t authenticate requests, authorize actions, or
-                    attribute decisions.
+                    <em>how do machines prove they can be trusted?</em>
+                </p>
+                <p class="lead">
+                    Agents have raised the stakes: they take autonomous actions. Without cryptographic identity, we
+                    can&rsquo;t authenticate requests, authorize actions, or attribute decisions.
                 </p>
 
                 <p>
@@ -372,7 +399,7 @@
 
             <div class="columns-divider"></div>
 
-            <div class="content" style="margin-bottom: -11px">
+            <div class="content" style="margin-bottom: -19px">
                 <h2 class="section-heading">Do agents need their own identities?</h2>
                 <p>
                     You could argue that agents are just another type of application and don&rsquo;t need new identity
@@ -431,7 +458,7 @@
 
             <div class="columns-divider" style="margin-top: 3em"></div>
 
-            <div class="content">
+            <div class="content" style="margin-bottom: 4px">
                 <h2 class="section-heading">Who is this agent?</h2>
 
                 <p>
@@ -516,7 +543,7 @@
                 </p>
             </div>
 
-            <div class="columns-divider"></div>
+            <div class="columns-divider" style="margin-top: calc(1.5em + 4px)"></div>
 
             <div class="content">
                 <h2 class="section-heading">Where do the secrets live?</h2>
@@ -572,7 +599,7 @@
                 </p>
             </div>
 
-            <div class="columns-divider"></div>
+            <div class="columns-divider" style="margin-top: calc(1.5em + 12px)"></div>
 
             <div class="content">
                 <h2 class="section-heading">What can this agent do, and on whose behalf?</h2>
@@ -620,7 +647,7 @@
                 </p>
             </div>
 
-            <div class="columns-divider"></div>
+            <div class="columns-divider" style="margin-top: calc(1.5em + 4px)"></div>
 
             <div class="content">
                 <p>
@@ -665,7 +692,7 @@
                 </p>
             </div>
 
-            <div class="columns-divider"></div>
+            <div class="columns-divider" style="margin-top: calc(1.5em + 2px)"></div>
 
             <p class="discussion-link">
                 <a
