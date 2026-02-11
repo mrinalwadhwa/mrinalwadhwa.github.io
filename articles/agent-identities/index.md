@@ -1,6 +1,6 @@
 # Agent Identities, from first principles
 
-For over two decades, my work has kept circling back to one really hard problem: *how do machines prove they can be trusted?*
+For over two decades, my work has kept circling back to one hard problem: *how do machines prove they can be trusted?* Autonomous agents have raised the stakes: without cryptographic identity, we can't authenticate requests, authorize actions, or attribute decisions.
 
 By the late 2000s, WebPKI and TLS were finally maturing, and communication on the Internet was starting to become reasonably trustworthy. In 2008, I implemented TLS 1.2 in ActionScript. It was my first deep dive into security protocols.
 
