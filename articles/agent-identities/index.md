@@ -30,7 +30,7 @@ There is a reasonable case that agents are just another type of application and 
 
 But agents don't behave like traditional software.
 
-**Attribution.** Traditional software follows a pre-programmed set of steps. Agents on the other hand autonomously pick and decompose each step: "resolve this complaint" becomes access order history, check inventory, issue a refund, update shipping. The rep never authorized those specific actions, but with only her identity in the system, she takes the blame when something goes wrong.
+**Attribution.** Traditional software follows a pre-programmed set of steps. Agents on the other hand autonomously pick and decompose each step: "resolve this complaint" becomes access order history, check inventory, issue a refund, update shipping. The rep never authorized those specific actions, but with only her identity on record, she takes the blame when something goes wrong.
 
 **Distinct capabilities.** Agents often need permissions the invoking user doesn't have. A support agent needs refund authority. The rep who invokes it does not. She shouldn't. And some agents don't act for any specific user at all. An onboarding agent acts on behalf of a company, not the HR manager who configured it. A contract reviewer acts on behalf of a firm, not the paralegal who invoked it.
 
@@ -46,7 +46,7 @@ The rest of this article walks through what this infrastructure looks like and h
 
 To trust an agent, we need to authenticate who it is, authorize what it does, and attribute what it decides. All three require the agent to hold a private key and produce cryptographic proof.
 
-**Authentication.** An agent calls a payments API. HTTPS verifies the API's domain and encrypts the connection. But the agent authenticates by sending an API token in a request header. That token identifies an account, not an agent. That token is almost always shared across every agent in the system, set once as an environment variable. If it leaked or was exfiltrated, the holder is indistinguishable from a legitimate agent.
+**Authentication.** An agent calls a payments API. HTTPS verifies the API's domain and encrypts the connection. But the agent authenticates by sending an API token in a request header. That token identifies an account, not an agent. That token is almost always shared across every agent, set once as an environment variable. If it leaked or was exfiltrated, the holder is indistinguishable from a legitimate agent.
 
 OAuth access tokens are no better. The token says the authorization server approved these scopes at some point. OpenID Connect adds a subject identifier, but the proof comes from the identity provider, not the agent. The agent presents someone else's assertion, not its own.
 
@@ -70,7 +70,7 @@ An agent needs two kinds of secrets. Cryptographic private keys: its identity ke
 
 Storing secrets where an agent can read them is riskier than with traditional software. Traditional software follows a fixed code path. Exfiltrating a secret requires exploiting a vulnerability. Agents act on externally provided inputs, are prone to injection, and can be manipulated into revealing secrets that they can read.
 
-The most common practice is to store bearer tokens in environment variables or files. A Stripe token, an OpenAI token, a database password, all readable by every agent in the system. If any agent is compromised, every credential is exposed. Even when every agent calls the same API, they all share one token. No way to audit which agent made which call.
+The most common practice is to store bearer tokens in environment variables or files. A Stripe token, an OpenAI token, a database password, all readable by every agent. If any agent is compromised, every credential is exposed. There is a second problem. When many agents call the same API, they all share one token. No way to audit which agent made which call.
 
 If each agent has its own cryptographic identity, secrets don't have to be shared. The agent proves its identity and a broker exchanges that proof for a short-lived, scoped token. If the agent is compromised, the attacker gets a token that expires in minutes. The long-lived secret never left the broker. The billing agent gets its own Stripe token. The support agent gets a different one, scoped to refunds. Autonomy supports this with leased secrets: short-lived credentials bound to a specific agent's identity, issued on demand, revoked when the identity is revoked.
 
@@ -86,9 +86,11 @@ An authenticated identity tells us who an agent is. An authenticated credential 
 
 **Bearer Credentials** are secrets like API tokens and database passwords. Agents need them because existing systems run on them. The agent should never read the raw secret. We need infrastructure to broker short-lived tokens scoped to a specific agent and its needs.
 
-**Cryptographic Credentials** are signed attestations about the attributes of a specific identity. An authority signs a statement about a subject, with attributes and expiration timestamps. The credential is bound to the subject's cryptographic identifier and carries attributes as key-value pairs: role, scope, delegation context. It is self-verifiable: the signature proves authenticity without calling the issuer. Unlike bearer credentials, it is not a secret. Ockam credentials and W3C Verifiable Credentials work this way.
+**Cryptographic Credentials** are signed statements: an authority attests that a specific identity has certain attributes. Each credential is bound to a subject's cryptographic identifier and carries attributes as key-value pairs: role, scope, delegation context, expiration. The signature proves authenticity without calling the issuer. Unlike bearer credentials, cryptographic credentials are not secrets.
 
-**Delegation.** An agent's identity tells us that it performed an action. A cryptographic credential tells us whether it was authorized to do it, and by whom. Not just *this agent should have access to order history* but *this agent should have access because a specific customer delegated that authority to resolve this complaint*. In Autonomy, every identity is a credential issuer, which is what enables delegation. When an agent delegates to another agent, the credential captures who delegated to whom, for what purpose, and for how long. Each delegation can only reduce authority, never amplify it.
+Ockam credentials and W3C Verifiable Credentials work this way.
+
+**Delegation.** An agent's identity tells us that it is requesting an action. A cryptographic credential tells us whether it is authorized to do it, and by whom. Not just *this agent should have access to order history* but *this agent should have access because a specific customer delegated that authority to resolve this complaint*. In Autonomy, every identity is a credential issuer, which is what enables delegation. When an agent delegates to another agent, the credential captures who delegated to whom, for what purpose, and for how long. Each delegation can only reduce authority, never amplify it.
 
 Credential attributes are defined at authorization time, but agent behavior evolves at execution time. A user says *onboard this new employee*. The agent interprets that as: create accounts, assign permissions, schedule training, order equipment. The attributes granted said *employee onboarding*, but the agent's actual behavior has gone further. Fine-grained attributes can constrain what an agent does, but someone (human or agent) must anticipate and enumerate every action ahead of time. The more autonomous the agent, the harder that becomes.
 

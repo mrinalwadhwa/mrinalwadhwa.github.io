@@ -385,7 +385,7 @@
                     <strong>Attribution.</strong> Traditional software follows pre-programmed steps. Agents autonomously
                     decompose and pick their own. &ldquo;Resolve this complaint&rdquo; becomes: access order history,
                     check inventory, issue a refund, update shipping. The rep never authorized those specific actions,
-                    but with only her identity in the system, she takes the blame when something goes wrong.
+                    but with only her identity on record, she takes the blame when something goes wrong.
                 </p>
 
                 <p>
@@ -443,8 +443,8 @@
                     <strong>Authentication.</strong> An agent calls a payments API. HTTPS verifies the API&rsquo;s
                     domain and encrypts the connection. But the agent authenticates by sending an API token in a request
                     header. That token identifies an account, not an agent. That token is almost always shared across
-                    every agent in the system, set once as an environment variable. If it leaks, the attacker looks
-                    exactly like a legitimate agent.
+                    every agent, set once as an environment variable. If it leaks, the attacker looks exactly like a
+                    legitimate agent.
                 </p>
 
                 <p>
@@ -511,8 +511,8 @@
                 </p>
 
                 <p>
-                    The identifier is the anchor. Everything else in the system hangs off it: credentials reference it,
-                    secure channels verify it, access policies evaluate it, audit logs record&nbsp;it.
+                    The identifier is the anchor. Everything else hangs off it: credentials reference it, secure
+                    channels verify it, access policies evaluate it, audit logs record&nbsp;it.
                 </p>
             </div>
 
@@ -537,9 +537,9 @@
 
                 <p>
                     In practice, teams store bearer tokens in environment variables or files. A Stripe token, an OpenAI
-                    token, a database password, all readable by every agent in the system. If any agent is compromised,
-                    every credential is exposed. Even when every agent calls the same API, they all share one token. No
-                    way to audit which agent made which&nbsp;call.
+                    token, a database password, all readable by every agent. If any agent is compromised, every
+                    credential is exposed. There is a second problem. When many agents call the same API, they all share
+                    one token. No way to audit which agent made which&nbsp;call.
                 </p>
 
                 <p>
@@ -590,17 +590,17 @@
 
                 <p>
                     <strong>Cryptographic Credentials</strong> are signed statements: an authority attests that a
-                    specific identity has certain attributes. The credential is bound to the subject&rsquo;s
+                    specific identity has certain attributes. Each credential is bound to a subject&rsquo;s
                     cryptographic identifier and carries attributes as key-value pairs: role, scope, delegation context,
-                    expiration. It is <span style="border-bottom: 1px solid #999">self-verifiable</span>: the signature
-                    proves authenticity without calling the issuer. Unlike bearer credentials, it is
-                    <span style="border-bottom: 1px solid #999">not a secret</span>. Ockam credentials and W3C
-                    Verifiable Credentials work this&nbsp;way.
+                    expiration. The signature proves authenticity without calling the issuer. Unlike bearer credentials,
+                    cryptographic credentials are not secrets.
                 </p>
 
+                <p>Ockam credentials and W3C Verifiable Credentials work this&nbsp;way.</p>
+
                 <p>
-                    <strong>Delegation.</strong> An agent&rsquo;s identity tells us that it performed an action. A
-                    cryptographic credential tells us whether it was authorized to do it, and by whom. Not just
+                    <strong>Delegation.</strong> An agent&rsquo;s identity tells us that it is requesting an action. A
+                    cryptographic credential tells us whether it is authorized to do it, and by whom. Not just
                     <em>this agent should have access to order history</em> but
                     <em
                         >this agent should have access because a specific customer delegated that authority to resolve
