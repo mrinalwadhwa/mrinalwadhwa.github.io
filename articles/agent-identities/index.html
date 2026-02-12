@@ -650,18 +650,86 @@
             <div class="columns-divider" style="margin-top: calc(1.5em + 4px)"></div>
 
             <div class="content">
+                <h2 class="section-heading">How do agents talk safely?</h2>
+
                 <p>
-                    An agent can now prove who it is, protect its secrets, and present credentials for what it can do.
-                    We have not yet addressed how agents communicate safely, how to constrain what they do and what data
-                    they see, or how to trace who did what and&nbsp;why.
+                    Agents operate across clusters, clouds, and organizations. But they are vulnerable to injection, and
+                    unlike traditional software, they take autonomous actions. A manipulated agent doesn&rsquo;t just
+                    leak&nbsp;data. It&nbsp;destructs.
                 </p>
 
                 <p>
-                    <strong>Secure channels.</strong> A TLS certificate authenticates a domain; a bearer token
-                    authenticates an account. Agents run behind private cloud networks, across company boundaries, on
-                    personal laptops, rarely with a public domain name or a publicly reachable endpoint. Communication
-                    between agents needs to traverse these network boundaries, mutually authenticate the actual agents,
-                    end-to-end encrypt through intermediaries, and provide forward&nbsp;secrecy.
+                    Agents act on what they receive. Compromised messages mean compromised actions. The communication
+                    channels to agents must guarantee message authenticity, integrity, confidentiality, and
+                    forward&nbsp;secrecy.
+                </p>
+
+                <p>
+                    <strong>Mutual authentication.</strong> A TLS certificate authenticates a domain, not an agent. A
+                    thousand agents sharing one domain all look the same to a client: the certificate proves which
+                    domain the client reached, not which agent answered. A private CA could avoid public domain names by
+                    giving each agent an internal one, but that doesn&rsquo;t solve the problem: you still need
+                    certificate infrastructure for every agent and trust agreements across every
+                    organizational&nbsp;boundary.
+                </p>
+
+                <p>
+                    On the client end, bearer tokens have the same gap. They tell the receiving agent which account a
+                    request belongs to, not which of the thousand agents sent it. Today&rsquo;s most prominent agent
+                    communication protocols build on these same primitives: TLS to authenticate the server, OAuth to
+                    authorize the client. They authenticate services and accounts, not the actual&nbsp;agents.
+                </p>
+
+                <p>
+                    Agents must authenticate each other&rsquo;s identities and credentials. Without that, neither side
+                    can enforce access control or attribute actions to a specific agent. After the handshake, each agent
+                    must be confident of the other&rsquo;s identifier, attributes, and delegation context, because it
+                    has verified signatures only that agent&rsquo;s private key could&nbsp;produce.
+                </p>
+
+                <p>
+                    <strong>End-to-end encryption.</strong> When an agent is a public service for many&nbsp;customers,
+                    an internet-facing endpoint makes sense. Most agents aren&rsquo;t a public service. They communicate
+                    across a few specific systems and organizations. They belong in private&nbsp;networks.
+                </p>
+
+                <p>
+                    To reach each other across those networks, agents route through relays, gateways, and load
+                    balancers. TLS terminates at the gateway. The gateway sees plaintext. It may read it, modify it, log
+                    it, or leak&nbsp;it.
+                </p>
+
+                <p>
+                    End-to-end encryption solves this. The channel runs between the two end&nbsp;agents, guaranteeing
+                    <span style="border-bottom: 1px solid #999">integrity and confidentiality</span> regardless of how
+                    many hops the transport takes. Intermediaries forward ciphertext they cannot&nbsp;decrypt. The relay
+                    is a transport concern, not a security&nbsp;boundary. Without end-to-end encryption, every
+                    intermediary in the path is an attack surface that can expose sensitive data and manipulate
+                    highly&nbsp;capable&nbsp;agents.
+                </p>
+
+                <p>
+                    <strong>Forward secrecy.</strong> Agents handle financial records, medical data, customer PII. That
+                    data has value to attackers long after the session ends. If an attacker records encrypted traffic
+                    and later compromises an agent&rsquo;s channel key, can they decrypt the recording? Forward secrecy
+                    guarantees they cannot. A compromised channel key does not unlock past&nbsp;messages.
+                </p>
+
+                <p>
+                    In Autonomy, any agent can create a mutually authenticated,
+                    <span style="white-space: nowrap">end-to-end encrypted</span> channel with any other agent.
+                    Autonomy&rsquo;s encrypted relay service routes these channels across private network boundaries.
+                    Two agents can create a secure collaboration channel regardless of where they&nbsp;run.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <p>
+                    An agent can now prove who it is, protect its secrets, present credentials for what it can do, and
+                    communicate safely. We have not yet addressed how to constrain what agents do and what data they
+                    see, or how to trace who did what and&nbsp;why.
                 </p>
 
                 <p>

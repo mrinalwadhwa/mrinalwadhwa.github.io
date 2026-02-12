@@ -96,11 +96,31 @@ Ockam credentials and W3C Verifiable Credentials work this way.
 
 Credential attributes are defined at authorization time, but agent behavior evolves at execution time. A user says *onboard this new employee*. The agent interprets that as: create accounts, assign permissions, schedule training, order equipment. The attributes granted said *employee onboarding*, but the agent's actual behavior has gone further. Fine-grained attributes can constrain what an agent does, but someone (human or agent) must anticipate and enumerate every action ahead of time. The more autonomous the agent, the harder that becomes.
 
+## How do agents talk safely?
+
+Agents operate across clusters, clouds, and organizations. But they are vulnerable to injection, and unlike traditional software, they take autonomous actions. A manipulated agent doesn't just leak data. It destructs.
+
+Agents act on what they receive. Compromised messages mean compromised actions. The communication channels to agents must guarantee message authenticity, integrity, confidentiality, and forward secrecy.
+
+**Mutual authentication.** A TLS certificate authenticates a domain, not an agent. A thousand agents sharing one domain all look the same to a client: the certificate proves which domain the client reached, not which agent answered. A private CA could avoid public domain names by giving each agent an internal one, but that doesn't solve the problem: you still need certificate infrastructure for every agent and trust agreements across every organizational boundary.
+
+On the client end, bearer tokens have the same gap. They tell the receiving agent which account a request belongs to, not which of the thousand agents sent it. Today's most prominent agent communication protocols build on these same primitives: TLS to authenticate the server, OAuth to authorize the client. They authenticate services and accounts, not the actual agents.
+
+Agents must authenticate each other's identities and credentials. Without that, neither side can enforce access control or attribute actions to a specific agent. After the handshake, each agent must be confident of the other's identifier, attributes, and delegation context, because it has verified signatures only that agent's private key could produce.
+
+**End-to-end encryption.** When an agent is a public service for many customers, an internet-facing endpoint makes sense. Most agents aren't a public service. They communicate across a few specific systems and organizations. They belong in private networks.
+
+To reach each other across those networks, agents route through relays, gateways, and load balancers. TLS terminates at the gateway. The gateway sees plaintext. It may read it, modify it, log it, or leak it.
+
+End-to-end encryption solves this. The channel runs between the two end agents, guaranteeing integrity and confidentiality regardless of how many hops the transport takes. Intermediaries forward ciphertext they cannot decrypt. The relay is a transport concern, not a security boundary. Without end-to-end encryption, every intermediary in the path is an attack surface that can expose sensitive data and manipulate highly capable agents.
+
+**Forward secrecy.** Agents handle financial records, medical data, customer PII. That data has value to attackers long after the session ends. If an attacker records encrypted traffic and later compromises an agent's channel key, can they decrypt the recording? Forward secrecy guarantees they cannot. A compromised channel key does not unlock past messages.
+
+In Autonomy, any agent can create a mutually authenticated, end-to-end encrypted channel with any other agent. Autonomy's encrypted relay service routes these channels across private network boundaries. Two agents can create a secure collaboration channel regardless of where they run.
+
 ---
 
-An agent can now prove who it is, protect its secrets, and present credentials for what it can do. We have not yet addressed how agents communicate safely, how to constrain what they do and what data they see, or how to trace who did what and why.
-
-**Secure channels.** A TLS certificate authenticates a domain; a bearer token authenticates an account. Agents run behind private cloud networks, across company boundaries, on personal laptops, rarely with a public domain name or a publicly reachable endpoint. Communication between agents needs to traverse these network boundaries, mutually authenticate the actual agents, end-to-end encrypt through intermediaries, and provide forward secrecy.
+An agent can now prove who it is, protect its secrets, present credentials for what it can do, and communicate safely. We have not yet addressed how to constrain what agents do and what data they see, or how to trace who did what and why.
 
 **Access control.** A credential asserts an agent's attributes. Access control evaluates those attributes at each boundary: should this agent perform this action, access this data, right now? Making role-based access control granular enough for agents leads to role explosion: the roles multiply as agent type × user × task × data scope. Agents need dedicated infrastructure to evaluate attribute-based policies on every incoming request, defined centrally, with a deny-all default.
 
