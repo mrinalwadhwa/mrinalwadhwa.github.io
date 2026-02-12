@@ -92,7 +92,9 @@ An authenticated identity tells us who an agent is. An authenticated credential 
 
 Ockam credentials and W3C Verifiable Credentials work this way.
 
-**Delegation.** An agent's identity tells us that it is requesting an action. A cryptographic credential tells us whether it is authorized to do it, and by whom. Not just *this agent should have access to order history* but *this agent should have access because a specific customer delegated that authority to resolve this complaint*. In Autonomy, every identity is a credential issuer, which is what enables delegation. When an agent delegates to another agent, the credential captures who delegated to whom, for what purpose, and for how long. Each delegation can only reduce authority, never amplify it.
+**Delegation.** An agent's identity tells us that it is requesting an action. A cryptographic credential tells us whether it is authorized to do it, and by whom. Not just *this agent should have access to order history* but *this agent should have access because a specific customer delegated that authority to resolve this complaint*.
+
+In Autonomy, every identity can issue credentials. That's what enables delegation. When an agent delegates to another agent, the credential captures who delegated to whom, for what purpose, and for how long. Each delegation can only reduce authority, never amplify it. A credential verifier sees three distinct facts: which agent is acting, who delegated authority to it, and what constraints apply. The agent presents its own identity; it never impersonates the delegator.
 
 Credential attributes are defined at authorization time, but agent behavior evolves at execution time. A user says *onboard this new employee*. The agent interprets that as: create accounts, assign permissions, schedule training, order equipment. The attributes granted said *employee onboarding*, but the agent's actual behavior has gone further. Fine-grained attributes can constrain what an agent does, but someone (human or agent) must anticipate and enumerate every action ahead of time. The more autonomous the agent, the harder that becomes.
 
