@@ -122,12 +122,44 @@ In Autonomy, any agent can create a mutually authenticated, end-to-end encrypted
 
 ---
 
-An agent can now prove who it is, protect its secrets, present credentials for what it can do, and communicate safely. We have not yet addressed how to constrain what agents do and what data they see, or how to trace who did what and why.
+## Can this agent do that?
 
-**Access control.** A credential asserts an agent's attributes. Access control evaluates those attributes at each boundary: should this agent perform this action, access this data, right now? Making role-based access control granular enough for agents leads to role explosion: the roles multiply as agent type × user × task × data scope. Agents need dedicated infrastructure to evaluate attribute-based policies on every incoming request, defined centrally, with a deny-all default.
+Agents act by invoking tools. A tool call can run a function, call an API, query a DB, write a file, run a shell command, send a message to another agent, or delegate work to a sub-agent. Agents autonomously choose which tools to invoke on each turn. They also make mistakes and are vulnerable to injection and manipulation. Every tool invocation must be evaluated before it executes: allow or deny.
 
-**Observability and accountability.** Agents need decision traces that capture not just what they did but why: what context the agent saw, what policies applied, under whose authority it acted. Cryptographic identity makes each action and decision attributable to a specific agent. Over time, past decisions and exceptions become context that improves an agent's future decisions.
+**Gates, not guardrails.** System instructions guide an agent's behavior, but can't enforce it. Inputs like user messages and tool call results routinely include untrusted content. A prompt injection in a tool result can override the system instructions. Access control must sit outside the agent, in infrastructure the agent cannot bypass.
 
-Each layer depends on the ones below it. Identity makes credentials possible. Credentials make secure channels meaningful. Secure channels make access control enforceable. Pull out any layer and the ones above it collapse.
+The first gate is tool availability. An agent's credential attributes determine which tools it can reach. If the tool isn't in the set, the agent never sees it. The second gate is invocation. Before a tool call executes, the infrastructure evaluates whether this specific invocation is permitted.
 
-*I will dig deeper into each of these layers in a future update.*
+The third gate is the external service. The agent proves its identity to a broker. The broker issues short-lived, scoped bearer credentials unique to this agent. Those credentials are passed to the tool, and the tool uses them to authenticate to the external service. The external service validates them independently.
+
+Agent-to-agent requests must travel over secure channels. Each side authenticates the other's identifier, attributes, and delegation context. Credential attributes checked against access control policies determine which agents can reach it and what they can request.
+
+**Deny by default.** Malicious agents can probe for gaps in access control at machine speed. All gates must be closed by default. If no policy exists, deny.
+
+**Policy-driven.** Drive access control with policies. Manage policies centrally. Distribute them asynchronously to every enforcement point. Thousands of agents invoke tools simultaneously. A central decision point in the path of every invocation cannot keep up.
+
+**Attributes, not roles.** A broad "deploy agent" role lets an agent deploy to every environment, production included. To restrict access, you create narrower roles: deploy-staging, deploy-production, deploy-production-us-east. Every new environment and region requires another role. Attribute-based credentials avoid this explosion of roles: `environments=staging,production`, `regions=us-east,eu-west`, `approved_by=release-manager`. The policy at each gate checks those attributes and decides: allow or deny.
+
+**Continuous evaluation.** A human authorizes an agent to review a batch of documents for a legal case and revokes that authority halfway through. If credentials are checked only once, the agent keeps reading privileged documents. Every gate must evaluate credentials on every invocation.
+
+Autonomy evaluates every gate on every invocation. The default: deny all.
+
+---
+
+## Who did what, and why?
+
+An agent invokes a tool, interprets the result, decides what to do next, invokes another tool. Traces must capture every step at every level of detail: each tool invocation, each decision, each intermediate result. They are how you debug failures, analyze errors, and build evaluations. They are also the audit trail: who did what, under whose authority.
+
+No agent is reliable on day one. Traces are how agents improve.
+
+**Delegation chain.** A record that says "agent X performed action Y" tells you what happened. It does not tell you who authorized it. The trace must capture the full delegation chain: the human who delegated, each intermediate agent, and the constraints each delegation imposed.
+
+**Auditable proofs.** A log entry can be edited or fabricated. A record signed with the agent's private key cannot. The signature ties the action to the agent that performed it and the delegation chain that authorized it.
+
+**Decision traces.** When an agent hits a case it cannot handle, it escalates to a human. The trace captures how the exception was resolved: what the human considered, why they chose a particular path. That reasoning, previously locked in someone's head, is now captured. Each trace captures the full context of the decision: the inputs the agent received, the reasoning it followed, its identity, its credentials, and the policies that applied.
+
+Engineers study the traces, build evaluation sets, and iterate on the agent until it handles similar cases on its own. The next escalation doesn't happen.
+
+---
+
+The stack is load-bearing. Identity makes credentials possible; credentials make secure channels meaningful; secure channels make access control enforceable; traces make agents improve over time. A weakness in any layer compromises the ones above it.
