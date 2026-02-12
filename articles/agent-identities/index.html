@@ -165,25 +165,28 @@
                 break-inside: avoid;
             }
 
+            @media (max-width: 1830px) {
+                .diagram-caption {
+                    display: none;
+                }
+            }
+
+            @media (max-width: 1600px) {
+                .demo-gif-caption {
+                    display: none;
+                }
+            }
+
             @media (max-width: 1300px) {
                 .demo-gif,
                 .diagram {
-                    flex-direction: column;
                     margin-right: 0;
-                    align-items: flex-start;
                     margin-bottom: calc(1.5em - 6px);
                 }
 
                 .demo-gif img,
                 .diagram img {
                     border-radius: 8px;
-                }
-
-                .demo-gif-caption,
-                .diagram-caption {
-                    max-width: 100%;
-                    padding-top: 0.588235em; /* 0.75em in content context = 0.5 baseline units */
-                    margin-top: 0;
                 }
             }
 
@@ -327,7 +330,7 @@
                 fill: #666;
             }
 
-            @media (max-width: 1300px) {
+            @media (max-width: 1700px) {
                 .stack-diagram {
                     display: none;
                 }
