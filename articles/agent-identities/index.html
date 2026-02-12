@@ -47,6 +47,7 @@
                 background: #fff;
                 color: #222;
                 overflow-x: hidden;
+                position: relative;
             }
 
             ::selection {
@@ -279,6 +280,49 @@
                 border-bottom-color: #000;
             }
 
+            .stack-diagram {
+                position: absolute;
+                top: 5.5em;
+                right: 5.5em;
+            }
+
+            .stack-diagram svg {
+                width: 260px;
+                height: auto;
+            }
+
+            .stack-diagram rect {
+                fill: transparent;
+                stroke: #000;
+                stroke-width: 2;
+            }
+
+            .stack-diagram text {
+                font-family: inherit;
+                font-size: 14px;
+                fill: #000;
+                text-anchor: middle;
+                dominant-baseline: central;
+            }
+
+            .stack-diagram a {
+                cursor: pointer;
+            }
+
+            .stack-diagram a:hover rect {
+                stroke: #666;
+            }
+
+            .stack-diagram a:hover text {
+                fill: #666;
+            }
+
+            @media (max-width: 1300px) {
+                .stack-diagram {
+                    display: none;
+                }
+            }
+
             @media (max-width: 900px) {
                 .container {
                     padding: 1.5em;
@@ -301,6 +345,34 @@
                     d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 0 160c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-160-32 0c-18 0-32-14.3-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 11 15 11 24z"
                 /></svg
         ></a>
+        <div class="stack-diagram">
+            <svg viewBox="-1 -1 202 302" xmlns="http://www.w3.org/2000/svg">
+                <a href="#traces">
+                    <rect x="0" y="0" width="200" height="44" rx="3" />
+                    <text x="100" y="22">Traces</text>
+                </a>
+                <a href="#access-control">
+                    <rect x="0" y="51" width="200" height="44" rx="3" />
+                    <text x="100" y="73">Access Control</text>
+                </a>
+                <a href="#secure-channels">
+                    <rect x="0" y="102" width="200" height="44" rx="3" />
+                    <text x="100" y="124">Secure Channels</text>
+                </a>
+                <a href="#credentials">
+                    <rect x="0" y="153" width="200" height="44" rx="3" />
+                    <text x="100" y="175">Credentials</text>
+                </a>
+                <a href="#identities">
+                    <rect x="0" y="204" width="200" height="44" rx="3" />
+                    <text x="100" y="226">Identities</text>
+                </a>
+                <a href="#secrets">
+                    <rect x="0" y="255" width="200" height="44" rx="3" />
+                    <text x="100" y="277">Secrets</text>
+                </a>
+            </svg>
+        </div>
         <div class="container">
             <div class="body-header">
                 <p class="article-meta"><a href="/">Mrinal Wadhwa</a> &middot; February 8, 2026</p>
@@ -459,7 +531,7 @@
             <div class="columns-divider" style="margin-top: 3em"></div>
 
             <div class="content" style="margin-bottom: 4px">
-                <h2 class="section-heading">Who is this agent?</h2>
+                <h2 class="section-heading" id="identities">Who is this agent?</h2>
 
                 <p>
                     To trust an agent, we need to authenticate who it is, authorize what it does, and attribute what it
@@ -546,7 +618,7 @@
             <div class="columns-divider" style="margin-top: calc(1.5em + 4px)"></div>
 
             <div class="content">
-                <h2 class="section-heading">Where do the secrets live?</h2>
+                <h2 class="section-heading" id="secrets">Where do the secrets live?</h2>
 
                 <p>
                     An agent needs two kinds of secrets.
@@ -602,7 +674,7 @@
             <div class="columns-divider" style="margin-top: calc(1.5em + 12px)"></div>
 
             <div class="content">
-                <h2 class="section-heading">What can this agent do, and on whose behalf?</h2>
+                <h2 class="section-heading" id="credentials">What can this agent do, and on whose behalf?</h2>
 
                 <p>
                     An authenticated identity tells us who. An authenticated credential tells us what, and on whose
@@ -656,7 +728,7 @@
             <div class="columns-divider" style="margin-top: calc(1.5em + 4px)"></div>
 
             <div class="content">
-                <h2 class="section-heading">How do agents talk safely?</h2>
+                <h2 class="section-heading" id="secure-channels">How do agents talk safely?</h2>
 
                 <p>
                     Agents operate across clusters, clouds, and organizations. But they are vulnerable to injection, and
@@ -732,7 +804,7 @@
             <div class="columns-divider"></div>
 
             <div class="content">
-                <h2 class="section-heading">Can this agent do that?</h2>
+                <h2 class="section-heading" id="access-control">Can this agent do that?</h2>
 
                 <p>
                     Agents act by invoking tools. A tool call can run a function, call an API, query a DB, write a file,
@@ -803,7 +875,7 @@
             <div class="columns-divider"></div>
 
             <div class="content">
-                <h2 class="section-heading">Who did what, and why?</h2>
+                <h2 class="section-heading" id="traces">Who did what, and why?</h2>
 
                 <p>
                     An agent invokes a tool, interprets the result, decides what to do next, invokes another tool.
