@@ -933,13 +933,56 @@
 
             <div class="columns-divider"></div>
 
-            <div class="content" style="column-count: 1">
+            <div class="content">
+                <h2 class="section-heading">Final thoughts</h2>
                 <p>
-                    The stack is load-bearing. Identity makes credentials possible; credentials make secure channels
-                    meaningful; secure channels make access control enforceable; traces make agents improve over time. A
-                    weakness in any layer compromises the ones above&nbsp;it.
+                    The industry is converging on a similar picture across
+                    <span style="white-space: nowrap">specifications: W3C Decentralized</span> Identifiers and
+                    Verifiable Credentials, the OpenID Foundation&rsquo;s OIDC-A, IETF&rsquo;s WIMSE, CNCF&rsquo;s
+                    SPIFFE. Weaving those specifications together and turning them into deployed infrastructure for
+                    autonomous products is a long&nbsp;journey.
                 </p>
+
+                <p>
+                    <a href="/articles/agent-swarms-like-the-one-cursor-created/"
+                        >Swarms of thousands of long-horizon agents</a
+                    >
+                    collaborating to solve complex problems are already here. TLS authenticates a domain. OAuth
+                    authenticates an account. Neither authenticates an individual agent. A thousand agents behind one
+                    domain all look the same: same identity, same authority, same audit trail. Authenticating domains
+                    and accounts does not scale to swarms of thousands. A2A, MCP, Okta&rsquo;s Cross-App Access all
+                    build on TLS and OAuth. That is a&nbsp;mismatch.
+                </p>
+
+                <p>
+                    Agents take autonomous actions. Cryptographic identity is how we authenticate those actions,
+                    authorize them, and attribute&nbsp;them.
+                </p>
+
+                <div class="demo-gif">
+                    <img
+                        src="autonomy-1password.gif"
+                        alt="An autonomous on-call agent deploying 150 agents across 3 regions to diagnose a cascading failure"
+                        style="clip-path: polygon(0 0, 88% 0, 100% 12%, 100% 100%, 0 100%)"
+                    />
+                    <div class="demo-gif-caption">
+                        <p>
+                            Autonomous on-call agents built with 1Password and Autonomy. Each agent has its own
+                            cryptographic identity and scoped access to infrastructure credentials.
+                        </p>
+                        <p>
+                            <a
+                                href="https://1password.com/blog/how-to-build-secure-agent-swarms-that-power-autonomous-systems"
+                                target="_blank"
+                                rel="noopener"
+                                >Full demo on 1Password&rsquo;s blog</a
+                            >.
+                        </p>
+                    </div>
+                </div>
             </div>
+
+            <div class="columns-divider" style="margin-top: 3em"></div>
 
             <p class="discussion-link">
                 <a
