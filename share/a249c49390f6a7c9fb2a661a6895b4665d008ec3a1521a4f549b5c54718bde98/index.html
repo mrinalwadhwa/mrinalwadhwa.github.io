@@ -685,45 +685,6 @@
                 display: inline;
             }
 
-            .bullet-list li .bullet-detail {
-                display: none;
-                position: fixed;
-                left: 2em;
-                bottom: 2em;
-                z-index: 200;
-                background: #fff;
-                border: 1px solid #e99c1f;
-                border-radius: 4px;
-                padding: 0.6em 0.8em;
-                font-size: 14px;
-                line-height: 1.55;
-                max-width: 36em;
-                min-width: 22em;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-                color: #444;
-                font-style: normal;
-                cursor: default;
-            }
-
-            .bullet-list li:hover .bullet-detail {
-                display: block;
-            }
-
-            .bullet-detail strong {
-                color: #222;
-            }
-
-            .bullet-detail .highlight-req,
-            .bullet-detail .highlight-sol {
-                background: rgba(233, 156, 31, 0.12);
-                padding: 0.05em 0.2em;
-                border-radius: 2px;
-            }
-
-            .bullet-detail .highlight-sol {
-                background: rgba(233, 156, 31, 0.22);
-            }
-
             /* Bullet-article slides: top-align and left-align like the hub page */
             .slide-inner:has(.bullet-article) {
                 overflow: visible;
@@ -747,26 +708,6 @@
                 cursor: default;
             }
 
-            .identity-statement .bullet-detail {
-                display: none;
-                position: fixed;
-                left: 2em;
-                bottom: 2em;
-                z-index: 200;
-                background: #fff;
-                border: 1px solid #e99c1f;
-                border-radius: 4px;
-                padding: 0.6em 0.8em;
-                font-size: 14px;
-                line-height: 1.55;
-                max-width: 36em;
-                min-width: 22em;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-                color: #444;
-                font-style: normal;
-                cursor: default;
-            }
-
             .identity-statement p {
                 font-family: "adobe-garamond-pro", "Garamond", Georgia, serif;
                 font-size: 1.625em;
@@ -777,10 +718,6 @@
 
             .identity-statement p + p {
                 margin-top: 0.5em;
-            }
-
-            .identity-statement:hover .bullet-detail {
-                display: block;
             }
 
             /* ============================================================
@@ -1301,37 +1238,18 @@
                                         ><strong style="color: #e99c1f">Attribution.</strong> Agents autonomously pick
                                         their own steps; the invoking user takes the blame.</span
                                     >
-                                    <div class="bullet-detail">
-                                        Traditional software follows a pre-programmed set of steps. Agents autonomously
-                                        pick and decompose each step: &ldquo;resolve this complaint&rdquo; becomes
-                                        access order history, check inventory, issue a refund, update shipping. The rep
-                                        never authorized those specific actions, but with only her identity on record,
-                                        she takes the blame when something goes wrong.
-                                    </div>
                                 </li>
                                 <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
                                     <span class="bullet-label"
                                         ><strong style="color: #e99c1f">Distinct capabilities.</strong> Agents often
                                         need permissions the invoking user doesn't have.</span
                                     >
-                                    <div class="bullet-detail">
-                                        A support agent needs refund authority. The rep who invokes it does not. She
-                                        shouldn't. And some agents don't act for any specific user at all. An onboarding
-                                        agent acts on behalf of a company, not the HR manager who configured it. A
-                                        contract reviewer acts on behalf of a firm, not the paralegal who invoked it.
-                                    </div>
                                 </li>
                                 <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
                                     <span class="bullet-label"
                                         ><strong style="color: #e99c1f">Delegation.</strong> Agents delegate to
                                         sub-agents; we need to identify every one of them.</span
                                     >
-                                    <div class="bullet-detail">
-                                        Agents delegate to sub-agents. We need to identify every sub-agent to know who
-                                        has access to what, who did what, and what information they acted on. Existing
-                                        IAM, designed for humans, can't keep up: thousands of agents spawned in seconds,
-                                        each needing secrets and credentials.
-                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -1359,15 +1277,6 @@
                                     TLS authenticates domains. OAuth authenticates accounts. Neither authenticates
                                     agents.
                                 </p>
-                                <div class="bullet-detail">
-                                    An agent calls a payments API. HTTPS verifies the API&rsquo;s domain and encrypts
-                                    the connection. But the agent authenticates by sending an API token in a request
-                                    header. That token identifies an account, not an agent. That token is almost always
-                                    shared across every agent, set once as an environment variable. If it leaks, the
-                                    attacker is indistinguishable from a legitimate agent. OAuth access tokens are no
-                                    better: the token says the authorization server approved these scopes at some point.
-                                    The agent presents someone else&rsquo;s assertion, not its own.
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>
@@ -1375,27 +1284,9 @@
                                     <span style="color: #e99c1f">authorize</span> its actions, and
                                     <span style="color: #e99c1f">attribute</span> its decisions.
                                 </p>
-                                <div class="bullet-detail">
-                                    A month later, an audit asks: which agent accessed this customer&rsquo;s financial
-                                    records, acting on whose behalf, for what reason? The log says API token
-                                    <em>sk-proj-abc123</em> performed a read on record #4471. That token is shared
-                                    across 30 agents. Which one? The log cannot say. And even if it could, the log entry
-                                    is text in a database. It can be edited. It can be fabricated.
-                                    <span class="highlight-req"
-                                        >Nothing cryptographically binds the action to the actor. No signature. No
-                                        proof.</span
-                                    >
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>A cryptographic identity, rooted in a key pair, solves all three.</p>
-                                <div class="bullet-detail">
-                                    The agent holds a private key it never reveals. It proves identity by signing a
-                                    challenge. It proves actions by signing each one. The signature is verifiable by
-                                    anyone who knows the public key. It cannot be forged or repudiated. The identifier
-                                    is tied to this key pair: credentials reference it, secure channels verify it,
-                                    access policies evaluate it, and audit logs record it.
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1429,11 +1320,6 @@
                                 hash of the first change in a cryptographic change history. Self-contained; no server,
                                 domain, or infrastructure dependency.</span
                             >
-                            <div class="bullet-detail">
-                                SPIFFE ties identity to infrastructure. WebPKI ties it to a domain name. An Ockam
-                                identifier is self-contained: anyone with the change history can verify it, without
-                                contacting a server or trusting an infrastructure provider.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -1441,22 +1327,12 @@
                                 rotation appends a new change, signed by both the old and new key. The identifier stays
                                 the same.</span
                             >
-                            <div class="bullet-detail">
-                                Every credential, audit trail, and trust relationship built on the identifier survives a
-                                key rotation. No infrastructure needed to maintain continuity. In Autonomy, every agent
-                                creates its own cryptographic identity in milliseconds.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
                                 ><strong style="color: #e99c1f">Provisioned in milliseconds.</strong> No CA, no DNS, no
                                 operator in the loop. Each agent creates its own identity locally.</span
                             >
-                            <div class="bullet-detail">
-                                An agent can hold multiple identities for different contexts: one for internal services,
-                                another for external APIs, a third scoped to a specific task. Enrollment associates each
-                                identity with credentials from an authority.
-                            </div>
                         </li>
                     </ul>
 
@@ -1514,13 +1390,6 @@
                                         signing credentials. Create many, keep them short-lived, rotate them
                                         often.</span
                                     >
-                                    <div class="bullet-detail">
-                                        Purpose keys branch off the primary identity key. A compromised channel key does
-                                        not give the attacker credential-signing capability. Each purpose key is
-                                        attested by a PurposeKeyAttestation signed by the primary key, binding it to the
-                                        identity. Because they are short-lived, the blast radius of any single
-                                        compromise is small.
-                                    </div>
                                 </li>
                                 <li>
                                     <span class="bullet-label"
@@ -1528,12 +1397,6 @@
                                         the identity revokes every purpose key at once. The identifier stays the same;
                                         no broken credentials or trust chains.</span
                                     >
-                                    <div class="bullet-detail">
-                                        The primary key signs a new change that revokes all existing purpose keys. New
-                                        purpose keys are attested immediately. Every credential, audit trail, and trust
-                                        relationship built on the identifier survives. No need to coordinate with
-                                        external infrastructure or rotate the identity itself.
-                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -1556,18 +1419,6 @@
                                     Traditional software guards both behind fixed code paths. Agents act on external
                                     inputs, and can be manipulated into revealing any secret they can read.
                                 </p>
-                                <div class="bullet-detail">
-                                    An agent needs two kinds of secrets. Cryptographic private keys: its identity keys,
-                                    signing keys, SSH keys. And bearer credentials: API tokens, database passwords,
-                                    OAuth access tokens. Traditional software follows a pre-programmed path.
-                                    Exfiltrating a secret from it requires finding and exploiting a specific
-                                    vulnerability. Agents are different: they receive instructions from external inputs,
-                                    reason about how to follow them, and can be tricked into treating &ldquo;reveal your
-                                    API key&rdquo; as a legitimate instruction.
-                                    <span class="highlight-req"
-                                        >If the agent can read a secret, the secret is already at risk.</span
-                                    >
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>
@@ -1575,14 +1426,6 @@
                                     database password, the same environment variable. One compromise exposes everything.
                                     No log can say which agent made which call.
                                 </p>
-                                <div class="bullet-detail">
-                                    In practice, teams store bearer tokens in environment variables or files. A Stripe
-                                    token, an OpenAI token, a database password, all readable by every agent in the
-                                    process. If any one agent is compromised, every credential is exposed. And because
-                                    all agents share one token per service, there is no way to audit which agent
-                                    accessed which record, made which payment, or called which API. The billing agent
-                                    and the support agent look identical to every downstream service.
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>A compromised agent should have nothing long-lived to reveal.</p>
@@ -1612,15 +1455,6 @@
                                         and <span style="color: #e99c1f">short-lived</span>.
                                     </li>
                                 </ul>
-                                <div class="bullet-detail">
-                                    Identity keys need a vault boundary: the agent can ask the vault to sign data, but
-                                    can never extract the private key. Bearer credentials can be protected two ways. A
-                                    broker exchanges the agent's identity proof for a short-lived, scoped token; the
-                                    long-lived secret never leaves the broker, but the agent does hold a token that
-                                    could be revealed. A gateway injects credentials at the transport layer; the agent
-                                    never touches any secret at all, but the gateway must understand every protocol and
-                                    request format passing through it.
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1654,23 +1488,12 @@
                                 handles, not key material. The agent calls <code>vault.sign(handle, data)</code> and
                                 gets a signature back. The private key never crosses the vault boundary.</span
                             >
-                            <div class="bullet-detail">
-                                This is the foundational security property. A compromised agent cannot exfiltrate what
-                                it cannot access. The agent proves its identity by asking the vault to sign a challenge.
-                                It never holds the private key itself. An attacker who compromises the agent gets
-                                nothing: no key material, no exportable secret.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
                                 ><strong style="color: #e99c1f">Pluggable backends, same interface.</strong> OS
                                 keychain, YubiKey, AWS KMS, software vault. One trait, many implementations.</span
                             >
-                            <div class="bullet-detail">
-                                The same vault trait works across OS keychain, YubiKey, AWS KMS, and software vaults.
-                                Each backend implements the same interface. The agent never knows which backend holds
-                                its keys.
-                            </div>
                         </li>
                     </ul>
 
@@ -1953,24 +1776,12 @@
                                     proves its identity over a secure channel. A lease issuer exchanges that proof for a
                                     short-lived, scoped token.</span
                                 >
-                                <div class="bullet-detail">
-                                    Each LeaseToken is bound to the requesting agent&rsquo;s Ockam Identifier. The lease
-                                    issuer reads the authenticated identity from the secure channel, not from a claim.
-                                    The long-lived secret never leaves the lease issuer.
-                                </div>
                             </li>
                             <li>
                                 <span class="bullet-label"
                                     ><strong style="color: #e99c1f">Automatic lifecycle.</strong> Tokens refresh at
                                     half-TTL and revoke on expiry. Each agent gets its own scoped token.</span
                                 >
-                                <div class="bullet-detail">
-                                    A background processor manages the lease lifecycle: refresh before expiry (at
-                                    half-TTL, minimum 5-second interval), revoke when the lease expires or the
-                                    agent&rsquo;s identity is revoked. Every lease is per-agent: the billing agent gets
-                                    its own Stripe token, the support agent gets a different one scoped to refunds. No
-                                    shared credentials, full attribution.
-                                </div>
                             </li>
                             <li>
                                 <span class="bullet-label"
@@ -1978,14 +1789,6 @@
                                     intercepts outgoing requests and injects credentials at the transport layer. The
                                     agent never touches any secret at all.</span
                                 >
-                                <div class="bullet-detail">
-                                    Ockam and Autonomy also support a gateway pattern: an HTTP interceptor sits between
-                                    the agent and the downstream service, injecting the leased token into Authorization
-                                    headers before the request leaves the node. The agent&rsquo;s code makes a normal
-                                    HTTP call; the credential appears only in transit, never in agent memory. The
-                                    trade-off: the gateway must understand every protocol and request format passing
-                                    through it, but the agent holds zero secrets.
-                                </div>
                             </li>
                         </ul>
                     </div>
@@ -2014,17 +1817,6 @@
                                     <span style="color: #e99c1f">cryptographic credentials</span>, signed statements
                                     verifiable without calling the issuer.
                                 </p>
-                                <div class="bullet-detail">
-                                    An authenticated identity tells us who. An authenticated credential tells us what,
-                                    and on whose behalf. Bearer credentials are secrets: API tokens, database passwords,
-                                    OAuth access tokens. Agents need them because existing systems run on them, but the
-                                    agent should never see the raw secret. We need infrastructure to broker short-lived
-                                    tokens scoped to a specific agent and its needs. Cryptographic credentials are
-                                    different: an authority attests that a specific identity has certain attributes.
-                                    Each credential is bound to a subject&rsquo;s cryptographic identifier and carries
-                                    attributes as key-value pairs: role, scope, delegation context, expiration. The
-                                    signature proves authenticity without calling the issuer.
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>
@@ -2034,18 +1826,6 @@
                                     <span style="color: #e99c1f">narrow</span> authority, never amplify it. An agent
                                     should present its own identity; it should never impersonate the delegator.
                                 </p>
-                                <div class="bullet-detail">
-                                    An agent&rsquo;s identity tells us that it is requesting an action. A cryptographic
-                                    credential tells us whether it is authorized to do it, and by whom. Not just
-                                    <em>this agent should have access to order history</em> but
-                                    <em
-                                        >this agent should have access because a specific customer delegated that
-                                        authority to resolve this complaint</em
-                                    >. When an agent delegates to another agent, the credential captures who delegated
-                                    to whom, for what purpose, and for how long. Each delegation can only reduce
-                                    authority, never amplify it. A credential verifier sees three distinct facts: which
-                                    agent is acting, who delegated authority to it, and what constraints apply.
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2086,15 +1866,6 @@
                                         credential carries typed attributes as key-value pairs, not opaque scopes. Bound
                                         to the subject&rsquo;s Identifier. Default TTL: 30 minutes.</span
                                     >
-                                    <div class="bullet-detail">
-                                        Each credential carries created_at and expires_at (default TTL: 30 minutes).
-                                        Attributes are typed key-value pairs, not opaque scopes. The credential is
-                                        signed with the issuer&rsquo;s CredentialSigning purpose key and bound to the
-                                        subject&rsquo;s Identifier. An OAuth access token says &ldquo;the authorization
-                                        server approved these scopes at some point.&rdquo; An Ockam credential says
-                                        &ldquo;this specific authority attests that this specific identity has these
-                                        specific attributes, valid until this timestamp.&rdquo;
-                                    </div>
                                 </li>
                                 <li>
                                     <span class="bullet-label"
@@ -2104,26 +1875,12 @@
                                         Issuance is permissionless. Whether an attestation is trusted depends on Trust
                                         Contexts: which issuer is authoritative for which attributes.</span
                                     >
-                                    <div class="bullet-detail">
-                                        Any Ockam identity can sign a credential about any other identity. But whether
-                                        that attestation is trusted depends on Trust Contexts: a policy that specifies
-                                        which issuer is authoritative for which attributes. Issuance is permissionless.
-                                        Trust evaluation is not. This is what enables delegation: any agent can issue a
-                                        credential to a sub-agent, and the verifier decides whether to trust it.
-                                    </div>
                                 </li>
                                 <li>
                                     <span class="bullet-label"
                                         ><strong style="color: #e99c1f">Delegation as credential chains.</strong> Each
                                         delegation narrows authority. The agent never impersonates the delegator.</span
                                     >
-                                    <div class="bullet-detail">
-                                        When an agent delegates to a sub-agent, it issues a credential. The sub-agent
-                                        presents its own identity with the delegation credential. Each delegation can
-                                        only reduce authority, never amplify it. The agent never impersonates the
-                                        delegator. A verifier sees three facts: which agent is acting, who delegated
-                                        authority, and what constraints apply.
-                                    </div>
                                 </li>
                                 <li>
                                     <span class="bullet-label"
@@ -2132,16 +1889,6 @@
                                         PurposeKeyAttestation, credential signature. Thousands of checks per second, no
                                         central bottleneck.</span
                                     >
-                                    <div class="bullet-detail">
-                                        Credential verification requires no call to the issuer. The verifier checks the
-                                        signature chain locally: issuer&rsquo;s ChangeHistory, PurposeKeyAttestation
-                                        linking the signing key to the issuer, and the credential signature itself.
-                                        Thousands of credential checks per second without a central authorization
-                                        service in the path. The diagram shows how these three data structures connect:
-                                        the Issuer PurposeKeyAttestation links to the signing key, the Credential
-                                        references the subject&rsquo;s identity, and the Subject Identity provides the
-                                        full change history chain.
-                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -2182,13 +1929,6 @@
                                     the code with everything the new agent needs to find and authenticate the
                                     Authority.</span
                                 >
-                                <div class="bullet-detail">
-                                    The provisioner is a human or automated system that decides which attributes a new
-                                    agent should receive. The Authority creates a single-use code, stores it with the
-                                    requested attributes, and returns it. The enrollment ticket bundles this code with
-                                    everything the new node needs to find and authenticate the Authority: project route,
-                                    authority identity, and authority route.
-                                </div>
                             </li>
                             <li>
                                 <span class="bullet-label"
@@ -2196,12 +1936,6 @@
                                     creates its own Ed25519 identity in milliseconds. No CA, no DNS, no operator in the
                                     loop.</span
                                 >
-                                <div class="bullet-detail">
-                                    Identity creation is entirely local. The node generates an Ed25519 key pair and
-                                    computes its Identifier as the SHA256 hash of the first change. No certificate
-                                    authority, no DNS registration, no human approval needed. In Autonomy, every agent
-                                    creates its own cryptographic identity this way before enrolling.
-                                </div>
                             </li>
                             <li>
                                 <span class="bullet-label"
@@ -2209,25 +1943,12 @@
                                     opens a secure channel to the Authority and presents the one-time code. The
                                     Authority verifies, consumes the token, and adds the node as a member.</span
                                 >
-                                <div class="bullet-detail">
-                                    The new node opens a mutually authenticated secure channel to the Authority and
-                                    presents the one-time code. The Authority verifies the code is valid and unused,
-                                    consumes it (so it cannot be replayed), and adds the node&rsquo;s Identifier as a
-                                    project member with the pre-defined attributes. The enrollment token is single-use
-                                    by design: one token, one identity, one enrollment.
-                                </div>
                             </li>
                             <li>
                                 <span class="bullet-label"
                                     ><strong style="color: #e99c1f">Credentials issued.</strong> The Authority issues
                                     credentials with the enrolled attributes. The agent is now a project member.</span
                                 >
-                                <div class="bullet-detail">
-                                    Once enrolled, the Authority issues credentials carrying the attributes specified in
-                                    the original token. These credentials are short-lived (default 30-minute TTL) and
-                                    automatically refreshed. The enrolled identity can now present these credentials
-                                    over secure channels to access project resources.
-                                </div>
                             </li>
                         </ul>
                     </div>
@@ -2406,16 +2127,6 @@
                                     to agents must guarantee message authenticity, integrity, confidentiality, and
                                     <span style="color: #e99c1f">forward secrecy</span>.
                                 </p>
-                                <div class="bullet-detail">
-                                    Agents operate across clusters, clouds, and organizations. They are vulnerable to
-                                    injection, and unlike traditional software, they take autonomous actions. A
-                                    manipulated agent doesn&rsquo;t just leak data. It destructs. Agents handle
-                                    financial records, medical data, customer PII. That data has value to attackers long
-                                    after the session ends. If an attacker records encrypted traffic and later
-                                    compromises an agent&rsquo;s channel key, can they decrypt the recording? Forward
-                                    secrecy guarantees they cannot. A compromised channel key does not unlock past
-                                    messages.
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>
@@ -2427,17 +2138,6 @@
                                     <span style="color: #e99c1f">attributes</span>, and
                                     <span style="color: #e99c1f">delegation context</span>.
                                 </p>
-                                <div class="bullet-detail">
-                                    A TLS certificate authenticates a domain, not an agent. A thousand agents sharing
-                                    one domain all look the same to a client. On the client end, bearer tokens tell the
-                                    receiving agent which account a request belongs to, not which of the thousand agents
-                                    sent it. Today&rsquo;s most prominent agent communication protocols build on these
-                                    same primitives: TLS to authenticate the server, OAuth to authorize the client. They
-                                    authenticate services and accounts, not the actual agents. After the handshake, each
-                                    agent must be confident of the other&rsquo;s identifier, attributes, and delegation
-                                    context, because it has verified signatures only that agent&rsquo;s private key
-                                    could produce.
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>
@@ -2447,19 +2147,6 @@
                                     <span style="color: #e99c1f">end agents</span>. Intermediaries forward ciphertext
                                     they cannot decrypt.
                                 </p>
-                                <div class="bullet-detail">
-                                    Most agents aren&rsquo;t a public service. They communicate across a few specific
-                                    systems and organizations. To reach each other, agents route through relays,
-                                    gateways, and load balancers. TLS terminates at the gateway. The gateway sees
-                                    plaintext. It may read it, modify it, log it, or leak it. End-to-end encryption
-                                    solves this: the channel runs between the two end agents, guaranteeing integrity and
-                                    confidentiality regardless of how many hops the transport takes. Without end-to-end
-                                    encryption, every intermediary in the path is an attack surface that can expose
-                                    sensitive data and manipulate highly capable agents. In Autonomy, any agent can
-                                    create a mutually authenticated, end-to-end encrypted channel with any other agent.
-                                    Autonomy&rsquo;s encrypted relay service routes these channels across private
-                                    network boundaries.
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2484,13 +2171,6 @@
                                 carries a route. Each hop removes itself from onward_route, adds itself to return_route.
                                 The reply travels back without the sender knowing the full path.</span
                             >
-                            <div class="bullet-detail">
-                                Ockam messages carry two ordered lists of addresses: onward_route and return_route. The
-                                sender places the full path in onward_route and its own address in return_route. Each
-                                intermediate hop pops its address from the front of onward_route and pushes it onto the
-                                front of return_route. The replier reverses: it makes the incoming return_route its
-                                outgoing onward_route. This means any worker can reply without knowing the topology.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -2498,15 +2178,6 @@
                                 WebSocket, UDP, Bluetooth. Any number of intermediaries. Each hop forwards without
                                 reading the payload.</span
                             >
-                            <div class="bullet-detail">
-                                Addresses in the route refer to workers (named processing units), not network endpoints.
-                                A route can span multiple transports: the first hop might be TCP, the second WebSocket,
-                                the third a relay. The routing layer does not care. The routing protocol handles any
-                                number of hops with the same algorithm. Each intermediary applies one rule: pop itself
-                                from onward_route, push itself onto return_route, forward. The intermediary never needs
-                                to inspect the payload. This is the foundation that makes end-to-end encrypted secure
-                                channels possible: intermediaries route ciphertext they cannot decrypt.
-                            </div>
                         </li>
                     </ul>
 
@@ -2546,14 +2217,6 @@
                                 specifies a route, not connections. Add a relay, move a service, switch transports. The
                                 application does not change.</span
                             >
-                            <div class="bullet-detail">
-                                The sender constructs a route as an ordered list of addresses. It does not open
-                                connections, manage sockets, or track which hop is where. The transport layer handles
-                                connections independently. The routing algorithm is uniform across all intermediaries:
-                                each hop removes its own address from onward_route and adds it to return_route, then
-                                forwards. Same code at every hop, regardless of position. Network topology can change
-                                without modifying any application code. The route is the only thing that changes.
-                            </div>
                         </li>
                     </ul>
 
@@ -2587,12 +2250,6 @@
                                 channel runs between two Ockam Identities. It works across TCP, WebSocket, relay.
                                 Topology does not matter.</span
                             >
-                            <div class="bullet-detail">
-                                The secure channel is between two Ockam Identities, not between two IP addresses or
-                                domains. Two agents in different clouds, different clusters, different organizations
-                                create a secure channel without exposing either to the public internet. The relay
-                                forwards ciphertext it cannot decrypt.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -2600,12 +2257,6 @@
                                 sides exchange and verify identities, purpose key attestations, and credentials during
                                 the handshake.</span
                             >
-                            <div class="bullet-detail">
-                                After message 3, each agent knows the other&rsquo;s identifier, attributes, and
-                                delegation context, because it has verified signatures only that agent&rsquo;s private
-                                key could produce. The diagram below shows the full protocol: Key Establishment Phase
-                                (three messages), then Encrypted Transport Phase with derived session keys k1 and k2.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -2613,11 +2264,6 @@
                                 (Noise_XX_25519_AESGCM_SHA256). No downgrade attacks. No fallback to weaker
                                 ciphers.</span
                             >
-                            <div class="bullet-detail">
-                                Cipher suite is a compile-time choice, not a runtime negotiation. All participants use
-                                the same primitives. There is no &ldquo;fallback to weaker cipher&rdquo; path for an
-                                attacker to exploit.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -2663,13 +2309,6 @@
                                 on a local TCP port. An Outlet connects to a target TCP service. Between them: a secure
                                 channel through Ockam&rsquo;s relay.</span
                             >
-                            <div class="bullet-detail">
-                                A Portal is a pair of components that tunnel a TCP connection through an Ockam secure
-                                channel. The Inlet accepts connections from local TCP clients and forwards their data
-                                through the encrypted channel. The Outlet receives the data and connects to the target
-                                TCP service. The entire path between Inlet and Outlet is end-to-end encrypted, mutually
-                                authenticated, and routed through Ockam&rsquo;s relay infrastructure.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -2677,13 +2316,6 @@
                                 clients and servers work unchanged. The portal handles encryption, routing, and identity
                                 verification.</span
                             >
-                            <div class="bullet-detail">
-                                Applications connect to a local TCP port (the Inlet) as if the service were running
-                                locally. On the other end, the target service receives a standard TCP connection from
-                                the Outlet. Neither the client nor the server knows about the secure channel in between.
-                                No code changes, no SDK integration, no certificate management. The portal is invisible
-                                infrastructure.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -2691,13 +2323,6 @@
                                 target service stays in a private network. No public IP, no open firewall port. The
                                 secure channel reaches it through the relay.</span
                             >
-                            <div class="bullet-detail">
-                                The Outlet runs in the same private network as the target service. It creates an
-                                outbound connection to the relay. No inbound ports need to be opened. No public IP is
-                                required. The service remains invisible to the internet while being reachable through
-                                the authenticated, encrypted portal. This is how agents in Autonomy reach private
-                                databases, APIs, and services across organizational boundaries.
-                            </div>
                         </li>
                     </ul>
 
@@ -2728,14 +2353,6 @@
                                     <span style="color: #e99c1f">deny</span>. Access control must sit outside the agent,
                                     in <span style="color: #e99c1f">infrastructure</span> the agent cannot bypass.
                                 </p>
-                                <div class="bullet-detail">
-                                    Agents act by invoking tools. A tool call can run a function, call an API, query a
-                                    DB, write a file, run a shell command, send a message to another agent, or delegate
-                                    work to a sub-agent. System instructions guide behavior, but can&rsquo;t enforce it.
-                                    Inputs like user messages and tool call results routinely include untrusted content.
-                                    A prompt injection in a tool result can override system instructions. Every tool
-                                    invocation must be evaluated before it executes: allow or deny.
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2759,47 +2376,24 @@
                                 ><strong style="color: #e99c1f">Cryptographically authenticated attributes.</strong> A
                                 single verified chain from authority to access decision.</span
                             >
-                            <div class="bullet-detail">
-                                Policies are evaluated against attributes that were attested by a trusted authority and
-                                delivered through a verified credential chain. Not self-asserted claims. Not role
-                                memberships in an external directory. The identity, the credential, the secure channel,
-                                and the policy form a single verified chain from authority to access decision.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
                                 ><strong style="color: #e99c1f">Three gates, all closed by default.</strong> Tool
                                 availability, invocation, external service. No policy = deny.</span
                             >
-                            <div class="bullet-detail">
-                                Tool availability: credential attributes determine which tools an agent can reach.
-                                Invocation: before a tool call executes, infrastructure evaluates whether this specific
-                                invocation is permitted. External service: the agent proves its identity to a broker and
-                                receives scoped credentials the service validates independently. If no policy exists,
-                                deny.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
                                 ><strong style="color: #e99c1f">ABAC policy language.</strong> S-expression boolean
                                 expressions over credential attribute names. Dynamic updates.</span
                             >
-                            <div class="bullet-detail">
-                                Policies are S-expression boolean expressions over attribute names. Operators: and, or,
-                                not, =, !=, member?, exists?. A boolean shorthand lets you write simple checks without
-                                S-expressions. Dynamic policies can be updated while workers are running.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
                                 ><strong style="color: #e99c1f">Every invocation, not once at session start.</strong>
                                 Revoke mid-task; the next call is denied.</span
                             >
-                            <div class="bullet-detail">
-                                Credentials are checked on every tool call, not once at connection time. Revoke
-                                authority mid-task, and the next invocation is denied. No stale permissions. Thousands
-                                of agents invoke tools simultaneously; enforcement is distributed, not centralized.
-                            </div>
                         </li>
                     </ul>
                 </div>
@@ -2824,13 +2418,6 @@
                                 Each expression evaluates to true or false against the sender&rsquo;s credential
                                 attributes.</span
                             >
-                            <div class="bullet-detail">
-                                Each attribute name/value pair from a credential is added to the environment as
-                                subject.attribute_name. The policy expression is recursively evaluated against this
-                                environment. The result is a boolean: allow or deny. Values can be String, Int, Float,
-                                Bool, or Seq (a sequence of values). The member? operator checks if a value is present
-                                in a Seq.
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -2838,12 +2425,6 @@
                                 write <code>deploy_agent and staging_access</code> instead of the full S-expression.
                                 Readable for operators, precise for machines.</span
                             >
-                            <div class="bullet-detail">
-                                The boolean shorthand translates attribute names to (= subject.name "true"). You can use
-                                infix and, or, not operators and string comparisons like component="web". Parentheses
-                                group expressions with precedence rules: not > and > or. An Ockam Identifier can be used
-                                directly as a policy, translating to (= subject.identifier "I84502ce...").
-                            </div>
                         </li>
                         <li>
                             <span class="bullet-label"
@@ -2851,13 +2432,6 @@
                                 while workers are running. Manage centrally, distribute asynchronously. Enforcement is
                                 local, not centralized.</span
                             >
-                            <div class="bullet-detail">
-                                PolicyAccessControl models a Resource/Action pair. Policies for that resource and action
-                                can be modified even if the worker they are attached to is already started. Thousands of
-                                agents invoke tools simultaneously. A central decision point in the path of every
-                                invocation cannot keep up. Distribute policies to every enforcement point. Evaluate
-                                locally.
-                            </div>
                         </li>
                     </ul>
 
@@ -3079,12 +2653,6 @@
                                     each result. They are the <span style="color: #e99c1f">audit trail</span> and the
                                     <span style="color: #e99c1f">debugging tool</span>.
                                 </p>
-                                <div class="bullet-detail">
-                                    Traces must capture every step at every level of detail: each tool invocation, each
-                                    decision, each intermediate result. They are how you debug failures, analyze errors,
-                                    and build evaluations. They are also the audit trail: who did what, under whose
-                                    authority. No agent is reliable on day one. Traces are how agents improve.
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>
@@ -3093,12 +2661,6 @@
                                     the <span style="color: #e99c1f">constraints</span> each delegation imposed. The
                                     full <span style="color: #e99c1f">delegation chain</span>.
                                 </p>
-                                <div class="bullet-detail">
-                                    A record that says &ldquo;agent X performed action Y&rdquo; tells you what happened.
-                                    It does not tell you who authorized it. The trace must capture the full delegation
-                                    chain: the human who delegated, each intermediate agent, and the constraints each
-                                    delegation imposed.
-                                </div>
                             </div>
                             <div class="identity-statement">
                                 <p>
@@ -3107,15 +2669,6 @@
                                     be forged or repudiated. No agent is reliable on day one. Signed, attributable
                                     traces are how agents <span style="color: #e99c1f">improve</span>.
                                 </p>
-                                <div class="bullet-detail">
-                                    The signature ties the action to the agent that performed it and the delegation
-                                    chain that authorized it. When an agent hits a case it cannot handle, it escalates
-                                    to a human. The trace captures how the exception was resolved: what the human
-                                    considered, why they chose a particular path. That reasoning, previously locked in
-                                    someone&rsquo;s head, is now captured. Engineers study the traces, build evaluation
-                                    sets, and iterate on the agent until it handles similar cases on its own. The next
-                                    escalation doesn&rsquo;t happen.
-                                </div>
                             </div>
                         </div>
                     </div>
