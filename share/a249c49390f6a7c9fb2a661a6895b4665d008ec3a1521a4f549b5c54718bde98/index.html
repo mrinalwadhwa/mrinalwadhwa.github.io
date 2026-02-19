@@ -1,0 +1,3571 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Agent Identity</title>
+        <link rel="stylesheet" href="https://use.typekit.net/biy2rlh.css" />
+        <style>
+            /* ============================================================
+         * RESET & BASE
+         * ============================================================ */
+
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            html {
+                font-size: 100%;
+                -webkit-text-size-adjust: 100%;
+            }
+
+            body {
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-weight: 400;
+                font-style: normal;
+                color: #222;
+                background: #fff;
+                overflow: hidden;
+                width: 100vw;
+                height: 100vh;
+            }
+
+            ::selection {
+                background: rgba(233, 156, 31, 0.2);
+                color: inherit;
+            }
+
+            /* ============================================================
+         * COLOR PALETTE
+         *
+         *   #222     primary text
+         *   #e99c1f  accent, highlights, SVG labels, emphasis
+         *   #666     secondary text, annotations
+         *   #888     tertiary, slide numbers
+         *   #fff     slide background
+         *   #000     SVG strokes
+         *   #f5f4f0  subtle background for quote/code blocks
+         *   #900     hover accent (links)
+         *
+         * ============================================================ */
+
+            /* ============================================================
+         * TYPOGRAPHY
+         *
+         * Modular scale ratio 1.625:
+         *   0.379em, 0.616em, 1em, 1.625em, 2.641em, 4.291em, 6.973em
+         *
+         * Body base for slides: ~1.5em (24px at 16px root)
+         * ============================================================ */
+
+            /* ============================================================
+         * SLIDE FRAMEWORK
+         * ============================================================ */
+
+            .deck {
+                width: 100vw;
+                height: 100vh;
+                position: relative;
+            }
+
+            .slide {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: #fff;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.35s ease;
+                padding: 15.846em 4.291em 4.291em;
+            }
+
+            .slide.active {
+                opacity: 1;
+                visibility: visible;
+                z-index: 10;
+            }
+
+            /* Slide inner container: max-width for content centering */
+            .slide-inner {
+                width: 100%;
+                max-width: 1600px;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                position: relative;
+            }
+
+            /* ============================================================
+         * SLIDE NUMBER
+         * ============================================================ */
+
+            .slide-number {
+                position: fixed;
+                bottom: 1.625em;
+                right: 2.641em;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 0.75em;
+                color: #888;
+                z-index: 100;
+                letter-spacing: 0.05em;
+            }
+
+            /* ============================================================
+         * NAVIGATION HINT (fades after first interaction)
+         * ============================================================ */
+
+            .nav-hint {
+                position: fixed;
+                bottom: 1.625em;
+                left: 50%;
+                transform: translateX(-50%);
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 0.7em;
+                color: #bbb;
+                z-index: 100;
+                transition: opacity 0.6s ease;
+                letter-spacing: 0.03em;
+            }
+
+            .nav-hint.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            /* ============================================================
+         * HEADING STYLES
+         * ============================================================ */
+
+            .slide-title {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 700;
+                font-style: normal;
+                text-transform: uppercase;
+                font-size: 4.291em;
+                line-height: 1;
+                color: #000;
+                margin-bottom: 0.3em;
+            }
+
+            .slide-title-accent {
+                display: block;
+                width: 2.641em;
+                height: 3px;
+                background: #e99c1f;
+                margin-top: 0.3em;
+                border-radius: 1px;
+            }
+
+            .slide-subtitle {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+                text-transform: uppercase;
+                font-size: 1.625em;
+                line-height: 1.1;
+                color: #666;
+            }
+
+            .slide-section-label {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 0.7em;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                color: #e99c1f;
+                margin-bottom: 1em;
+            }
+
+            /* ============================================================
+         * BODY TEXT
+         * ============================================================ */
+
+            .slide-text {
+                font-size: 1.375em;
+                line-height: 1.6;
+                color: #222;
+                max-width: 36em;
+            }
+
+            .slide-text p {
+                margin-bottom: 0.75em;
+            }
+
+            .slide-text p:last-child {
+                margin-bottom: 0;
+            }
+
+            .slide-points {
+                list-style: none;
+                padding: 0;
+                font-size: 1.625em;
+                line-height: 1.5;
+                color: #222;
+            }
+
+            .slide-points li {
+                padding-left: 1.2em;
+                position: relative;
+                margin-bottom: 0.5em;
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .slide-points li::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0.65em;
+                width: 0.35em;
+                height: 0.35em;
+                background: #e99c1f;
+                border-radius: 50%;
+            }
+
+            .accent {
+                color: #e99c1f;
+            }
+
+            .secondary {
+                color: #666;
+            }
+
+            .caption {
+                font-family: Baskerville, "Palatino Linotype", Palatino, Georgia, Utopia, serif;
+                font-style: italic;
+                font-size: 1em;
+                color: #666;
+                text-align: center;
+                margin-top: 1.5em;
+                max-width: 50em;
+            }
+
+            .quote-block {
+                background: #f5f4f0;
+                padding: 1.625em 2em;
+                border-radius: 3px;
+                margin: 1em 0;
+            }
+
+            .quote-block p {
+                font-style: italic;
+                font-size: 1.25em;
+                line-height: 1.5;
+                color: #333;
+            }
+
+            .quote-block .attribution {
+                font-style: normal;
+                font-size: 0.85em;
+                color: #888;
+                margin-top: 0.5em;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+            }
+
+            /* ============================================================
+         * LAYOUT: SIDE-BY-SIDE (Template A)
+         * ============================================================ */
+
+            .layout-split {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4.291em;
+                align-items: start;
+                width: 100%;
+                height: 100%;
+            }
+
+            .layout-split .split-left {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-left: 4.291em;
+            }
+
+            .layout-split .split-right {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            /* ============================================================
+         * LAYOUT: FULL-WIDTH CENTERED (Template B)
+         * ============================================================ */
+
+            .layout-full {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+            }
+
+            .layout-full .slide-title {
+                text-align: center;
+                margin-bottom: 0.6em;
+            }
+
+            .layout-full .slide-title-accent {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            /* ============================================================
+         * SVG DIAGRAM STYLES
+         *
+         * Match the article's stack diagram exactly:
+         *   - Transparent fill
+         *   - #000 stroke, 2px
+         *   - #e99c1f text labels
+         *   - rx="3" rounded corners
+         *   - text-anchor: middle, dominant-baseline: central
+         *   - Hover: stroke -> #666, text -> #666
+         * ============================================================ */
+
+            .diagram-svg rect {
+                fill: transparent;
+                stroke: #000;
+                stroke-width: 2;
+                transition: stroke 0.15s ease;
+            }
+
+            .diagram-svg text {
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, Georgia, serif;
+                fill: #e99c1f;
+                text-anchor: middle;
+                dominant-baseline: central;
+                transition: fill 0.15s ease;
+            }
+
+            .diagram-svg .layer-group {
+                cursor: default;
+            }
+
+            .diagram-svg .layer-group:hover rect {
+                stroke: #666;
+            }
+
+            .diagram-svg .layer-group:hover text {
+                fill: #666;
+            }
+
+            /* Dashed stroke variant for "gap" / "unknown" elements */
+            .diagram-svg rect.dashed {
+                stroke-dasharray: 6 4;
+            }
+
+            /* Muted variant for context elements */
+            .diagram-svg rect.muted {
+                stroke: #bbb;
+                stroke-width: 1.5;
+            }
+
+            .diagram-svg text.muted {
+                fill: #bbb;
+            }
+
+            /* Arrow / connector lines */
+            .diagram-svg line,
+            .diagram-svg path.connector {
+                stroke: #000;
+                stroke-width: 1.5;
+                fill: none;
+            }
+
+            .diagram-svg line.dashed,
+            .diagram-svg path.connector.dashed {
+                stroke-dasharray: 6 4;
+            }
+
+            .diagram-svg polygon.arrow-head {
+                fill: #000;
+                stroke: none;
+            }
+
+            .diagram-svg polygon.arrow-head.accent {
+                fill: #e99c1f;
+            }
+
+            .diagram-svg line.accent-line {
+                stroke: #e99c1f;
+            }
+
+            /* Label text (smaller, system font) */
+            .diagram-svg text.label {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 12px;
+                fill: #888;
+            }
+
+            .diagram-svg text.label-lg {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 14px;
+                fill: #666;
+            }
+
+            #policy-examples text {
+                text-anchor: start;
+                dominant-baseline: auto;
+            }
+
+            /* ============================================================
+         * TITLE SLIDE SPECIFIC
+         * ============================================================ */
+
+            .title-slide .slide-inner {
+                align-items: center;
+                text-align: center;
+            }
+
+            .title-slide .deck-title {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 700;
+                font-style: normal;
+                text-transform: uppercase;
+                font-size: 4.291em;
+                line-height: 0.95;
+                color: #000;
+                margin-bottom: 0.25em;
+            }
+
+            .title-slide .deck-author {
+                font-family: "adobe-garamond-pro", Georgia, serif;
+                font-size: 1.625em;
+                color: #666;
+                margin-top: 0.3em;
+            }
+
+            .title-slide .deck-accent-line {
+                width: 4em;
+                height: 3px;
+                background: #e99c1f;
+                margin: 0.6em auto;
+                border-radius: 1px;
+            }
+
+            .title-slide .watermark-svg {
+                position: absolute;
+                bottom: 3em;
+                right: 3em;
+                width: 160px;
+                opacity: 0.12;
+            }
+
+            /* ============================================================
+         * ARTICLE CONTENT SLIDES
+         *
+         * Replicates the article's rendering within slide containers.
+         * Two-column layout, same typography, same strong/em styling.
+         * ============================================================ */
+
+            .article-slide {
+                padding: 6em 4.291em 4.291em;
+            }
+
+            .article-slide .slide-inner {
+                max-width: 1600px;
+                overflow-y: auto;
+                scrollbar-width: thin;
+                scrollbar-color: #ccc transparent;
+            }
+
+            .article-slide .slide-inner::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .article-slide .slide-inner::-webkit-scrollbar-thumb {
+                background: #ccc;
+                border-radius: 3px;
+            }
+
+            .article-body {
+                max-width: 68em;
+                margin: 0 auto;
+                column-count: 2;
+                column-gap: 3em;
+                font-size: 1.275em;
+                line-height: 1.568628;
+                color: #333;
+            }
+
+            .article-body p {
+                margin: 0 0 1.176471em;
+                text-wrap: pretty;
+                widows: 3;
+                orphans: 3;
+            }
+
+            .article-body p:last-child {
+                margin-bottom: 1.568628em;
+            }
+
+            .article-body p.lead {
+                column-span: all;
+                font-size: 1.5em;
+                line-height: 1.333333;
+                margin-bottom: 1.333333em;
+                text-align: left;
+                max-width: 28em;
+            }
+
+            .article-body p.lead + p.lead {
+                margin-top: -1em;
+            }
+
+            .article-body .section-heading {
+                column-span: all;
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-weight: 400;
+                font-style: italic;
+                font-size: 1.3205em;
+                line-height: 1.781856;
+                margin: 0 0 0.649635em;
+                color: #000;
+            }
+
+            .article-body strong {
+                font-weight: normal;
+                font-variant: small-caps;
+                letter-spacing: 0.05em;
+                color: #e99c1f;
+                border-bottom: 1px solid #e99c1f;
+            }
+
+            .article-body a {
+                color: #000;
+                text-decoration: none;
+                border-bottom: 1px solid #999;
+                transition: border-color 0.2s ease;
+            }
+
+            .article-body a:hover {
+                border-bottom-color: #e99c1f;
+            }
+
+            .article-body em {
+                font-style: italic;
+            }
+
+            .article-link {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 0.8em;
+                color: #888;
+                margin-top: 2em;
+            }
+
+            .article-link a {
+                color: #888;
+                text-decoration: none;
+                border-bottom: 1px solid #ccc;
+                transition:
+                    color 0.2s ease,
+                    border-color 0.2s ease;
+            }
+
+            .article-link a:hover {
+                color: #e99c1f;
+                border-bottom-color: #e99c1f;
+            }
+
+            .article-body .diagram-img {
+                column-span: all;
+                display: block;
+                max-width: 100%;
+                height: auto;
+                margin: 0 auto 1.176471em;
+            }
+
+            .article-body .diagram-caption {
+                column-span: all;
+                font-family: Baskerville, "Palatino Linotype", Palatino, Georgia, Utopia, serif;
+                font-style: italic;
+                font-size: 0.85em;
+                color: #666;
+                text-align: center;
+                margin-bottom: 1.5em;
+            }
+
+            .highlight-req {
+                background: rgba(233, 156, 31, 0.1);
+                padding: 0.05em 0.25em;
+                border-radius: 2px;
+            }
+
+            .highlight-sol {
+                background: rgba(233, 156, 31, 0.2);
+                padding: 0.05em 0.25em;
+                border-radius: 2px;
+            }
+
+            /* ============================================================
+         * BULLET ARTICLE STYLES (condensed article slides with tooltips)
+         * ============================================================ */
+
+            .bullet-article {
+                max-width: 68em;
+                margin: 0;
+                padding: 0;
+            }
+
+            .bullet-article .section-heading {
+                font-family: "adobe-garamond-pro", "Garamond", Georgia, serif;
+                font-weight: 400;
+                font-style: italic;
+                text-transform: none;
+                letter-spacing: 0;
+                font-size: 2.2em;
+                color: #222;
+                margin: 0 0 0.6em;
+                line-height: 1.3;
+            }
+
+            .bullet-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                font-size: 1.625em;
+                line-height: 1.5;
+                color: #222;
+            }
+
+            .bullet-list li {
+                position: relative;
+                padding-left: 1.2em;
+                margin-bottom: 0.5em;
+                cursor: default;
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .bullet-list li::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0.65em;
+                width: 0.35em;
+                height: 0.35em;
+                background: #e99c1f;
+                border-radius: 50%;
+            }
+
+            .bullet-list li .bullet-label {
+                display: inline;
+            }
+
+            .bullet-list li .bullet-detail {
+                display: none;
+                position: fixed;
+                left: 2em;
+                bottom: 2em;
+                z-index: 200;
+                background: #fff;
+                border: 1px solid #e99c1f;
+                border-radius: 4px;
+                padding: 0.6em 0.8em;
+                font-size: 14px;
+                line-height: 1.55;
+                max-width: 36em;
+                min-width: 22em;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+                color: #444;
+                font-style: normal;
+                cursor: default;
+            }
+
+            .bullet-list li:hover .bullet-detail {
+                display: block;
+            }
+
+            .bullet-detail strong {
+                color: #222;
+            }
+
+            .bullet-detail .highlight-req,
+            .bullet-detail .highlight-sol {
+                background: rgba(233, 156, 31, 0.12);
+                padding: 0.05em 0.2em;
+                border-radius: 2px;
+            }
+
+            .bullet-detail .highlight-sol {
+                background: rgba(233, 156, 31, 0.22);
+            }
+
+            /* Bullet-article slides: top-align and left-align like the hub page */
+            .slide-inner:has(.bullet-article) {
+                overflow: visible;
+                justify-content: flex-start;
+            }
+
+            .article-slide:has(.bullet-article) {
+                padding-top: 15.846em;
+            }
+
+            /* Identity statement blocks (slide 2-2-0) */
+            .identity-statements {
+                display: flex;
+                flex-direction: column;
+                gap: 1.8em;
+                max-width: 68em;
+            }
+
+            .identity-statement {
+                position: relative;
+                cursor: default;
+            }
+
+            .identity-statement .bullet-detail {
+                display: none;
+                position: fixed;
+                left: 2em;
+                bottom: 2em;
+                z-index: 200;
+                background: #fff;
+                border: 1px solid #e99c1f;
+                border-radius: 4px;
+                padding: 0.6em 0.8em;
+                font-size: 14px;
+                line-height: 1.55;
+                max-width: 36em;
+                min-width: 22em;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+                color: #444;
+                font-style: normal;
+                cursor: default;
+            }
+
+            .identity-statement p {
+                font-family: "adobe-garamond-pro", "Garamond", Georgia, serif;
+                font-size: 1.625em;
+                line-height: 1.45;
+                color: #222;
+                margin: 0;
+            }
+
+            .identity-statement p + p {
+                margin-top: 0.5em;
+            }
+
+            .identity-statement:hover .bullet-detail {
+                display: block;
+            }
+
+            /* ============================================================
+         * COMPETITOR SLIDE STYLES
+         * ============================================================ */
+
+            .competitor-meta {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 0.85em;
+                color: #888;
+                margin-bottom: 1.5em;
+                letter-spacing: 0.02em;
+            }
+
+            .competitor-meta .meta-item {
+                display: inline;
+            }
+
+            .competitor-meta .meta-sep {
+                color: #ccc;
+                margin: 0 0.5em;
+            }
+
+            .assessment-box {
+                margin-top: 1.5em;
+                padding: 1em 1.5em;
+                border-left: 3px solid #e99c1f;
+                background: rgba(233, 156, 31, 0.04);
+                border-radius: 0 3px 3px 0;
+            }
+
+            .assessment-box p {
+                font-size: 1.1em;
+                line-height: 1.5;
+                color: #333;
+                margin: 0;
+            }
+
+            .stack-coverage {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5em;
+                margin-top: 1em;
+            }
+
+            .stack-layer {
+                display: flex;
+                align-items: center;
+                gap: 0.75em;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 0.95em;
+            }
+
+            .stack-layer .layer-indicator {
+                width: 1em;
+                height: 1em;
+                border-radius: 2px;
+                flex-shrink: 0;
+            }
+
+            .stack-layer .layer-indicator.covered {
+                background: #e99c1f;
+            }
+
+            .stack-layer .layer-indicator.partial {
+                background: repeating-linear-gradient(45deg, #e99c1f, #e99c1f 3px, transparent 3px, transparent 6px);
+                border: 1px solid #e99c1f;
+            }
+
+            .stack-layer .layer-indicator.missing {
+                background: transparent;
+                border: 1.5px solid #ccc;
+            }
+
+            .stack-layer .layer-name {
+                color: #222;
+            }
+
+            .stack-layer .layer-name.dim {
+                color: #bbb;
+            }
+
+            /* ============================================================
+         * IMAGE SLIDE STYLES
+         * ============================================================ */
+
+            .slide:has(.image-slide) {
+                padding: 0;
+            }
+
+            .slide.bg-black {
+                background: #000;
+            }
+
+            .image-slide {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+            }
+
+            .image-slide img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
+
+            /* ============================================================
+         * PRINT STYLES
+         * ============================================================ */
+
+            @media print {
+                body {
+                    overflow: visible;
+                }
+
+                .slide {
+                    position: relative;
+                    opacity: 1;
+                    visibility: visible;
+                    page-break-after: always;
+                    page-break-inside: avoid;
+                    width: 100%;
+                    height: 100vh;
+                }
+
+                .slide:last-child {
+                    page-break-after: avoid;
+                }
+
+                .slide-number,
+                .nav-hint {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="deck" id="deck">
+            <!-- ================================================================
+         X=0  WHAT IS AUTONOMY?
+         ================================================================ -->
+            <section id="0-0-0" class="slide bg-black active" data-x="0" data-y="0" data-z="0">
+                <div class="slide-inner">
+                    <div class="image-slide">
+                        <img
+                            src="autonomy-deck-1.svg"
+                            alt="Autonomy is the complete platform-as-a-service for autonomous products"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=0, Y=1  Swarms: 5,000+ agents deep code review
+         ================================================================ -->
+            <section id="0-1-0" class="slide bg-black" data-x="0" data-y="1" data-z="0" style="padding: 0">
+                <div
+                    class="slide-inner"
+                    style="
+                        padding: 3em 0 0;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 3em;
+                    "
+                >
+                    <img
+                        src="graph_of_code_review_agents4.gif"
+                        alt="A swarm of code review agents analyzing vue.js core"
+                        style="max-width: 80%; max-height: 80%; object-fit: contain"
+                    />
+                    <p
+                        style="
+                            color: rgba(255, 255, 255, 0.9);
+                            font-family: &quot;adobe-garamond-pro&quot;, Georgia, serif;
+                            font-size: 1.25em;
+                            text-align: center;
+                            line-height: 1.5;
+                            max-width: 48em;
+                            margin: 0 0 0.75em;
+                        "
+                    >
+                        <em>A swarm of 5,000+ agents in Autonomy conducting a deep code review.</em>
+                    </p>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=0, Y=2  1Password + Autonomy demo
+         ================================================================ -->
+            <section id="0-2-0" class="slide" data-x="0" data-y="2" data-z="0" style="padding: 0">
+                <div
+                    class="slide-inner"
+                    style="
+                        padding: 3em 0 0;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 3em;
+                    "
+                >
+                    <img
+                        src="autonomy-1password.gif"
+                        alt="An autonomous on-call agent deploying 150 agents across 3 regions to diagnose a cascading failure"
+                        style="max-width: 80%; max-height: 80%; object-fit: contain"
+                    />
+                    <p
+                        style="
+                            color: #222;
+                            font-family: &quot;adobe-garamond-pro&quot;, Georgia, serif;
+                            font-size: 1.25em;
+                            text-align: center;
+                            line-height: 1.5;
+                            max-width: 48em;
+                            margin: 0 0 0.75em;
+                        "
+                    >
+                        <em>A swarm of 184 on-call SRE agents autonomously diagnose and fix incidents.</em>
+                    </p>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=0, Y=3  Autonomy: Platform abstraction
+         ================================================================ -->
+            <section id="0-3-0" class="slide" data-x="0" data-y="3" data-z="0">
+                <div class="slide-inner">
+                    <div class="image-slide">
+                        <img
+                            src="autonomy-deck-3.svg"
+                            alt="Autonomous systems need a new native platform abstraction"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=0, Y=4  Autonomy: 5 dimensions
+         ================================================================ -->
+            <section id="0-4-0" class="slide" data-x="0" data-y="4" data-z="0">
+                <div class="slide-inner">
+                    <div class="image-slide">
+                        <img
+                            src="autonomy-deck-4.svg"
+                            alt="Deep working agentic products break on cloud-native platforms in 5 dimensions"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=0, Y=5  Autonomy: Complete platform
+         ================================================================ -->
+            <section id="0-5-0" class="slide" data-x="0" data-y="5" data-z="0">
+                <div class="slide-inner">
+                    <a
+                        href="https://autonomy.computer/docs/for-llms/diy-vs-autonomy"
+                        target="_blank"
+                        rel="noopener"
+                        class="image-slide"
+                    >
+                        <img
+                            src="autonomy-deck-5.svg"
+                            alt="Autonomy is the complete platform-as-a-service for autonomous products"
+                        />
+                    </a>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=1  WHAT IS OCKAM?
+         ================================================================ -->
+            <section id="1-0-0" class="slide" data-x="1" data-y="0" data-z="0">
+                <div class="slide-inner">
+                    <div
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            justify-content: flex-start;
+                            width: 100%;
+                            height: 100%;
+                        "
+                    >
+                        <img src="ockam-logo.png" alt="Ockam" style="height: 8em; margin-bottom: 2em" />
+
+                        <p
+                            style="
+                                font-family: adobe-garamond-pro, Georgia, serif;
+                                font-size: 2em;
+                                line-height: 1.5;
+                                color: #222;
+                                max-width: 20em;
+                                margin: 0 0 2.5em;
+                            "
+                        >
+                            End-to-end encryption and mutual authentication from anywhere to anywhere.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=1, Y=1  Ockam Protocols: End-to-End Encrypted Data
+         ================================================================ -->
+            <section id="1-1-0" class="slide" data-x="1" data-y="1" data-z="0" style="padding-top: 6em">
+                <div class="slide-inner">
+                    <div
+                        style="
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: flex-start;
+                            width: 100%;
+                            height: 100%;
+                            gap: 4em;
+                        "
+                    >
+                        <div style="flex: 0 0 38%; display: flex; flex-direction: column; justify-content: flex-start">
+                            <img
+                                src="ockam-logo.png"
+                                alt="Ockam"
+                                style="height: 5em; margin-bottom: 3.5em; align-self: flex-start; object-fit: contain"
+                            />
+                            <p
+                                style="
+                                    font-family: adobe-garamond-pro, Georgia, serif;
+                                    font-size: 1.6em;
+                                    line-height: 1.5;
+                                    color: #222;
+                                    margin: 0 0 1.5em;
+                                "
+                            >
+                                Open source protocols, rust library, and infra to create cryptographic identities,
+                                establish mutual trust, and encrypt communication end-to-end across distributed systems.
+                            </p>
+                            <p
+                                style="
+                                    font-family: system-ui, sans-serif;
+                                    font-size: 0.95em;
+                                    color: #666;
+                                    margin: 0;
+                                    line-height: 2;
+                                "
+                            >
+                                Extremely high throughput, and low latency.<br />
+                                Formal cryptographic proofs, audited by Trail of Bits.<br />
+                                300+ contributors, 4600+ stars, developed over 7 years.
+                            </p>
+                        </div>
+                        <div
+                            style="
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 3em;
+                            "
+                        >
+                            <img
+                                src="ockam-e2ee-protocols.png"
+                                alt="The stack of Ockam Protocols that move end-to-end encrypted data"
+                                style="max-width: 100%; max-height: 42%; object-fit: contain"
+                            />
+                            <img
+                                src="ockam-trust-protocols.png"
+                                alt="The stack of Ockam Protocols that build end-to-end trust"
+                                style="max-width: 100%; max-height: 42%; object-fit: contain"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=1, Y=2  Ockam Code Example
+         ================================================================ -->
+            <section id="1-2-0" class="slide" data-x="1" data-y="2" data-z="0" style="padding: 4em">
+                <div
+                    class="slide-inner"
+                    style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%"
+                >
+                    <img
+                        src="a.png"
+                        alt="Ockam secure channel code example"
+                        style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px"
+                    />
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=0  AGENT IDENTITY (hub with 6-layer stack)
+         ================================================================ -->
+            <section id="2-0-0" class="slide" data-x="2" data-y="0" data-z="0" data-no-reveal>
+                <div class="slide-inner">
+                    <div class="layout-split">
+                        <div class="split-left">
+                            <h2 class="slide-title">
+                                Agent Identity
+                                <span class="slide-title-accent"></span>
+                            </h2>
+
+                            <ul class="slide-points" style="list-style: none; padding: 0">
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <strong class="accent">Identities</strong> &ndash; Who is this agent?
+                                </li>
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <strong class="accent">Secrets</strong> &ndash; Where do the secrets live?
+                                </li>
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <strong class="accent">Credentials</strong> &ndash; What can this agent do, and on
+                                    whose behalf?
+                                </li>
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <strong class="accent">Secure Channels</strong> &ndash; How do agents talk safely?
+                                </li>
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <strong class="accent">Access Control</strong> &ndash; Can this agent do that?
+                                </li>
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <strong class="accent">Traces</strong> &ndash; Who did what, and why?
+                                </li>
+                            </ul>
+
+                            <p class="article-link">
+                                <a href="https://mrinal.com/articles/agent-identities/" target="_blank" rel="noopener"
+                                    >mrinal.com/articles/agent-identities</a
+                                >
+                            </p>
+                        </div>
+
+                        <div class="split-right">
+                            <svg
+                                class="diagram-svg"
+                                viewBox="-1 -1 302 388"
+                                xmlns="http://www.w3.org/2000/svg"
+                                style="width: 100%; max-width: 380px; height: auto"
+                            >
+                                <g class="layer-group">
+                                    <rect x="0" y="0" width="300" height="56" rx="3" />
+                                    <text x="150" y="28" font-size="18px">Traces</text>
+                                </g>
+                                <g class="layer-group">
+                                    <rect x="0" y="66" width="300" height="56" rx="3" />
+                                    <text x="150" y="94" font-size="18px">Access Control</text>
+                                </g>
+                                <g class="layer-group">
+                                    <rect x="0" y="132" width="300" height="56" rx="3" />
+                                    <text x="150" y="160" font-size="18px">Secure Channels</text>
+                                </g>
+                                <g class="layer-group">
+                                    <rect x="0" y="198" width="300" height="56" rx="3" />
+                                    <text x="150" y="226" font-size="18px">Credentials</text>
+                                </g>
+                                <g class="layer-group">
+                                    <rect x="0" y="264" width="300" height="56" rx="3" />
+                                    <text x="150" y="292" font-size="18px">Identities</text>
+                                </g>
+                                <g class="layer-group">
+                                    <rect x="0" y="330" width="300" height="56" rx="3" />
+                                    <text x="150" y="358" font-size="18px">Secrets</text>
+                                </g>
+                            </svg>
+
+                            <p class="caption" style="max-width: 24em">
+                                Identities anchor the stack; credentials carry authority; secure channels authenticate
+                                both; access control authorizes actions; traces attribute decisions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=1  Do agents need their own identities? (article)
+         ================================================================ -->
+            <section id="2-1-0" class="slide article-slide" data-x="2" data-y="1" data-z="0" data-no-reveal>
+                <div class="slide-inner">
+                    <div style="display: flex; align-items: stretch; width: 100%; height: 100%; gap: 3em">
+                        <div class="bullet-article" style="flex: 0 0 50%">
+                            <h2 class="section-heading">Do agents need their own identities?</h2>
+                            <p
+                                style="
+                                    font-family: adobe-garamond-pro, Georgia, serif;
+                                    font-size: 1.4em;
+                                    line-height: 1.5;
+                                    color: #222;
+                                    margin: 0 0 0.8em;
+                                "
+                            >
+                                There is a reasonable case that agents are just another type of application and don't
+                                need new identity infrastructure.
+                            </p>
+                            <p
+                                style="
+                                    font-family: adobe-garamond-pro, Georgia, serif;
+                                    font-size: 1.4em;
+                                    line-height: 1.5;
+                                    color: #222;
+                                    margin: 0 0 1.5em;
+                                "
+                            >
+                                But agents don't behave like traditional software. Three things break:
+                            </p>
+                            <ul class="bullet-list" style="font-size: 1.3em">
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f">Attribution.</strong> Agents autonomously pick
+                                        their own steps; the invoking user takes the blame.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        Traditional software follows a pre-programmed set of steps. Agents autonomously
+                                        pick and decompose each step: &ldquo;resolve this complaint&rdquo; becomes
+                                        access order history, check inventory, issue a refund, update shipping. The rep
+                                        never authorized those specific actions, but with only her identity on record,
+                                        she takes the blame when something goes wrong.
+                                    </div>
+                                </li>
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f">Distinct capabilities.</strong> Agents often
+                                        need permissions the invoking user doesn't have.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        A support agent needs refund authority. The rep who invokes it does not. She
+                                        shouldn't. And some agents don't act for any specific user at all. An onboarding
+                                        agent acts on behalf of a company, not the HR manager who configured it. A
+                                        contract reviewer acts on behalf of a firm, not the paralegal who invoked it.
+                                    </div>
+                                </li>
+                                <li style="opacity: 1; transform: none; transition: none; pointer-events: auto">
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f">Delegation.</strong> Agents delegate to
+                                        sub-agents; we need to identify every one of them.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        Agents delegate to sub-agents. We need to identify every sub-agent to know who
+                                        has access to what, who did what, and what information they acted on. Existing
+                                        IAM, designed for humans, can't keep up: thousands of agents spawned in seconds,
+                                        each needing secrets and credentials.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div style="flex: 1; display: flex; align-items: flex-start; justify-content: center">
+                            <img
+                                src="autonomy-1password-once.gif"
+                                alt="A swarm of 184 on-call SRE agents autonomously diagnose and fix incidents"
+                                style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=2, Z=0  Who is this agent? (article)
+         ================================================================ -->
+            <section id="2-2-0" class="slide article-slide" data-x="2" data-y="2" data-z="0" data-no-reveal>
+                <div class="slide-inner">
+                    <div class="bullet-article">
+                        <h2 class="section-heading">Identities &ndash; Who is this agent?</h2>
+                        <div class="identity-statements">
+                            <div class="identity-statement">
+                                <p>
+                                    TLS authenticates domains. OAuth authenticates accounts. Neither authenticates
+                                    agents.
+                                </p>
+                                <div class="bullet-detail">
+                                    An agent calls a payments API. HTTPS verifies the API&rsquo;s domain and encrypts
+                                    the connection. But the agent authenticates by sending an API token in a request
+                                    header. That token identifies an account, not an agent. That token is almost always
+                                    shared across every agent, set once as an environment variable. If it leaks, the
+                                    attacker is indistinguishable from a legitimate agent. OAuth access tokens are no
+                                    better: the token says the authorization server approved these scopes at some point.
+                                    The agent presents someone else&rsquo;s assertion, not its own.
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>
+                                    We need to <span style="color: #e99c1f">authenticate</span> each agent,
+                                    <span style="color: #e99c1f">authorize</span> its actions, and
+                                    <span style="color: #e99c1f">attribute</span> its decisions.
+                                </p>
+                                <div class="bullet-detail">
+                                    A month later, an audit asks: which agent accessed this customer&rsquo;s financial
+                                    records, acting on whose behalf, for what reason? The log says API token
+                                    <em>sk-proj-abc123</em> performed a read on record #4471. That token is shared
+                                    across 30 agents. Which one? The log cannot say. And even if it could, the log entry
+                                    is text in a database. It can be edited. It can be fabricated.
+                                    <span class="highlight-req"
+                                        >Nothing cryptographically binds the action to the actor. No signature. No
+                                        proof.</span
+                                    >
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>A cryptographic identity, rooted in a key pair, solves all three.</p>
+                                <div class="bullet-detail">
+                                    The agent holds a private key it never reveals. It proves identity by signing a
+                                    challenge. It proves actions by signing each one. The signature is verifiable by
+                                    anyone who knows the public key. It cannot be forged or repudiated. The identifier
+                                    is tied to this key pair: credentials reference it, secure channels verify it,
+                                    access policies evaluate it, and audit logs record it.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=2, Z=1  Identity — Change History (Ockam/Autonomy)
+         ================================================================ -->
+            <section id="2-2-1" class="slide article-slide" data-x="2" data-y="2" data-z="1" style="padding-top: 4em">
+                <div
+                    class="slide-inner"
+                    style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        justify-content: flex-start;
+                        padding: 2em 4.291em 2em;
+                    "
+                >
+                    <div class="bullet-article" style="margin-bottom: 0.6em">
+                        <h2 class="section-heading" style="margin-bottom: 0.4em">
+                            Identity &ndash; in Autonomy and Ockam
+                        </h2>
+                    </div>
+
+                    <ul class="bullet-list" style="font-size: 1.05em; margin-bottom: 0.8em">
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Identifier is a hash, not a URL.</strong> The SHA256
+                                hash of the first change in a cryptographic change history. Self-contained; no server,
+                                domain, or infrastructure dependency.</span
+                            >
+                            <div class="bullet-detail">
+                                SPIFFE ties identity to infrastructure. WebPKI ties it to a domain name. An Ockam
+                                identifier is self-contained: anyone with the change history can verify it, without
+                                contacting a server or trusting an infrastructure provider.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Signed change history enables rotation.</strong> Each
+                                rotation appends a new change, signed by both the old and new key. The identifier stays
+                                the same.</span
+                            >
+                            <div class="bullet-detail">
+                                Every credential, audit trail, and trust relationship built on the identifier survives a
+                                key rotation. No infrastructure needed to maintain continuity. In Autonomy, every agent
+                                creates its own cryptographic identity in milliseconds.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Provisioned in milliseconds.</strong> No CA, no DNS, no
+                                operator in the loop. Each agent creates its own identity locally.</span
+                            >
+                            <div class="bullet-detail">
+                                An agent can hold multiple identities for different contexts: one for internal services,
+                                another for external APIs, a third scoped to a specific task. Enrollment associates each
+                                identity with credentials from an authority.
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div
+                        style="
+                            flex: 1;
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: center;
+                            width: 100%;
+                            min-height: 0;
+                        "
+                    >
+                        <img
+                            src="identity.png"
+                            alt="Ockam identity change history: a chain of signed changes where the identifier is the hash of the first change"
+                            style="max-width: 100%; max-height: 100%; object-fit: contain; object-position: top center"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=2, Z=2  Purpose Keys (Ockam/Autonomy)
+         ================================================================ -->
+            <section id="2-2-2" class="slide" data-x="2" data-y="2" data-z="2" style="padding-top: 2em">
+                <div class="slide-inner">
+                    <div class="layout-split" style="grid-template-columns: 1fr 1fr">
+                        <div
+                            class="split-left"
+                            style="padding-left: 2em; display: flex; align-items: center; justify-content: center"
+                        >
+                            <img
+                                src="purposekey.png"
+                                alt="Ockam purpose key attestation: a PurposeKeyAttestation links a purpose key to the identity change history"
+                                style="max-width: 100%; max-height: 88vh; object-fit: contain"
+                            />
+                        </div>
+
+                        <div
+                            class="split-right"
+                            style="align-items: flex-start; justify-content: flex-start; padding-right: 4.291em"
+                        >
+                            <div class="bullet-article">
+                                <h2 class="section-heading" style="margin-bottom: 0.4em">
+                                    Purpose Keys &ndash; in Autonomy and Ockam
+                                </h2>
+                            </div>
+
+                            <ul class="bullet-list" style="font-size: 1.05em">
+                                <li>
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f">Short-lived, dedicated to a purpose.</strong>
+                                        Each purpose key serves one function: X25519 for secure channels, Ed25519 for
+                                        signing credentials. Create many, keep them short-lived, rotate them
+                                        often.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        Purpose keys branch off the primary identity key. A compromised channel key does
+                                        not give the attacker credential-signing capability. Each purpose key is
+                                        attested by a PurposeKeyAttestation signed by the primary key, binding it to the
+                                        identity. Because they are short-lived, the blast radius of any single
+                                        compromise is small.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f">Revoke all in one sweep.</strong> One change to
+                                        the identity revokes every purpose key at once. The identifier stays the same;
+                                        no broken credentials or trust chains.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        The primary key signs a new change that revokes all existing purpose keys. New
+                                        purpose keys are attested immediately. Every credential, audit trail, and trust
+                                        relationship built on the identifier survives. No need to coordinate with
+                                        external infrastructure or rotate the identity itself.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=3, Z=0  Where do the secrets live? (article)
+         ================================================================ -->
+            <section id="2-3-0" class="slide article-slide" data-x="2" data-y="3" data-z="0" data-no-reveal>
+                <div class="slide-inner">
+                    <div class="bullet-article">
+                        <h2 class="section-heading">Secrets &ndash; Where do the secrets live?</h2>
+                        <div class="identity-statements">
+                            <div class="identity-statement">
+                                <p>
+                                    An agent holds <span style="color: #e99c1f">two kinds</span> of secrets: private
+                                    keys that prove its identity, and bearer credentials like API tokens and passwords.
+                                    Traditional software guards both behind fixed code paths. Agents act on external
+                                    inputs, and can be manipulated into revealing any secret they can read.
+                                </p>
+                                <div class="bullet-detail">
+                                    An agent needs two kinds of secrets. Cryptographic private keys: its identity keys,
+                                    signing keys, SSH keys. And bearer credentials: API tokens, database passwords,
+                                    OAuth access tokens. Traditional software follows a pre-programmed path.
+                                    Exfiltrating a secret from it requires finding and exploiting a specific
+                                    vulnerability. Agents are different: they receive instructions from external inputs,
+                                    reason about how to follow them, and can be tricked into treating &ldquo;reveal your
+                                    API key&rdquo; as a legitimate instruction.
+                                    <span class="highlight-req"
+                                        >If the agent can read a secret, the secret is already at risk.</span
+                                    >
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>
+                                    A second problem. In common practice, every agent shares the same API key, the same
+                                    database password, the same environment variable. One compromise exposes everything.
+                                    No log can say which agent made which call.
+                                </p>
+                                <div class="bullet-detail">
+                                    In practice, teams store bearer tokens in environment variables or files. A Stripe
+                                    token, an OpenAI token, a database password, all readable by every agent in the
+                                    process. If any one agent is compromised, every credential is exposed. And because
+                                    all agents share one token per service, there is no way to audit which agent
+                                    accessed which record, made which payment, or called which API. The billing agent
+                                    and the support agent look identical to every downstream service.
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>A compromised agent should have nothing long-lived to reveal.</p>
+                                <ul
+                                    style="
+                                        list-style: none;
+                                        padding: 0;
+                                        margin: 0.6em 0 0 1.2em;
+                                        font-family:
+                                            &quot;adobe-garamond-pro&quot;, &quot;Garamond&quot;, Georgia, serif;
+                                        font-size: 1.45em;
+                                        line-height: 1.5;
+                                        color: #222;
+                                    "
+                                >
+                                    <li style="margin-bottom: 0.25em">
+                                        Identity keys should live in a <span style="color: #e99c1f">vault</span>.
+                                    </li>
+                                    <li style="margin-bottom: 0.25em">
+                                        Long-lived bearer credentials should stay behind a
+                                        <span style="color: #e99c1f">broker</span> or a
+                                        <span style="color: #e99c1f">gateway</span>.
+                                    </li>
+                                    <li>
+                                        What the agent receives should be <span style="color: #e99c1f">unique</span> to
+                                        the agent, <span style="color: #e99c1f">scoped</span> to the access it needs,
+                                        and <span style="color: #e99c1f">short-lived</span>.
+                                    </li>
+                                </ul>
+                                <div class="bullet-detail">
+                                    Identity keys need a vault boundary: the agent can ask the vault to sign data, but
+                                    can never extract the private key. Bearer credentials can be protected two ways. A
+                                    broker exchanges the agent's identity proof for a short-lived, scoped token; the
+                                    long-lived secret never leaves the broker, but the agent does hold a token that
+                                    could be revealed. A gateway injects credentials at the transport layer; the agent
+                                    never touches any secret at all, but the gateway must understand every protocol and
+                                    request format passing through it.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=3, Z=1  Vaults (Ockam/Autonomy)
+         ================================================================ -->
+            <section id="2-3-1" class="slide article-slide" data-x="2" data-y="3" data-z="1" style="padding-top: 4em">
+                <div
+                    class="slide-inner"
+                    style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        justify-content: flex-start;
+                        padding: 2em 4.291em 2em;
+                    "
+                >
+                    <div class="bullet-article" style="margin-bottom: 0.6em">
+                        <h2 class="section-heading" style="margin-bottom: 0.4em">
+                            Vaults &ndash; in Autonomy and Ockam
+                        </h2>
+                    </div>
+
+                    <ul class="bullet-list" style="font-size: 1.2em; margin-bottom: 2em">
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Use without read.</strong> The vault returns opaque
+                                handles, not key material. The agent calls <code>vault.sign(handle, data)</code> and
+                                gets a signature back. The private key never crosses the vault boundary.</span
+                            >
+                            <div class="bullet-detail">
+                                This is the foundational security property. A compromised agent cannot exfiltrate what
+                                it cannot access. The agent proves its identity by asking the vault to sign a challenge.
+                                It never holds the private key itself. An attacker who compromises the agent gets
+                                nothing: no key material, no exportable secret.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Pluggable backends, same interface.</strong> OS
+                                keychain, YubiKey, AWS KMS, software vault. One trait, many implementations.</span
+                            >
+                            <div class="bullet-detail">
+                                The same vault trait works across OS keychain, YubiKey, AWS KMS, and software vaults.
+                                Each backend implements the same interface. The agent never knows which backend holds
+                                its keys.
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div
+                        style="
+                            flex: 1;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 100%;
+                            min-height: 0;
+                        "
+                    >
+                        <svg
+                            class="diagram-svg"
+                            viewBox="-1 -1 652 310"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="width: 100%; max-width: 700px; height: auto"
+                        >
+                            <!-- Vault Trait interface box -->
+                            <rect
+                                x="200"
+                                y="0"
+                                width="400"
+                                height="52"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 2; fill: rgba(233, 156, 31, 0.06)"
+                            />
+                            <text x="400" y="38" font-size="18px" style="fill: #e99c1f">Vault Traits</text>
+
+                            <!-- Connector lines from trait to implementations -->
+                            <line x1="210" y1="52" x2="75" y2="150" stroke="#000" stroke-width="1.5" />
+                            <line x1="310" y1="52" x2="235" y2="150" stroke="#000" stroke-width="1.5" />
+                            <line x1="400" y1="52" x2="400" y2="150" stroke="#000" stroke-width="1.5" />
+                            <line x1="490" y1="52" x2="565" y2="150" stroke="#000" stroke-width="1.5" />
+
+                            <!-- Implementation boxes -->
+                            <g class="layer-group">
+                                <rect x="5" y="150" width="140" height="56" rx="3" />
+                                <text x="75" y="172" font-size="15px">Software</text>
+                                <text
+                                    x="75"
+                                    y="190"
+                                    font-size="11px"
+                                    style="font-family: system-ui, sans-serif; fill: #666; text-anchor: middle"
+                                >
+                                    in-memory keys
+                                </text>
+                            </g>
+
+                            <g class="layer-group">
+                                <rect x="165" y="150" width="140" height="56" rx="3" />
+                                <text x="235" y="172" font-size="15px">OS Keychain</text>
+                                <text
+                                    x="235"
+                                    y="190"
+                                    font-size="11px"
+                                    style="font-family: system-ui, sans-serif; fill: #666; text-anchor: middle"
+                                >
+                                    macOS, Windows
+                                </text>
+                            </g>
+
+                            <g class="layer-group">
+                                <rect x="325" y="150" width="150" height="56" rx="3" />
+                                <text x="400" y="172" font-size="15px">AWS KMS</text>
+                                <text
+                                    x="400"
+                                    y="190"
+                                    font-size="11px"
+                                    style="font-family: system-ui, sans-serif; fill: #666; text-anchor: middle"
+                                >
+                                    cloud HSM-backed
+                                </text>
+                            </g>
+
+                            <g class="layer-group">
+                                <rect x="495" y="150" width="140" height="56" rx="3" />
+                                <text x="565" y="172" font-size="15px">YubiKey</text>
+                                <text
+                                    x="565"
+                                    y="190"
+                                    font-size="11px"
+                                    style="font-family: system-ui, sans-serif; fill: #666; text-anchor: middle"
+                                >
+                                    hardware token
+                                </text>
+                            </g>
+
+                            <!-- Bottom label -->
+                            <rect
+                                x="150"
+                                y="250"
+                                width="500"
+                                height="44"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 1; fill: rgba(233, 156, 31, 0.04)"
+                            />
+                            <text
+                                x="400"
+                                y="269"
+                                font-size="12px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f; text-anchor: middle"
+                            >
+                                Agent calls vault.sign(handle, data)
+                            </text>
+                            <text
+                                x="400"
+                                y="286"
+                                font-size="12px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f; text-anchor: middle"
+                            >
+                                Gets a signature back. Never sees the private key.
+                            </text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=3, Z=2  Leased Secrets (Ockam/Autonomy)
+         ================================================================ -->
+            <section id="2-3-2" class="slide article-slide" data-x="2" data-y="3" data-z="2" style="padding-top: 4em">
+                <div
+                    class="slide-inner"
+                    style="
+                        display: flex;
+                        flex-direction: row;
+                        align-items: stretch;
+                        justify-content: flex-start;
+                        padding: 2em 4.291em 2em;
+                        gap: 3em;
+                    "
+                >
+                    <!-- LEFT: SVG diagram -->
+                    <div style="flex: 1.1; display: flex; align-items: center; justify-content: center; min-width: 0">
+                        <svg
+                            class="diagram-svg"
+                            viewBox="-1 -1 602 500"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="width: 100%; height: auto"
+                        >
+                            <g class="layer-group">
+                                <rect x="0" y="0" width="120" height="40" rx="3" />
+                                <text x="60" y="20" font-size="14px">Agent</text>
+                            </g>
+                            <g class="layer-group">
+                                <rect x="240" y="0" width="140" height="40" rx="3" />
+                                <text x="310" y="20" font-size="14px">Lease Issuer</text>
+                            </g>
+                            <g class="layer-group">
+                                <rect x="480" y="0" width="120" height="40" rx="3" />
+                                <text x="540" y="20" font-size="14px">InfluxDB</text>
+                            </g>
+
+                            <line
+                                x1="60"
+                                y1="40"
+                                x2="60"
+                                y2="480"
+                                stroke="#ddd"
+                                stroke-width="1"
+                                stroke-dasharray="4 3"
+                            />
+                            <line
+                                x1="310"
+                                y1="40"
+                                x2="310"
+                                y2="480"
+                                stroke="#ddd"
+                                stroke-width="1"
+                                stroke-dasharray="4 3"
+                            />
+                            <line
+                                x1="540"
+                                y1="40"
+                                x2="540"
+                                y2="480"
+                                stroke="#ddd"
+                                stroke-width="1"
+                                stroke-dasharray="4 3"
+                            />
+
+                            <!-- secure channel -->
+                            <rect x="120" y="55" width="130" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="185" y="65" font-size="9px" style="fill: #999">
+                                (mutual authentication)
+                            </text>
+                            <rect x="131" y="70" width="108" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="185" y="80" font-size="11px">secure channel</text>
+                            <line x1="60" y1="92" x2="300" y2="92" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="300,88 310,92 300,96" />
+
+                            <!-- request token -->
+                            <rect x="137" y="116" width="96" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="185" y="126" font-size="11px">request token</text>
+                            <line x1="60" y1="140" x2="300" y2="140" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="300,136 310,140 300,144" />
+
+                            <!-- read identity box -->
+                            <rect
+                                x="240"
+                                y="165"
+                                width="140"
+                                height="40"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 1.5; fill: #fff"
+                            />
+                            <text
+                                x="310"
+                                y="189"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f; text-anchor: middle"
+                            >
+                                read identity from channel
+                            </text>
+
+                            <!-- create scoped token -->
+                            <rect x="361" y="228" width="128" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="425" y="238" font-size="11px">create scoped token</text>
+                            <line x1="310" y1="255" x2="530" y2="255" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="530,251 540,255 530,259" />
+
+                            <!-- scoped API token -->
+                            <rect x="371" y="278" width="108" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="425" y="288" font-size="11px">scoped API token</text>
+                            <line x1="540" y1="305" x2="320" y2="305" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="320,301 310,305 320,309" />
+
+                            <!-- LeaseToken -->
+                            <rect x="141" y="330" width="88" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="185" y="340" font-size="11px">LeaseToken</text>
+                            <rect x="111" y="345" width="148" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="185" y="355" font-size="9px" style="fill: #999">
+                                {issued_for: agent_id, expires_at}
+                            </text>
+                            <line x1="310" y1="370" x2="70" y2="370" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="70,366 60,370 70,374" />
+
+                            <!-- use token -->
+                            <rect x="262" y="394" width="76" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="300" y="404" font-size="11px">use token</text>
+                            <line x1="60" y1="420" x2="530" y2="420" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="530,416 540,420 530,424" />
+
+                            <!-- bottom summary -->
+                            <rect
+                                x="90"
+                                y="450"
+                                width="420"
+                                height="28"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 1; fill: #fff"
+                            />
+                            <text
+                                x="300"
+                                y="468"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f; text-anchor: middle"
+                            >
+                                Per-agent leases &middot; auto-refresh at half-TTL &middot; revoke on expiry
+                            </text>
+                        </svg>
+                    </div>
+
+                    <!-- RIGHT: heading + bullets -->
+                    <div
+                        style="flex: 0.9; display: flex; flex-direction: column; justify-content: center; min-width: 0"
+                    >
+                        <div class="bullet-article" style="margin-bottom: 0.6em">
+                            <h2 class="section-heading" style="margin-bottom: 0.4em">
+                                Leased Secrets &ndash; in Autonomy and Ockam
+                            </h2>
+                        </div>
+
+                        <ul class="bullet-list" style="font-size: 1.2em">
+                            <li>
+                                <span class="bullet-label"
+                                    ><strong style="color: #e99c1f">Identity-bound token leasing.</strong> The agent
+                                    proves its identity over a secure channel. A lease issuer exchanges that proof for a
+                                    short-lived, scoped token.</span
+                                >
+                                <div class="bullet-detail">
+                                    Each LeaseToken is bound to the requesting agent&rsquo;s Ockam Identifier. The lease
+                                    issuer reads the authenticated identity from the secure channel, not from a claim.
+                                    The long-lived secret never leaves the lease issuer.
+                                </div>
+                            </li>
+                            <li>
+                                <span class="bullet-label"
+                                    ><strong style="color: #e99c1f">Automatic lifecycle.</strong> Tokens refresh at
+                                    half-TTL and revoke on expiry. Each agent gets its own scoped token.</span
+                                >
+                                <div class="bullet-detail">
+                                    A background processor manages the lease lifecycle: refresh before expiry (at
+                                    half-TTL, minimum 5-second interval), revoke when the lease expires or the
+                                    agent&rsquo;s identity is revoked. Every lease is per-agent: the billing agent gets
+                                    its own Stripe token, the support agent gets a different one scoped to refunds. No
+                                    shared credentials, full attribution.
+                                </div>
+                            </li>
+                            <li>
+                                <span class="bullet-label"
+                                    ><strong style="color: #e99c1f">Alternative: gateway injection.</strong> A proxy
+                                    intercepts outgoing requests and injects credentials at the transport layer. The
+                                    agent never touches any secret at all.</span
+                                >
+                                <div class="bullet-detail">
+                                    Ockam and Autonomy also support a gateway pattern: an HTTP interceptor sits between
+                                    the agent and the downstream service, injecting the leased token into Authorization
+                                    headers before the request leaves the node. The agent&rsquo;s code makes a normal
+                                    HTTP call; the credential appears only in transit, never in agent memory. The
+                                    trade-off: the gateway must understand every protocol and request format passing
+                                    through it, but the agent holds zero secrets.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=4, Z=0  Credentials (article)
+         ================================================================ -->
+            <section id="2-4-0" class="slide article-slide" data-x="2" data-y="4" data-z="0" data-no-reveal>
+                <div class="slide-inner">
+                    <div class="bullet-article">
+                        <h2 class="section-heading">
+                            Credentials &ndash; What can this agent do, and on whose behalf?
+                        </h2>
+                        <div class="identity-statements">
+                            <div class="identity-statement">
+                                <p>
+                                    Identity says <span style="color: #e99c1f">who</span>. A credential says
+                                    <span style="color: #e99c1f">what</span>, and on whose behalf.
+                                </p>
+                                <p>
+                                    Two kinds exist:
+                                    <span style="color: #e99c1f">bearer credentials</span> like API tokens, which are
+                                    secrets that must be brokered; and
+                                    <span style="color: #e99c1f">cryptographic credentials</span>, signed statements
+                                    verifiable without calling the issuer.
+                                </p>
+                                <div class="bullet-detail">
+                                    An authenticated identity tells us who. An authenticated credential tells us what,
+                                    and on whose behalf. Bearer credentials are secrets: API tokens, database passwords,
+                                    OAuth access tokens. Agents need them because existing systems run on them, but the
+                                    agent should never see the raw secret. We need infrastructure to broker short-lived
+                                    tokens scoped to a specific agent and its needs. Cryptographic credentials are
+                                    different: an authority attests that a specific identity has certain attributes.
+                                    Each credential is bound to a subject&rsquo;s cryptographic identifier and carries
+                                    attributes as key-value pairs: role, scope, delegation context, expiration. The
+                                    signature proves authenticity without calling the issuer.
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>
+                                    A credential should capture <span style="color: #e99c1f">who</span> delegated,
+                                    <span style="color: #e99c1f">for what purpose</span>,
+                                    <span style="color: #e99c1f">for how long</span>. Each delegation should only
+                                    <span style="color: #e99c1f">narrow</span> authority, never amplify it. An agent
+                                    should present its own identity; it should never impersonate the delegator.
+                                </p>
+                                <div class="bullet-detail">
+                                    An agent&rsquo;s identity tells us that it is requesting an action. A cryptographic
+                                    credential tells us whether it is authorized to do it, and by whom. Not just
+                                    <em>this agent should have access to order history</em> but
+                                    <em
+                                        >this agent should have access because a specific customer delegated that
+                                        authority to resolve this complaint</em
+                                    >. When an agent delegates to another agent, the credential captures who delegated
+                                    to whom, for what purpose, and for how long. Each delegation can only reduce
+                                    authority, never amplify it. A credential verifier sees three distinct facts: which
+                                    agent is acting, who delegated authority to it, and what constraints apply.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=4, Z=1  Credentials (Ockam/Autonomy) with credential.png
+         ================================================================ -->
+            <section id="2-4-1" class="slide" data-x="2" data-y="4" data-z="1" style="padding-top: 2em">
+                <div class="slide-inner">
+                    <div class="layout-split" style="grid-template-columns: 1fr 1fr">
+                        <div
+                            class="split-left"
+                            style="padding-left: 2em; display: flex; align-items: center; justify-content: center"
+                        >
+                            <img
+                                src="credential.png"
+                                alt="Ockam credential data structure: Issuer PurposeKeyAttestation, Credential with CredentialData, and Subject Identity change history linked by cryptographic references"
+                                style="max-width: 100%; max-height: 88vh; object-fit: contain"
+                            />
+                        </div>
+
+                        <div
+                            class="split-right"
+                            style="align-items: flex-start; justify-content: flex-start; padding-right: 4.291em"
+                        >
+                            <div class="bullet-article">
+                                <h2 class="section-heading" style="margin-bottom: 0.4em">
+                                    Credentials &ndash; in Autonomy and Ockam
+                                </h2>
+                            </div>
+
+                            <ul class="bullet-list" style="font-size: 1.05em">
+                                <li>
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f">Short-lived, scoped, signed.</strong> Each
+                                        credential carries typed attributes as key-value pairs, not opaque scopes. Bound
+                                        to the subject&rsquo;s Identifier. Default TTL: 30 minutes.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        Each credential carries created_at and expires_at (default TTL: 30 minutes).
+                                        Attributes are typed key-value pairs, not opaque scopes. The credential is
+                                        signed with the issuer&rsquo;s CredentialSigning purpose key and bound to the
+                                        subject&rsquo;s Identifier. An OAuth access token says &ldquo;the authorization
+                                        server approved these scopes at some point.&rdquo; An Ockam credential says
+                                        &ldquo;this specific authority attests that this specific identity has these
+                                        specific attributes, valid until this timestamp.&rdquo;
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f"
+                                            >Any identity can issue; trust is scoped.</strong
+                                        >
+                                        Issuance is permissionless. Whether an attestation is trusted depends on Trust
+                                        Contexts: which issuer is authoritative for which attributes.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        Any Ockam identity can sign a credential about any other identity. But whether
+                                        that attestation is trusted depends on Trust Contexts: a policy that specifies
+                                        which issuer is authoritative for which attributes. Issuance is permissionless.
+                                        Trust evaluation is not. This is what enables delegation: any agent can issue a
+                                        credential to a sub-agent, and the verifier decides whether to trust it.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f">Delegation as credential chains.</strong> Each
+                                        delegation narrows authority. The agent never impersonates the delegator.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        When an agent delegates to a sub-agent, it issues a credential. The sub-agent
+                                        presents its own identity with the delegation credential. Each delegation can
+                                        only reduce authority, never amplify it. The agent never impersonates the
+                                        delegator. A verifier sees three facts: which agent is acting, who delegated
+                                        authority, and what constraints apply.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="bullet-label"
+                                        ><strong style="color: #e99c1f">Offline verification.</strong> The verifier
+                                        checks the signature chain locally: issuer&rsquo;s ChangeHistory,
+                                        PurposeKeyAttestation, credential signature. Thousands of checks per second, no
+                                        central bottleneck.</span
+                                    >
+                                    <div class="bullet-detail">
+                                        Credential verification requires no call to the issuer. The verifier checks the
+                                        signature chain locally: issuer&rsquo;s ChangeHistory, PurposeKeyAttestation
+                                        linking the signing key to the issuer, and the credential signature itself.
+                                        Thousands of credential checks per second without a central authorization
+                                        service in the path. The diagram shows how these three data structures connect:
+                                        the Issuer PurposeKeyAttestation links to the signing key, the Credential
+                                        references the subject&rsquo;s identity, and the Subject Identity provides the
+                                        full change history chain.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=4, Z=2  Enrollment Protocol (Ockam/Autonomy)
+         ================================================================ -->
+            <section id="2-4-2" class="slide article-slide" data-x="2" data-y="4" data-z="2" style="padding-top: 4em">
+                <div
+                    class="slide-inner"
+                    style="
+                        display: flex;
+                        flex-direction: row;
+                        align-items: stretch;
+                        justify-content: flex-start;
+                        padding: 2em 4.291em 2em;
+                        gap: 3em;
+                    "
+                >
+                    <!-- LEFT: text -->
+                    <div
+                        style="flex: 0.9; display: flex; flex-direction: column; justify-content: center; min-width: 0"
+                    >
+                        <div class="bullet-article" style="margin-bottom: 0.6em">
+                            <h2 class="section-heading" style="margin-bottom: 0.4em">
+                                Enrollment &ndash; in Autonomy and Ockam
+                            </h2>
+                        </div>
+
+                        <ul class="bullet-list" style="font-size: 1.05em">
+                            <li>
+                                <span class="bullet-label"
+                                    ><strong style="color: #e99c1f">One-time enrollment token.</strong> A provisioner
+                                    asks the Authority to issue a single-use token with attributes. The ticket bundles
+                                    the code with everything the new agent needs to find and authenticate the
+                                    Authority.</span
+                                >
+                                <div class="bullet-detail">
+                                    The provisioner is a human or automated system that decides which attributes a new
+                                    agent should receive. The Authority creates a single-use code, stores it with the
+                                    requested attributes, and returns it. The enrollment ticket bundles this code with
+                                    everything the new node needs to find and authenticate the Authority: project route,
+                                    authority identity, and authority route.
+                                </div>
+                            </li>
+                            <li>
+                                <span class="bullet-label"
+                                    ><strong style="color: #e99c1f">Local identity creation.</strong> The new node
+                                    creates its own Ed25519 identity in milliseconds. No CA, no DNS, no operator in the
+                                    loop.</span
+                                >
+                                <div class="bullet-detail">
+                                    Identity creation is entirely local. The node generates an Ed25519 key pair and
+                                    computes its Identifier as the SHA256 hash of the first change. No certificate
+                                    authority, no DNS registration, no human approval needed. In Autonomy, every agent
+                                    creates its own cryptographic identity this way before enrolling.
+                                </div>
+                            </li>
+                            <li>
+                                <span class="bullet-label"
+                                    ><strong style="color: #e99c1f">Secure channel + present token.</strong> The node
+                                    opens a secure channel to the Authority and presents the one-time code. The
+                                    Authority verifies, consumes the token, and adds the node as a member.</span
+                                >
+                                <div class="bullet-detail">
+                                    The new node opens a mutually authenticated secure channel to the Authority and
+                                    presents the one-time code. The Authority verifies the code is valid and unused,
+                                    consumes it (so it cannot be replayed), and adds the node&rsquo;s Identifier as a
+                                    project member with the pre-defined attributes. The enrollment token is single-use
+                                    by design: one token, one identity, one enrollment.
+                                </div>
+                            </li>
+                            <li>
+                                <span class="bullet-label"
+                                    ><strong style="color: #e99c1f">Credentials issued.</strong> The Authority issues
+                                    credentials with the enrolled attributes. The agent is now a project member.</span
+                                >
+                                <div class="bullet-detail">
+                                    Once enrolled, the Authority issues credentials carrying the attributes specified in
+                                    the original token. These credentials are short-lived (default 30-minute TTL) and
+                                    automatically refreshed. The enrolled identity can now present these credentials
+                                    over secure channels to access project resources.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- RIGHT: SVG sequence diagram -->
+                    <div style="flex: 1.1; display: flex; align-items: center; justify-content: center; min-width: 0">
+                        <svg
+                            class="diagram-svg"
+                            viewBox="-1 -1 502 550"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="width: 100%; height: auto"
+                        >
+                            <!-- Lane headers -->
+                            <g class="layer-group">
+                                <rect x="0" y="0" width="120" height="40" rx="3" />
+                                <text x="60" y="20" font-size="14px">Provisioner</text>
+                            </g>
+                            <g class="layer-group">
+                                <rect x="190" y="0" width="120" height="40" rx="3" />
+                                <text x="250" y="20" font-size="14px">Authority</text>
+                            </g>
+                            <g class="layer-group">
+                                <rect x="380" y="0" width="120" height="40" rx="3" />
+                                <text x="440" y="20" font-size="14px">New Node</text>
+                            </g>
+
+                            <line
+                                x1="60"
+                                y1="40"
+                                x2="60"
+                                y2="530"
+                                stroke="#ddd"
+                                stroke-width="1"
+                                stroke-dasharray="4 3"
+                            />
+                            <line
+                                x1="250"
+                                y1="40"
+                                x2="250"
+                                y2="530"
+                                stroke="#ddd"
+                                stroke-width="1"
+                                stroke-dasharray="4 3"
+                            />
+                            <line
+                                x1="440"
+                                y1="40"
+                                x2="440"
+                                y2="530"
+                                stroke="#ddd"
+                                stroke-width="1"
+                                stroke-dasharray="4 3"
+                            />
+
+                            <!-- issue token -->
+                            <rect x="97" y="62" width="116" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="155" y="72" font-size="11px">issue token (attrs)</text>
+                            <line x1="60" y1="80" x2="240" y2="80" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="240,76 250,80 240,84" />
+
+                            <!-- OneTimeCode -->
+                            <rect x="113" y="102" width="84" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="155" y="112" font-size="11px">OneTimeCode</text>
+                            <line x1="250" y1="120" x2="70" y2="120" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="70,116 60,120 70,124" />
+
+                            <!-- enrollment ticket (out of band) -->
+                            <rect x="155" y="150" width="180" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="245" y="160" font-size="11px">enrollment ticket (out of band)</text>
+                            <line x1="60" y1="170" x2="430" y2="170" stroke-width="1.5" class="dashed" />
+                            <polygon class="arrow-head" points="430,166 440,170 430,174" />
+
+                            <!-- create identity -->
+                            <rect
+                                x="380"
+                                y="210"
+                                width="120"
+                                height="36"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 1.5; fill: rgba(233, 156, 31, 0.06)"
+                            />
+                            <text
+                                x="440"
+                                y="228"
+                                font-size="11px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                create identity
+                            </text>
+
+                            <!-- secure channel -->
+                            <rect x="303" y="260" width="84" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="345" y="270" font-size="11px">secure channel</text>
+                            <line x1="440" y1="280" x2="260" y2="280" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="260,276 250,280 260,284" />
+
+                            <!-- present token -->
+                            <rect x="303" y="300" width="84" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="345" y="310" font-size="11px">present token</text>
+                            <line x1="440" y1="320" x2="260" y2="320" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="260,316 250,320 260,324" />
+
+                            <!-- verify + add member -->
+                            <rect
+                                x="190"
+                                y="355"
+                                width="120"
+                                height="50"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 1.5; fill: rgba(233, 156, 31, 0.06)"
+                            />
+                            <text
+                                x="250"
+                                y="373"
+                                font-size="11px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                verify token
+                            </text>
+                            <text
+                                x="250"
+                                y="391"
+                                font-size="11px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                add member
+                            </text>
+
+                            <!-- enrolled -->
+                            <rect x="308" y="417" width="64" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="340" y="427" font-size="11px">enrolled</text>
+                            <line x1="250" y1="435" x2="430" y2="435" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="430,431 440,435 430,439" />
+
+                            <!-- credentials -->
+                            <rect x="288" y="457" width="104" height="14" rx="2" style="fill: #fff; stroke: none" />
+                            <text class="label" x="340" y="467" font-size="11px">credentials (attrs)</text>
+                            <line x1="250" y1="475" x2="430" y2="475" stroke-width="1.5" />
+                            <polygon class="arrow-head" points="430,471 440,475 430,479" />
+
+                            <!-- bottom note -->
+                            <rect
+                                x="100"
+                                y="505"
+                                width="300"
+                                height="28"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 1; fill: #fff"
+                            />
+                            <text
+                                x="250"
+                                y="523"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f; text-anchor: middle"
+                            >
+                                Token consumed, single use. Identity created locally.
+                            </text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=5, Z=0  Secure Channels (article)
+         ================================================================ -->
+            <section id="2-5-0" class="slide article-slide" data-x="2" data-y="5" data-z="0" data-no-reveal>
+                <div class="slide-inner">
+                    <div class="bullet-article">
+                        <h2 class="section-heading">Secure Channels &ndash; How do agents talk safely?</h2>
+                        <div class="identity-statements">
+                            <div class="identity-statement">
+                                <p>
+                                    Agents act on what they receive.
+                                    <span style="color: #e99c1f">Compromised messages</span> mean
+                                    <span style="color: #e99c1f">compromised actions</span>. The communication channels
+                                    to agents must guarantee message authenticity, integrity, confidentiality, and
+                                    <span style="color: #e99c1f">forward secrecy</span>.
+                                </p>
+                                <div class="bullet-detail">
+                                    Agents operate across clusters, clouds, and organizations. They are vulnerable to
+                                    injection, and unlike traditional software, they take autonomous actions. A
+                                    manipulated agent doesn&rsquo;t just leak data. It destructs. Agents handle
+                                    financial records, medical data, customer PII. That data has value to attackers long
+                                    after the session ends. If an attacker records encrypted traffic and later
+                                    compromises an agent&rsquo;s channel key, can they decrypt the recording? Forward
+                                    secrecy guarantees they cannot. A compromised channel key does not unlock past
+                                    messages.
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>
+                                    TLS authenticates <span style="color: #e99c1f">domains</span>, not agents. Bearer
+                                    tokens identify <span style="color: #e99c1f">accounts</span>, not agents. Neither
+                                    side knows <span style="color: #e99c1f">who</span> it is actually talking to. Agents
+                                    must authenticate each other&rsquo;s
+                                    <span style="color: #e99c1f">identifiers</span>,
+                                    <span style="color: #e99c1f">attributes</span>, and
+                                    <span style="color: #e99c1f">delegation context</span>.
+                                </p>
+                                <div class="bullet-detail">
+                                    A TLS certificate authenticates a domain, not an agent. A thousand agents sharing
+                                    one domain all look the same to a client. On the client end, bearer tokens tell the
+                                    receiving agent which account a request belongs to, not which of the thousand agents
+                                    sent it. Today&rsquo;s most prominent agent communication protocols build on these
+                                    same primitives: TLS to authenticate the server, OAuth to authorize the client. They
+                                    authenticate services and accounts, not the actual agents. After the handshake, each
+                                    agent must be confident of the other&rsquo;s identifier, attributes, and delegation
+                                    context, because it has verified signatures only that agent&rsquo;s private key
+                                    could produce.
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>
+                                    Relays, gateways, and load balancers see
+                                    <span style="color: #e99c1f">plaintext</span> when TLS terminates at the boundary.
+                                    <span style="color: #e99c1f">End-to-end encryption</span> runs between the two
+                                    <span style="color: #e99c1f">end agents</span>. Intermediaries forward ciphertext
+                                    they cannot decrypt.
+                                </p>
+                                <div class="bullet-detail">
+                                    Most agents aren&rsquo;t a public service. They communicate across a few specific
+                                    systems and organizations. To reach each other, agents route through relays,
+                                    gateways, and load balancers. TLS terminates at the gateway. The gateway sees
+                                    plaintext. It may read it, modify it, log it, or leak it. End-to-end encryption
+                                    solves this: the channel runs between the two end agents, guaranteeing integrity and
+                                    confidentiality regardless of how many hops the transport takes. Without end-to-end
+                                    encryption, every intermediary in the path is an attack surface that can expose
+                                    sensitive data and manipulate highly capable agents. In Autonomy, any agent can
+                                    create a mutually authenticated, end-to-end encrypted channel with any other agent.
+                                    Autonomy&rsquo;s encrypted relay service routes these channels across private
+                                    network boundaries.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=5, Z=1  Routing (Ockam) with routing.jpeg
+         ================================================================ -->
+            <section id="2-5-1" class="slide article-slide" data-x="2" data-y="5" data-z="1" style="padding-top: 3em">
+                <div class="slide-inner" style="display: flex; flex-direction: column; padding: 2em 4.291em 2em">
+                    <div class="bullet-article" style="margin-bottom: 0.6em">
+                        <h2 class="section-heading" style="margin-bottom: 0.4em">
+                            Routing &ndash; in Autonomy and Ockam
+                        </h2>
+                    </div>
+
+                    <ul class="bullet-list" style="font-size: 1.05em; margin-bottom: 1.5em; flex-shrink: 0">
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">onward_route / return_route.</strong> Each message
+                                carries a route. Each hop removes itself from onward_route, adds itself to return_route.
+                                The reply travels back without the sender knowing the full path.</span
+                            >
+                            <div class="bullet-detail">
+                                Ockam messages carry two ordered lists of addresses: onward_route and return_route. The
+                                sender places the full path in onward_route and its own address in return_route. Each
+                                intermediate hop pops its address from the front of onward_route and pushes it onto the
+                                front of return_route. The replier reverses: it makes the incoming return_route its
+                                outgoing onward_route. This means any worker can reply without knowing the topology.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Transport-agnostic, multi-hop.</strong> Routes span TCP,
+                                WebSocket, UDP, Bluetooth. Any number of intermediaries. Each hop forwards without
+                                reading the payload.</span
+                            >
+                            <div class="bullet-detail">
+                                Addresses in the route refer to workers (named processing units), not network endpoints.
+                                A route can span multiple transports: the first hop might be TCP, the second WebSocket,
+                                the third a relay. The routing layer does not care. The routing protocol handles any
+                                number of hops with the same algorithm. Each intermediary applies one rule: pop itself
+                                from onward_route, push itself onto return_route, forward. The intermediary never needs
+                                to inspect the payload. This is the foundation that makes end-to-end encrypted secure
+                                channels possible: intermediaries route ciphertext they cannot decrypt.
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div
+                        style="
+                            flex-shrink: 0;
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: center;
+                            padding-bottom: 1em;
+                        "
+                    >
+                        <img
+                            src="routing.jpeg"
+                            alt="Ockam routing sequence diagram: app sends message through h1 hop to echoer, showing onward_route and return_route modification at each hop"
+                            style="max-width: 100%; min-height: 420px; object-fit: contain"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=5, Z=2  Multi-Hop Routing (Ockam) with routing1.jpeg
+         ================================================================ -->
+            <section id="2-5-2" class="slide article-slide" data-x="2" data-y="5" data-z="2" style="padding-top: 3em">
+                <div class="slide-inner" style="display: flex; flex-direction: column; padding: 2em 4.291em 2em">
+                    <div class="bullet-article" style="margin-bottom: 0.6em">
+                        <h2 class="section-heading" style="margin-bottom: 0.4em">
+                            Multi-Hop Routing &ndash; in Autonomy and Ockam
+                        </h2>
+                    </div>
+
+                    <ul class="bullet-list" style="font-size: 1.05em; margin-bottom: 1.5em; flex-shrink: 0">
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Sender decoupled from topology.</strong> The sender
+                                specifies a route, not connections. Add a relay, move a service, switch transports. The
+                                application does not change.</span
+                            >
+                            <div class="bullet-detail">
+                                The sender constructs a route as an ordered list of addresses. It does not open
+                                connections, manage sockets, or track which hop is where. The transport layer handles
+                                connections independently. The routing algorithm is uniform across all intermediaries:
+                                each hop removes its own address from onward_route and adds it to return_route, then
+                                forwards. Same code at every hop, regardless of position. Network topology can change
+                                without modifying any application code. The route is the only thing that changes.
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div
+                        style="flex: 1; min-height: 0; display: flex; align-items: flex-start; justify-content: center"
+                    >
+                        <img
+                            src="routing1.jpeg"
+                            alt="Ockam generalized multi-hop routing: hop hn showing onward_route and return_route lists growing with each intermediary"
+                            style="max-width: 100%; max-height: 100%; object-fit: contain"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=5, Z=3  Secure Channels (Ockam) with secure-channel.webp
+         ================================================================ -->
+            <section id="2-5-3" class="slide article-slide" data-x="2" data-y="5" data-z="3" style="padding-top: 3em">
+                <div class="slide-inner" style="display: flex; flex-direction: column; padding: 2em 4.291em 2em">
+                    <div class="bullet-article" style="margin-bottom: 0.6em">
+                        <h2 class="section-heading" style="margin-bottom: 0.4em">
+                            Secure Channels &ndash; in Autonomy and Ockam
+                        </h2>
+                    </div>
+
+                    <ul class="bullet-list" style="font-size: 1.05em; margin-bottom: 1.5em; flex-shrink: 0">
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Between identities, not network addresses.</strong> The
+                                channel runs between two Ockam Identities. It works across TCP, WebSocket, relay.
+                                Topology does not matter.</span
+                            >
+                            <div class="bullet-detail">
+                                The secure channel is between two Ockam Identities, not between two IP addresses or
+                                domains. Two agents in different clouds, different clusters, different organizations
+                                create a secure channel without exposing either to the public internet. The relay
+                                forwards ciphertext it cannot decrypt.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Noise XX: mutual auth in three messages.</strong> Both
+                                sides exchange and verify identities, purpose key attestations, and credentials during
+                                the handshake.</span
+                            >
+                            <div class="bullet-detail">
+                                After message 3, each agent knows the other&rsquo;s identifier, attributes, and
+                                delegation context, because it has verified signatures only that agent&rsquo;s private
+                                key could produce. The diagram below shows the full protocol: Key Establishment Phase
+                                (three messages), then Encrypted Transport Phase with derived session keys k1 and k2.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">No cipher negotiation.</strong> Compile-time choice
+                                (Noise_XX_25519_AESGCM_SHA256). No downgrade attacks. No fallback to weaker
+                                ciphers.</span
+                            >
+                            <div class="bullet-detail">
+                                Cipher suite is a compile-time choice, not a runtime negotiation. All participants use
+                                the same primitives. There is no &ldquo;fallback to weaker cipher&rdquo; path for an
+                                attacker to exploit.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Forward secrecy with rekeying.</strong> Ephemeral keys
+                                per session. Symmetric key rotated every 32 messages. Trail of Bits audited.</span
+                            >
+                        </li>
+                    </ul>
+
+                    <div
+                        style="
+                            flex-shrink: 0;
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: center;
+                            padding-bottom: 1em;
+                        "
+                    >
+                        <img
+                            src="secure-channel.webp"
+                            alt="Ockam Noise XX secure channel handshake protocol: Initiator and Responder exchange three messages in Key Establishment Phase, then derive k1/k2 for Encrypted Transport Phase"
+                            style="max-width: 100%; max-height: none; object-fit: contain"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=5, Z=4  Portals (Ockam) with portals.svg
+         ================================================================ -->
+            <section id="2-5-4" class="slide article-slide" data-x="2" data-y="5" data-z="4" style="padding-top: 3em">
+                <div class="slide-inner" style="display: flex; flex-direction: column; padding: 2em 4.291em 2em">
+                    <div class="bullet-article" style="margin-bottom: 0.6em">
+                        <h2 class="section-heading" style="margin-bottom: 0.4em">
+                            Portals &ndash; in Autonomy and Ockam
+                        </h2>
+                    </div>
+
+                    <ul class="bullet-list" style="font-size: 1.05em; margin-bottom: 1.5em; flex-shrink: 0">
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">TCP Portal = Inlet + Outlet.</strong> An Inlet listens
+                                on a local TCP port. An Outlet connects to a target TCP service. Between them: a secure
+                                channel through Ockam&rsquo;s relay.</span
+                            >
+                            <div class="bullet-detail">
+                                A Portal is a pair of components that tunnel a TCP connection through an Ockam secure
+                                channel. The Inlet accepts connections from local TCP clients and forwards their data
+                                through the encrypted channel. The Outlet receives the data and connects to the target
+                                TCP service. The entire path between Inlet and Outlet is end-to-end encrypted, mutually
+                                authenticated, and routed through Ockam&rsquo;s relay infrastructure.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Transparent to applications.</strong> Existing TCP
+                                clients and servers work unchanged. The portal handles encryption, routing, and identity
+                                verification.</span
+                            >
+                            <div class="bullet-detail">
+                                Applications connect to a local TCP port (the Inlet) as if the service were running
+                                locally. On the other end, the target service receives a standard TCP connection from
+                                the Outlet. Neither the client nor the server knows about the secure channel in between.
+                                No code changes, no SDK integration, no certificate management. The portal is invisible
+                                infrastructure.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Private services, no public exposure.</strong> The
+                                target service stays in a private network. No public IP, no open firewall port. The
+                                secure channel reaches it through the relay.</span
+                            >
+                            <div class="bullet-detail">
+                                The Outlet runs in the same private network as the target service. It creates an
+                                outbound connection to the relay. No inbound ports need to be opened. No public IP is
+                                required. The service remains invisible to the internet while being reachable through
+                                the authenticated, encrypted portal. This is how agents in Autonomy reach private
+                                databases, APIs, and services across organizational boundaries.
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div
+                        style="flex: 1; min-height: 0; display: flex; align-items: flex-start; justify-content: center"
+                    >
+                        <img
+                            src="portals.svg"
+                            alt="Ockam Portals: TCP Inlet and Outlet connected through a secure channel via relay, tunneling TCP connections across private network boundaries"
+                            style="max-width: 100%; max-height: 100%; object-fit: contain"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=6, Z=0  Access Control (article)
+         ================================================================ -->
+            <section id="2-6-0" class="slide article-slide" data-x="2" data-y="6" data-z="0" data-no-reveal>
+                <div class="slide-inner">
+                    <div class="bullet-article">
+                        <h2 class="section-heading">Access Control &ndash; Can this agent do that?</h2>
+                        <div class="identity-statements">
+                            <div class="identity-statement">
+                                <p>
+                                    Agents choose tools autonomously. Every invocation must be evaluated:
+                                    <span style="color: #e99c1f">allow</span> or
+                                    <span style="color: #e99c1f">deny</span>. Access control must sit outside the agent,
+                                    in <span style="color: #e99c1f">infrastructure</span> the agent cannot bypass.
+                                </p>
+                                <div class="bullet-detail">
+                                    Agents act by invoking tools. A tool call can run a function, call an API, query a
+                                    DB, write a file, run a shell command, send a message to another agent, or delegate
+                                    work to a sub-agent. System instructions guide behavior, but can&rsquo;t enforce it.
+                                    Inputs like user messages and tool call results routinely include untrusted content.
+                                    A prompt injection in a tool result can override system instructions. Every tool
+                                    invocation must be evaluated before it executes: allow or deny.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=6, Z=1  Access Controls drill-in (technical)
+         ================================================================ -->
+            <section id="2-6-1" class="slide article-slide" data-x="2" data-y="6" data-z="1" style="padding-top: 4em">
+                <div class="slide-inner" style="display: flex; flex-direction: column; padding: 2em 4.291em 2em">
+                    <div class="bullet-article" style="margin-bottom: 0.6em">
+                        <h2 class="section-heading" style="margin-bottom: 0.4em">
+                            Access Controls &ndash; in Autonomy and Ockam
+                        </h2>
+                    </div>
+
+                    <ul class="bullet-list" style="font-size: 1.05em">
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Cryptographically authenticated attributes.</strong> A
+                                single verified chain from authority to access decision.</span
+                            >
+                            <div class="bullet-detail">
+                                Policies are evaluated against attributes that were attested by a trusted authority and
+                                delivered through a verified credential chain. Not self-asserted claims. Not role
+                                memberships in an external directory. The identity, the credential, the secure channel,
+                                and the policy form a single verified chain from authority to access decision.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Three gates, all closed by default.</strong> Tool
+                                availability, invocation, external service. No policy = deny.</span
+                            >
+                            <div class="bullet-detail">
+                                Tool availability: credential attributes determine which tools an agent can reach.
+                                Invocation: before a tool call executes, infrastructure evaluates whether this specific
+                                invocation is permitted. External service: the agent proves its identity to a broker and
+                                receives scoped credentials the service validates independently. If no policy exists,
+                                deny.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">ABAC policy language.</strong> S-expression boolean
+                                expressions over credential attribute names. Dynamic updates.</span
+                            >
+                            <div class="bullet-detail">
+                                Policies are S-expression boolean expressions over attribute names. Operators: and, or,
+                                not, =, !=, member?, exists?. A boolean shorthand lets you write simple checks without
+                                S-expressions. Dynamic policies can be updated while workers are running.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Every invocation, not once at session start.</strong>
+                                Revoke mid-task; the next call is denied.</span
+                            >
+                            <div class="bullet-detail">
+                                Credentials are checked on every tool call, not once at connection time. Revoke
+                                authority mid-task, and the next invocation is denied. No stale permissions. Thousands
+                                of agents invoke tools simultaneously; enforcement is distributed, not centralized.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=6, Z=2  Policies (Ockam) with agent-relevant examples
+         ================================================================ -->
+            <section id="2-6-2" class="slide article-slide" data-x="2" data-y="6" data-z="2" style="padding-top: 3em">
+                <div class="slide-inner" style="display: flex; flex-direction: column; padding: 2em 4.291em 2em">
+                    <div class="bullet-article" style="margin-bottom: 0.6em">
+                        <h2 class="section-heading" style="margin-bottom: 0.4em">
+                            Policies &ndash; in Autonomy and Ockam
+                        </h2>
+                    </div>
+
+                    <ul class="bullet-list" style="font-size: 1.05em; margin-bottom: 1.5em; flex-shrink: 0">
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Boolean expressions over attributes.</strong> Policies
+                                are S-expression boolean expressions. Operators: and, or, not, =, !=, member?, exists?.
+                                Each expression evaluates to true or false against the sender&rsquo;s credential
+                                attributes.</span
+                            >
+                            <div class="bullet-detail">
+                                Each attribute name/value pair from a credential is added to the environment as
+                                subject.attribute_name. The policy expression is recursively evaluated against this
+                                environment. The result is a boolean: allow or deny. Values can be String, Int, Float,
+                                Bool, or Seq (a sequence of values). The member? operator checks if a value is present
+                                in a Seq.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Boolean shorthand.</strong> For simple attribute checks,
+                                write <code>deploy_agent and staging_access</code> instead of the full S-expression.
+                                Readable for operators, precise for machines.</span
+                            >
+                            <div class="bullet-detail">
+                                The boolean shorthand translates attribute names to (= subject.name "true"). You can use
+                                infix and, or, not operators and string comparisons like component="web". Parentheses
+                                group expressions with precedence rules: not > and > or. An Ockam Identifier can be used
+                                directly as a policy, translating to (= subject.identifier "I84502ce...").
+                            </div>
+                        </li>
+                        <li>
+                            <span class="bullet-label"
+                                ><strong style="color: #e99c1f">Dynamic, distributed.</strong> Policies can be updated
+                                while workers are running. Manage centrally, distribute asynchronously. Enforcement is
+                                local, not centralized.</span
+                            >
+                            <div class="bullet-detail">
+                                PolicyAccessControl models a Resource/Action pair. Policies for that resource and action
+                                can be modified even if the worker they are attached to is already started. Thousands of
+                                agents invoke tools simultaneously. A central decision point in the path of every
+                                invocation cannot keep up. Distribute policies to every enforcement point. Evaluate
+                                locally.
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div
+                        style="flex: 1; min-height: 0; display: flex; align-items: flex-start; justify-content: center"
+                    >
+                        <svg
+                            id="policy-examples"
+                            class="diagram-svg"
+                            viewBox="0 30 520 448"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="width: 100%; max-width: 520px; height: auto"
+                        >
+                            <!-- Example 1: Boolean shorthand -->
+                            <text
+                                x="30"
+                                y="46"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                Boolean shorthand
+                            </text>
+                            <rect
+                                x="20"
+                                y="54"
+                                width="480"
+                                height="32"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="36"
+                                y="74"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                deploy_agent and staging_access
+                            </text>
+
+                            <!-- Example 2: Attribute check with string values -->
+                            <text
+                                x="30"
+                                y="112"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                Attribute check
+                            </text>
+                            <rect
+                                x="20"
+                                y="120"
+                                width="480"
+                                height="32"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="36"
+                                y="140"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                component="billing" or component="refunds"
+                            </text>
+
+                            <!-- Example 3: Scoped deployment (S-expression) -->
+                            <text
+                                x="30"
+                                y="178"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                Scoped deployment
+                            </text>
+                            <rect
+                                x="20"
+                                y="186"
+                                width="480"
+                                height="62"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="36"
+                                y="206"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                (and (= subject.role "deploy")
+                            </text>
+                            <text
+                                x="68"
+                                y="222"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                (= subject.environment "staging")
+                            </text>
+                            <text
+                                x="68"
+                                y="238"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                (= subject.approved_by "release-manager"))
+                            </text>
+
+                            <!-- Example 4: Department + region gate -->
+                            <text
+                                x="30"
+                                y="276"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                Department + region gate
+                            </text>
+                            <rect
+                                x="20"
+                                y="284"
+                                width="480"
+                                height="62"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="36"
+                                y="304"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                (or (= subject.application "billing-agent")
+                            </text>
+                            <text
+                                x="52"
+                                y="320"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                (and (= subject.department "finance")
+                            </text>
+                            <text
+                                x="68"
+                                y="336"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                (= subject.region "us-east")))
+                            </text>
+
+                            <!-- Example 5: Complex boolean shorthand -->
+                            <text
+                                x="30"
+                                y="374"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                Complex boolean shorthand
+                            </text>
+                            <rect
+                                x="20"
+                                y="382"
+                                width="480"
+                                height="32"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="36"
+                                y="402"
+                                font-size="12px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #666"
+                            >
+                                (billing_agent or not production) and analytics
+                            </text>
+
+                            <!-- Example 6: Identifier-based -->
+                            <text
+                                x="30"
+                                y="440"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f"
+                            >
+                                Identifier-based (allow a specific agent)
+                            </text>
+                            <rect
+                                x="20"
+                                y="448"
+                                width="480"
+                                height="28"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 1; fill: rgba(233, 156, 31, 0.06)"
+                            />
+                            <text
+                                x="36"
+                                y="466"
+                                font-size="11px"
+                                style="font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace; fill: #e99c1f"
+                            >
+                                I84502ce0d9a0a91bae29026b84e19be69fb4203a
+                            </text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=7, Z=0  Traces (article)
+         ================================================================ -->
+            <section id="2-7-0" class="slide article-slide" data-x="2" data-y="7" data-z="0" data-no-reveal>
+                <div class="slide-inner">
+                    <div class="bullet-article">
+                        <h2 class="section-heading">Traces &ndash; Who did what, and why?</h2>
+                        <div class="identity-statements">
+                            <div class="identity-statement">
+                                <p>
+                                    An agent invokes a tool, interprets the result, decides what to do next. Traces
+                                    capture
+                                    <span style="color: #e99c1f">every step</span>: each tool invocation, each decision,
+                                    each result. They are the <span style="color: #e99c1f">audit trail</span> and the
+                                    <span style="color: #e99c1f">debugging tool</span>.
+                                </p>
+                                <div class="bullet-detail">
+                                    Traces must capture every step at every level of detail: each tool invocation, each
+                                    decision, each intermediate result. They are how you debug failures, analyze errors,
+                                    and build evaluations. They are also the audit trail: who did what, under whose
+                                    authority. No agent is reliable on day one. Traces are how agents improve.
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>
+                                    Not just &ldquo;agent X did Y&rdquo; but
+                                    <span style="color: #e99c1f">who authorized it</span>, each intermediate agent, and
+                                    the <span style="color: #e99c1f">constraints</span> each delegation imposed. The
+                                    full <span style="color: #e99c1f">delegation chain</span>.
+                                </p>
+                                <div class="bullet-detail">
+                                    A record that says &ldquo;agent X performed action Y&rdquo; tells you what happened.
+                                    It does not tell you who authorized it. The trace must capture the full delegation
+                                    chain: the human who delegated, each intermediate agent, and the constraints each
+                                    delegation imposed.
+                                </div>
+                            </div>
+                            <div class="identity-statement">
+                                <p>
+                                    A log entry can be edited or fabricated. A record
+                                    <span style="color: #e99c1f">signed</span> with the agent&rsquo;s private key cannot
+                                    be forged or repudiated. No agent is reliable on day one. Signed, attributable
+                                    traces are how agents <span style="color: #e99c1f">improve</span>.
+                                </p>
+                                <div class="bullet-detail">
+                                    The signature ties the action to the agent that performed it and the delegation
+                                    chain that authorized it. When an agent hits a case it cannot handle, it escalates
+                                    to a human. The trace captures how the exception was resolved: what the human
+                                    considered, why they chose a particular path. That reasoning, previously locked in
+                                    someone&rsquo;s head, is now captured. Engineers study the traces, build evaluation
+                                    sets, and iterate on the agent until it handles similar cases on its own. The next
+                                    escalation doesn&rsquo;t happen.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================
+         X=2, Y=7, Z=1  Traces drill-in (technical)
+         ================================================================ -->
+            <section id="2-7-1" class="slide" data-x="2" data-y="7" data-z="1" style="padding-top: 3em">
+                <div class="slide-inner" style="align-items: center; justify-content: flex-start">
+                    <h2 class="section-heading" style="margin-bottom: 0.6em; text-align: center">
+                        Traces &ndash; in Autonomy
+                    </h2>
+                    <div
+                        style="
+                            flex: 1;
+                            min-height: 0;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            width: 100%;
+                        "
+                    >
+                        <svg
+                            class="diagram-svg"
+                            viewBox="0 0 360 480"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="max-width: 540px; max-height: 75vh; width: 100%; height: auto"
+                        >
+                            <text
+                                x="180"
+                                y="16"
+                                font-size="11px"
+                                style="
+                                    font-family: system-ui, sans-serif;
+                                    fill: #999;
+                                    letter-spacing: 0.1em;
+                                    text-anchor: middle;
+                                "
+                            >
+                                ANATOMY OF A SIGNED TRANSCRIPT
+                            </text>
+
+                            <!-- Outer signed envelope -->
+                            <rect
+                                x="10"
+                                y="30"
+                                width="340"
+                                height="430"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 2; fill: none"
+                            />
+                            <text
+                                x="180"
+                                y="50"
+                                font-size="10px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f; text-anchor: middle"
+                            >
+                                &#x1F512; Signed by agent&rsquo;s Ockam Identity
+                            </text>
+
+                            <!-- Agent metadata -->
+                            <rect
+                                x="24"
+                                y="62"
+                                width="312"
+                                height="50"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="80"
+                                font-size="9px"
+                                style="font-family: system-ui, sans-serif; fill: #666; text-anchor: middle"
+                            >
+                                Agent: billing_agent_7f3a
+                            </text>
+                            <text
+                                x="180"
+                                y="94"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #666; text-anchor: middle"
+                            >
+                                Credential: {role: &quot;billing&quot;, scope: &quot;refunds&quot;, TTL: 30m}
+                            </text>
+                            <text
+                                x="180"
+                                y="108"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: middle"
+                            >
+                                Delegated by: ops_manager via support_lead
+                            </text>
+
+                            <!-- Row: instructions -->
+                            <rect
+                                x="24"
+                                y="122"
+                                width="312"
+                                height="28"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="140"
+                                font-size="8px"
+                                style="
+                                    font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace;
+                                    fill: #666;
+                                    text-anchor: middle;
+                                "
+                            >
+                                system | &quot;You are a...&quot;
+                            </text>
+                            <text
+                                x="316"
+                                y="140"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: end"
+                            >
+                                instructions
+                            </text>
+
+                            <!-- Row: input -->
+                            <rect
+                                x="24"
+                                y="156"
+                                width="312"
+                                height="28"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="174"
+                                font-size="8px"
+                                style="
+                                    font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace;
+                                    fill: #666;
+                                    text-anchor: middle;
+                                "
+                            >
+                                user | &quot;Refund #12345&quot;
+                            </text>
+                            <text
+                                x="316"
+                                y="174"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: end"
+                            >
+                                input
+                            </text>
+
+                            <!-- Row: decision -->
+                            <rect
+                                x="24"
+                                y="190"
+                                width="312"
+                                height="28"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="208"
+                                font-size="8px"
+                                style="
+                                    font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace;
+                                    fill: #666;
+                                    text-anchor: middle;
+                                "
+                            >
+                                assistant | tool_calls: [...]
+                            </text>
+                            <text
+                                x="316"
+                                y="208"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: end"
+                            >
+                                decision
+                            </text>
+
+                            <!-- Row: result -->
+                            <rect
+                                x="24"
+                                y="224"
+                                width="312"
+                                height="28"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="242"
+                                font-size="8px"
+                                style="
+                                    font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace;
+                                    fill: #666;
+                                    text-anchor: middle;
+                                "
+                            >
+                                tool | lookup_order(...)
+                            </text>
+                            <text
+                                x="316"
+                                y="242"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: end"
+                            >
+                                result
+                            </text>
+
+                            <!-- Row: decision 2 -->
+                            <rect
+                                x="24"
+                                y="258"
+                                width="312"
+                                height="28"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="276"
+                                font-size="8px"
+                                style="
+                                    font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace;
+                                    fill: #666;
+                                    text-anchor: middle;
+                                "
+                            >
+                                assistant | tool_calls: [...]
+                            </text>
+                            <text
+                                x="316"
+                                y="276"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: end"
+                            >
+                                decision
+                            </text>
+
+                            <!-- Row: action -->
+                            <rect
+                                x="24"
+                                y="292"
+                                width="312"
+                                height="28"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="310"
+                                font-size="8px"
+                                style="
+                                    font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace;
+                                    fill: #666;
+                                    text-anchor: middle;
+                                "
+                            >
+                                tool | issue_refund(...)
+                            </text>
+                            <text
+                                x="316"
+                                y="310"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: end"
+                            >
+                                action
+                            </text>
+
+                            <!-- Row: response -->
+                            <rect
+                                x="24"
+                                y="326"
+                                width="312"
+                                height="28"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="344"
+                                font-size="8px"
+                                style="
+                                    font-family: &quot;SF Mono&quot;, &quot;Menlo&quot;, monospace;
+                                    fill: #666;
+                                    text-anchor: middle;
+                                "
+                            >
+                                assistant | &quot;Refund processed...&quot;
+                            </text>
+                            <text
+                                x="316"
+                                y="344"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: end"
+                            >
+                                response
+                            </text>
+
+                            <!-- Policies -->
+                            <rect
+                                x="24"
+                                y="364"
+                                width="312"
+                                height="36"
+                                rx="3"
+                                style="stroke: #999; stroke-width: 1; fill: rgba(0, 0, 0, 0.02)"
+                            />
+                            <text
+                                x="180"
+                                y="381"
+                                font-size="9px"
+                                style="font-family: system-ui, sans-serif; fill: #666; text-anchor: middle"
+                            >
+                                Policies: refund &#x2264; $50, single-order scope
+                            </text>
+                            <text
+                                x="180"
+                                y="395"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #999; text-anchor: middle"
+                            >
+                                Gates: tool_available &#x2713;, invocation &#x2713;, service &#x2713;
+                            </text>
+
+                            <!-- Signature -->
+                            <rect
+                                x="24"
+                                y="410"
+                                width="312"
+                                height="40"
+                                rx="3"
+                                style="stroke: #e99c1f; stroke-width: 1.5; fill: rgba(233, 156, 31, 0.06)"
+                            />
+                            <text
+                                x="180"
+                                y="428"
+                                font-size="9px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f; text-anchor: middle"
+                            >
+                                Signature: Ed25519(agent_private_key, transcript_hash)
+                            </text>
+                            <text
+                                x="180"
+                                y="444"
+                                font-size="8px"
+                                style="font-family: system-ui, sans-serif; fill: #e99c1f; text-anchor: middle"
+                            >
+                                tamper-evident, non-repudiable, attributable
+                            </text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Slide number indicator -->
+        <div class="slide-number" id="slideNumber">0,0,0</div>
+
+        <!-- Navigation hint -->
+        <div class="nav-hint" id="navHint">Arrow keys to navigate</div>
+
+        <script>
+            (function () {
+                "use strict";
+
+                var slides = document.querySelectorAll(".slide");
+                var totalSlides = slides.length;
+                var currentIndex = 0;
+                var slideNumberEl = document.getElementById("slideNumber");
+                var navHintEl = document.getElementById("navHint");
+                var hintDismissed = false;
+
+                function showSlide(index) {
+                    if (index < 0 || index >= totalSlides) return;
+                    slides[currentIndex].classList.remove("active");
+                    currentIndex = index;
+                    slides[currentIndex].classList.add("active");
+
+                    // Show all bullets instantly
+                    var bullets = slides[currentIndex].querySelectorAll(".slide-points li, .bullet-list li");
+                    for (var i = 0; i < bullets.length; i++) {
+                        bullets[i].classList.add("revealed");
+                    }
+
+                    // Update slide number and URL hash
+                    slideNumberEl.textContent = currentIndex + 1 + " / " + totalSlides;
+                    var id = slides[currentIndex].getAttribute("id");
+                    if (id) history.replaceState(null, null, "#" + id);
+
+                    if (!hintDismissed) {
+                        hintDismissed = true;
+                        navHintEl.classList.add("hidden");
+                    }
+                }
+
+                function forward() {
+                    if (currentIndex < totalSlides - 1) showSlide(currentIndex + 1);
+                }
+
+                function back() {
+                    if (currentIndex > 0) showSlide(currentIndex - 1);
+                }
+
+                // Keyboard: arrow keys only
+                document.addEventListener("keydown", function (e) {
+                    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                        e.preventDefault();
+                        forward();
+                    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                        e.preventDefault();
+                        back();
+                    }
+                });
+
+                // Click anywhere: forward (skip links)
+                document.addEventListener("click", function (e) {
+                    if (e.target.closest("a")) return;
+                    forward();
+                });
+
+                // Initialize: jump to hash anchor if present
+                var startIndex = 0;
+                if (location.hash) {
+                    var hashEl = document.getElementById(location.hash.substring(1));
+                    if (hashEl) {
+                        for (var i = 0; i < totalSlides; i++) {
+                            if (slides[i] === hashEl) {
+                                startIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+                showSlide(startIndex);
+
+                setTimeout(function () {
+                    if (!hintDismissed) {
+                        hintDismissed = true;
+                        navHintEl.classList.add("hidden");
+                    }
+                }, 5000);
+            })();
+        </script>
+    </body>
+</html>
