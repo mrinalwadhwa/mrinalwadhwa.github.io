@@ -9,6 +9,13 @@
 
     <!-- Add new items below this line, newest first -->
     <item>
+      <title>Agent Sandboxes, how to create millions of them</title>
+      <link>https://mrinal.com/articles/agent-sandboxes/</link>
+      <guid>https://mrinal.com/articles/agent-sandboxes/</guid>
+      <pubDate>Fri, 21 Feb 2026 00:00:00 GMT</pubDate>
+      <description>Long-horizon agents need their own workspace: a filesystem and a shell. A journey through linux isolation primitives and how we create millions of sandboxed workspaces in milliseconds.</description>
+    </item>
+    <item>
       <title>Agent Identities, everything you need to know</title>
       <link>https://mrinal.com/articles/agent-identities/</link>
       <guid>https://mrinal.com/articles/agent-identities/</guid>

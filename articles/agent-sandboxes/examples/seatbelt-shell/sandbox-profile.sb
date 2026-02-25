@@ -1,0 +1,29 @@
+; sandbox-profile.sb - Seatbelt profile for agent sandboxing
+; Run with: sandbox-exec -f sandbox-profile.sb /bin/bash
+; Note: /tmp is a symlink to /private/tmp on macOS
+
+(version 1)
+
+; Deny everything by default
+(deny default)
+
+; Allow reading from anywhere
+(allow file-read* (subpath "/"))
+
+; Allow writing only to workspace (both symlink and real path)
+(allow file-write* (subpath "/tmp/workspace"))
+(allow file-write* (subpath "/private/tmp/workspace"))
+(allow file-write* (literal "/dev/null"))
+
+; Allow process execution and forking
+(allow process-exec)
+(allow process-fork)
+
+; Allow reading system info
+(allow sysctl-read)
+
+; Allow mach lookups (needed for basic system functionality)
+(allow mach-lookup)
+
+; Allow signal handling
+(allow signal)

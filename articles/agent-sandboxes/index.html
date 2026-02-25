@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Agent Sandboxes, how to create millions of them – Mrinal Wadhwa</title>
+        <meta
+            name="description"
+            content="Long-horizon agents need their own workspace: a filesystem and a shell. A journey through linux isolation primitives and how we create millions of sandboxed workspaces in milliseconds."
+        />
+        <meta name="author" content="Mrinal Wadhwa" />
+        <link rel="canonical" href="https://mrinal.com/articles/agent-sandboxes/" />
+
+        <!-- Open Graph -->
+        <meta property="og:title" content="Agent Sandboxes, how to create millions of them – Mrinal Wadhwa" />
+        <meta
+            property="og:description"
+            content="Long-horizon agents need their own workspace: a filesystem and a shell. A journey through linux isolation primitives and how we create millions of sandboxed workspaces in milliseconds."
+        />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://mrinal.com/articles/agent-sandboxes/" />
+        <meta property="og:image" content="https://mrinal.com/articles/agent-sandboxes/og.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@mrinal" />
+        <meta name="twitter:title" content="Agent Sandboxes, how to create millions of them – Mrinal Wadhwa" />
+        <meta
+            name="twitter:description"
+            content="Long-horizon agents need their own workspace: a filesystem and a shell. A journey through linux isolation primitives and how we create millions of sandboxed workspaces in milliseconds."
+        />
+        <meta name="twitter:image" content="https://mrinal.com/articles/agent-sandboxes/og.png" />
+
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Mrinal Wadhwa"
+            href="https://mrinal.com/follow/rss.xml"
+        />
+        <link rel="stylesheet" href="https://use.typekit.net/biy2rlh.css" />
+        <link rel="stylesheet" type="text/css" href="/styles.css" />
+
+        <!-- Post-specific styles -->
+        <style>
+            body {
+                background: #e6f4f8;
+                color: rgba(0, 0, 0, 0.79);
+            }
+
+            ::selection {
+                background: #e33a42;
+                color: #fff;
+            }
+
+            .container {
+                background: #e6f4f8;
+                margin-left: 0;
+            }
+
+            .body-header {
+                text-align: left;
+                margin-bottom: 4.5em;
+                max-width: 76.5em; /* 60em * 1.275 to match .content’s computed width */
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .body-header p.video-meta {
+                font-size: 1em;
+                line-height: 1.5;
+                color: rgba(0, 0, 0, 0.4);
+                margin: 0 0 1.5em; /* 1 unit below before title */
+            }
+
+            .body-header p.video-meta a {
+                color: rgba(0, 0, 0, 0.6);
+            }
+
+            .body-header p.title-kicker {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+                font-size: 1.5em;
+                line-height: 1.5;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: rgba(0, 0, 0, 0.4);
+                margin: 0;
+                position: relative;
+                top: 0.375em;
+            }
+
+            .article-title {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 700;
+                font-style: normal;
+                text-transform: uppercase;
+                font-size: 4.291em;
+                line-height: 0.9;
+                margin: 0;
+                color: #e33a42;
+                text-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+            }
+
+            @media (max-width: 768px) {
+                .article-title {
+                    font-size: 2.641em;
+                    line-height: 1;
+                }
+            }
+
+            .content {
+                color: rgba(0, 0, 0, 0.79);
+            }
+
+            .content a {
+                color: rgba(0, 0, 0, 0.8);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+            }
+
+            .content a:hover {
+                border-bottom-color: rgba(0, 0, 0, 0.6);
+            }
+
+            .content code {
+                background: #fff;
+                padding: 0.2em 0.4em;
+                border-radius: 4px;
+                font-size: 0.85em;
+                color: rgba(0, 0, 0, 0.79);
+                border: 1px solid rgba(0, 0, 0, 0.12);
+            }
+
+            .content pre code {
+                background: transparent;
+                padding: 0;
+                border-radius: 0;
+                border: none;
+                font-size: inherit;
+                color: inherit;
+            }
+
+            .content pre code span {
+                background: transparent;
+                padding: 0;
+                border-radius: 0;
+                border: none;
+            }
+
+            .section-heading {
+                column-span: all;
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-weight: 400;
+                font-style: italic;
+                font-size: 1.3205em;
+                line-height: 1.781856;
+                margin: 0.389781em 0 0.649635em;
+                color: rgba(0, 0, 0, 0.8);
+            }
+
+            .content p {
+                margin: 0 0 1.176471em; /* 1.5em / 1.275 = 1 unit in base units */
+            }
+
+            .content blockquote {
+                border-left: 3px solid rgba(0, 0, 0, 0.15);
+                padding-left: 1.5em;
+                margin: 1.5em 0;
+                color: rgba(0, 0, 0, 0.5);
+                font-style: italic;
+            }
+
+            .content ol,
+            .content ul {
+                margin: 0 0 1.5em;
+                padding-left: 1.5em;
+            }
+
+            .content li {
+                margin-bottom: 0.5em;
+            }
+
+            .content strong {
+                font-weight: normal;
+                font-variant: small-caps;
+                letter-spacing: 0.05em;
+                color: #801a1a;
+                border-bottom: 1px solid #801a1a;
+            }
+
+            pre {
+                background: #fff;
+                border-radius: 8px;
+                padding: calc(1.5rem - 1px) 3rem;
+                overflow-x: auto;
+                margin: 3rem -3rem 1.5rem;
+                font-size: 1em;
+                line-height: 1.5rem;
+                color: #383a42;
+                border: 1px solid rgba(0, 0, 0, 0.12);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+                column-span: all;
+            }
+
+            pre code {
+                background: transparent;
+                padding: 0;
+                border-radius: 0;
+                border: none;
+                font-size: inherit;
+                color: inherit;
+            }
+
+            pre code span {
+                background: transparent;
+                border: none;
+            }
+
+            /* Syntax highlighting */
+            .kw {
+                color: #a626a4;
+            }
+            .fn {
+                color: #4078f2;
+            }
+            .st {
+                color: #50a14f;
+            }
+            .va {
+                color: #e45649;
+            }
+            .op {
+                color: #383a42;
+            }
+            .cm {
+                color: #a0a1a7;
+                font-style: italic;
+            }
+            .nb {
+                color: #0184bc;
+            }
+            .nu {
+                color: #986801;
+            }
+
+            .quote-images {
+                column-span: all;
+                background: #fff;
+                border-radius: 8px;
+                border: 1px solid rgba(0, 0, 0, 0.12);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+                padding: calc(1.176471em - 1px); /* 1 unit minus border for grid alignment */
+                margin-top: 2.352942em; /* 2 units */
+                margin-bottom: 2.020589em; /* Aligns first baseline of next text to grid (3 units total, compensated for upstream offset) */
+                display: flex;
+                gap: 1.176471em;
+                align-items: flex-start;
+                justify-content: center;
+                height: 14.117647em; /* 12 baseline units = 288px content area */
+            }
+
+            .quote-images img {
+                height: auto;
+                max-height: 100%;
+                min-width: 0;
+                object-fit: contain;
+            }
+
+            .quote-images img:first-child {
+                flex: 0 0 43%;
+                max-width: 43%;
+                border-right: 1px solid rgba(0, 0, 0, 0.1);
+                padding-right: 1.176471em;
+            }
+
+            .quote-images img:last-child {
+                flex: 0 0 52%;
+                max-width: 52%;
+            }
+
+            @media (max-width: 900px) {
+                .quote-images {
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .quote-images img:first-child {
+                    flex: 0 0 auto;
+                    border-right: none;
+                    padding-right: 0;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    padding-bottom: 1.176471em;
+                }
+                .quote-images img:last-child {
+                    flex: 0 0 auto;
+                }
+            }
+
+            .divider {
+                border: none;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                margin-top: calc(3em - 1px); /* 2 units minus border */
+                margin-bottom: 3em; /* 2 units */
+            }
+
+            .columns-divider {
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                margin-top: calc(3em - 1px); /* 2 units minus border */
+                margin-bottom: 3em; /* 2 units */
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1.5em 0;
+                font-size: 0.9em;
+                column-span: all;
+            }
+
+            th,
+            td {
+                text-align: left;
+                padding: 0.75em 1em;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            th {
+                background: rgba(0, 0, 0, 0.05);
+                color: rgba(0, 0, 0, 0.8);
+                font-weight: 600;
+            }
+
+            td {
+                background: transparent;
+            }
+
+            tr:hover td {
+                background: rgba(0, 0, 0, 0.03);
+            }
+
+            .discussion-link {
+                margin: 3em 0 0;
+                line-height: 1.5;
+                text-align: right;
+                font-size: 1em;
+                color: rgba(0, 0, 0, 0.6);
+            }
+
+            .discussion-link a {
+                color: rgba(0, 0, 0, 0.6);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            }
+
+            .discussion-link a:hover {
+                color: rgba(0, 0, 0, 0.8);
+                border-bottom-color: rgba(0, 0, 0, 0.4);
+            }
+
+            @media (max-width: 900px) {
+                .container {
+                    padding: 1.5em;
+                }
+
+                pre {
+                    margin-left: -1.5rem;
+                    margin-right: -1.5rem;
+                    padding-left: 1.5rem;
+                    padding-right: 1.5rem;
+                }
+
+                table {
+                    font-size: 0.8em;
+                }
+
+                th,
+                td {
+                    padding: 0.5em;
+                }
+            }
+
+            .baseline-grid-visible .container {
+                background: transparent;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="/" class="home-link" aria-label="Home"
+            ><svg class="icon" viewBox="0 0 576 512" fill="currentColor">
+                <path
+                    d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 0 160c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-160-32 0c-18 0-32-14.3-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 11 15 11 24z"
+                /></svg
+        ></a>
+        <div class="container">
+            <div class="body-header">
+                <p class="video-meta"><a href="/">Mrinal Wadhwa</a> · February 2026</p>
+                <h1 class="article-title">Agent Sandboxes</h1>
+                <p class="title-kicker">how to create millions of them</p>
+            </div>
+
+            <div class="content">
+                <p>
+                    In Autonomy, our customers can spin up
+                    <a href="/articles/agent-swarms-like-the-one-cursor-created/">swarms</a> of thousands of
+                    <span style="white-space: nowrap">long-horizon</span> agents in milliseconds. These swarms
+                    collaborate across machines and work autonomously for hours.
+                </p>
+
+                <p>
+                    Mid-last year, it was clear to me that agents need their own workspace: a filesystem and a shell.
+                    With one, they can work autonomously over a much longer horizon. Recent models are capable enough to
+                    reason and self-correct. A workspace gives them somewhere to do it. The longer an agent can work,
+                    the more it can achieve.
+                </p>
+
+                <p>
+                    Claude Code was an early glimpse. It wrote progress files and structured notes that bridged its
+                    thinking across context windows.
+                </p>
+
+                <p>
+                    It ran shell commands like grep and awk to find what it needed rather than relying on vector search.
+                    It created and ran ad hoc scripts to get work done without needing a predefined, exhaustive set of
+                    tools.
+                </p>
+
+                <p>
+                    My own experiments confirmed this. A single agent with a workspace could take thousands of
+                    autonomous steps toward complex goals. In
+                    <a href="https://autonomy.computer">Autonomy</a>, it can delegate to swarms of sub-agents that each
+                    have their own workspace. Together, they can autonomously tackle far more difficult problems. The
+                    conclusion was obvious: Autonomy should be able to give every agent its own workspace.
+                </p>
+
+                <p>In the last couple of months, the larger community has caught up.</p>
+
+                <div class="quote-images">
+                    <img
+                        src="quote-gokul-rajaram.png"
+                        alt="Gokul Rajaram: Turns out you are facing an existential challenge: long-horizon agents like Claude Code. Agents that are not trained on a specific domain, but can reliably work for hours or days on end in pursuit of a goal, self-correct, and actually do stuff."
+                    />
+                    <img
+                        src="quote-ethan-mollick.png"
+                        alt="Ethan Mollick: All those products where building an AI agent meant defining a series of basic prompts linked together deterministically through a flowchart with separate RAG inputs are looking pretty dated right about now. They certainly aren’t AI agents as we understand them in a post-Claude-Code world."
+                    />
+                </div>
+
+                <p>
+                    But giving an agent a shell is dangerous. Agents are gullible. They deal in untrusted input and
+                    can’t reliably tell the difference between a legitimate request and a malicious one. If an agent can
+                    run shell commands, an attacker can talk it into running a fork bomb.
+                </p>
+
+                <p>
+                    That risk is amplified in Autonomy. We’re a multi-tenant platform, and our customers are building
+                    multi-tenant products on top of us. Agents from different end users all run side by side. One
+                    compromised agent can’t be allowed to harm another.
+                </p>
+
+                <p>
+                    Every workspace must be locked down. Without filesystem isolation, one agent can read another’s
+                    secrets or corrupt its work.
+                </p>
+
+                <p>
+                    Without process isolation, it can spy on a neighbor’s memory or kill its processes. Without network
+                    controls, it can exfiltrate sensitive data or open a reverse shell. Without resource limits, a
+                    single runaway agent can consume all the memory and starve every other agent on that machine.
+                </p>
+
+                <p>
+                    Swarms of long-horizon agents are incredibly powerful. But to enable them, we needed millions of
+                    locked-down workspaces, created in milliseconds, with minimal overhead, and without compromising
+                    security.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Seatbelt: the macOS Sandbox</h2>
+
+                <p>
+                    I develop on macOS. So the first sandbox technique I explored was Seatbelt: the kernel-enforced
+                    mechanism that Chrome, Safari, and every App Store app use to restrict what a process can do.
+                </p>
+
+                <p>
+                    The interface to it is the command: <code>sandbox-exec</code>. We write a profile in SBPL (Sandbox
+                    Profile Language), a Scheme-like syntax that compiles to kernel-enforced rules.
+                    <code>/System/Library/Sandbox/Profiles/</code> has dozens of built-in profiles worth studying.
+                </p>
+
+                <p>
+                    I deny everything by default, then allow only what’s needed: reads from system paths and the
+                    workspace, writes to only the workspace.
+                </p>
+
+                <p>
+                    Run the following script with <code>./sandbox.sh /bin/bash</code> and we get a shell where reads
+                    outside <code>/usr</code>, <code>/bin</code>, and <code>/tmp/workspace</code> fail, writes outside
+                    <code>/tmp/workspace</code> fail, and network access is limited to approved endpoints. The kernel
+                    enforces the rules.
+                </p>
+
+                <pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># sandbox.sh - Run a command in a sandboxed environment</span>
+
+<span class="fn">mkdir</span> <span class="op">-p</span> <span class="st">/tmp/workspace</span>
+
+<span class="cm"># Create the sandbox profile</span>
+<span class="va">cat</span> <span class="op">></span> /tmp/sandbox-profile.sb <span class="op"><<</span><span class="st">'EOF'</span>
+(version 1)
+(deny default)                                                <span class="cm">; deny everything by default</span>
+(allow file-read* (subpath "/usr"))                           <span class="cm">; allow reading system binaries and libraries</span>
+(allow file-read* (subpath "/bin"))
+(allow file-read* (subpath "/tmp/workspace"))                 <span class="cm">; allow reading the workspace</span>
+(allow file-write* (subpath "/tmp/workspace"))                <span class="cm">; allow writing to the workspace</span>
+(allow file-write* (literal "/dev/null"))
+(allow network-outbound (remote tcp "api.example.com:443"))   <span class="cm">; allow connecting to a specific api endpoint</span>
+(allow process-exec)                                          <span class="cm">; allow executing programs</span>
+(allow process-fork)
+(allow sysctl-read)
+<span class="st">EOF</span>
+
+<span class="cm"># Run the command inside the sandbox</span>
+<span class="va">sandbox-exec</span> <span class="op">-f</span> /tmp/sandbox-profile.sb <span class="st">"$@"</span></code></pre>
+
+                <p>
+                    Seatbelt has no process isolation; a sandboxed process can still see, signal, and kill other
+                    processes on the machine, and trace them to read their memory. There are no resource limits either;
+                    a single runaway process can consume all available memory.
+                </p>
+
+                <p>
+                    Even with these gaps, Seatbelt is far better than a loose coding agent that can read every secret on
+                    your disk. For local development, it’s a meaningful layer of protection. But for production, I
+                    needed to run on Linux with full process isolation and resource limits.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Landlock</h2>
+
+                <p>
+                    The classic approach to filesystem isolation on Linux is <code>chroot</code>. It changes the root
+                    directory for a process so it can only see files under the new root. But <code>chroot</code> was
+                    never designed as a security boundary. A root process can escape it trivially, and it does nothing
+                    to restrict network, processes, or resources. Landlock is the modern replacement.
+                </p>
+
+                <p>
+                    It’s a Linux Security Module, available since kernel 5.13, that lets an unprivileged process
+                    restrict its own filesystem access. No root required. No containers. Once applied, the restrictions
+                    are permanent for that process and all its children. There’s no undo. Landlock uses three syscalls.
+                    There’s no shell command for it. Here’s the minimal C code:
+                </p>
+
+                <pre><code><span class="cm">// sandbox.c - minimal Landlock example</span>
+<span class="kw">#include</span> <span class="st">&lt;linux/landlock.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;sys/prctl.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;sys/syscall.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;fcntl.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;unistd.h&gt;</span>
+
+<span class="cm">// Step 1: Create a ruleset that handles filesystem access</span>
+<span class="kw">struct</span> <span class="nb">landlock_ruleset_attr</span> <span class="va">ruleset_attr</span> <span class="op">=</span> {
+    .<span class="va">handled_access_fs</span> <span class="op">=</span> LANDLOCK_ACCESS_FS_READ_FILE <span class="op">|</span> LANDLOCK_ACCESS_FS_READ_DIR <span class="op">|</span>
+                         LANDLOCK_ACCESS_FS_WRITE_FILE <span class="op">|</span> LANDLOCK_ACCESS_FS_EXECUTE,
+};
+
+<span class="kw">int</span> <span class="fn">ruleset_fd</span> <span class="op">=</span> <span class="fn">syscall</span>(SYS_landlock_create_ruleset, <span class="op">&</span>ruleset_attr, <span class="kw">sizeof</span>(ruleset_attr), <span class="nu">0</span>);
+
+<span class="cm">// Step 2: Add rules - allow read access to /usr</span>
+<span class="kw">struct</span> <span class="nb">landlock_path_beneath_attr</span> <span class="va">path_attr</span> <span class="op">=</span> {
+    .<span class="va">allowed_access</span> <span class="op">=</span> LANDLOCK_ACCESS_FS_READ_FILE <span class="op">|</span> LANDLOCK_ACCESS_FS_READ_DIR <span class="op">|</span> LANDLOCK_ACCESS_FS_EXECUTE,
+    .<span class="va">parent_fd</span> <span class="op">=</span> <span class="fn">open</span>(<span class="st">"/usr"</span>, O_PATH),
+};
+<span class="fn">syscall</span>(SYS_landlock_add_rule, ruleset_fd, LANDLOCK_RULE_PATH_BENEATH, <span class="op">&</span>path_attr, <span class="nu">0</span>);
+<span class="fn">close</span>(path_attr.<span class="va">parent_fd</span>);
+
+<span class="cm">// Add write access to workspace</span>
+path_attr.<span class="va">allowed_access</span> <span class="op">=</span> LANDLOCK_ACCESS_FS_READ_FILE <span class="op">|</span> LANDLOCK_ACCESS_FS_WRITE_FILE;
+path_attr.<span class="va">parent_fd</span> <span class="op">=</span> <span class="fn">open</span>(<span class="st">"/tmp/workspace"</span>, O_PATH);
+<span class="fn">syscall</span>(SYS_landlock_add_rule, ruleset_fd, LANDLOCK_RULE_PATH_BENEATH, <span class="op">&</span>path_attr, <span class="nu">0</span>);
+<span class="fn">close</span>(path_attr.<span class="va">parent_fd</span>);
+
+<span class="cm">// Step 3: Enforce - no going back after this</span>
+<span class="fn">prctl</span>(PR_SET_NO_NEW_PRIVS, <span class="nu">1</span>, <span class="nu">0</span>, <span class="nu">0</span>, <span class="nu">0</span>);
+<span class="fn">syscall</span>(SYS_landlock_restrict_self, ruleset_fd, <span class="nu">0</span>);
+<span class="fn">close</span>(ruleset_fd);
+
+<span class="cm">// Now sandboxed. Exec the target command.</span>
+<span class="fn">execvp</span>(argv[<span class="nu">1</span>], <span class="op">&</span>argv[<span class="nu">1</span>]);</code></pre>
+
+                <p>
+                    Landlock restricts the filesystem. But that&#x2019;s all it does. A Landlock-sandboxed process can
+                    still open TCP connections, exfiltrate data, or establish reverse shells.
+                </p>
+
+                <p>It can see and signal every other process on the machine. It has no resource limits.</p>
+
+                <p>Compile and run the C code as shown below.</p>
+
+                <pre><code><span class="va">$</span> <span class="fn">gcc</span> <span class="op">-o</span> sandbox sandbox.c
+<span class="va">$</span> <span class="fn">mkdir</span> <span class="op">-p</span> /tmp/workspace
+<span class="va">$</span> ./sandbox /bin/bash
+
+<span class="cm"># Inside the sandboxed shell:</span>
+<span class="va">$</span> <span class="fn">echo</span> <span class="st">"test"</span> <span class="op">></span> /tmp/workspace/allowed.txt   <span class="cm"># works</span>
+<span class="va">$</span> <span class="fn">echo</span> <span class="st">"test"</span> <span class="op">></span> /tmp/not-allowed.txt        <span class="cm"># Permission denied</span>
+<span class="va">$</span> <span class="fn">cat</span> /etc/passwd                           <span class="cm"># Permission denied (not in rules)</span></code></pre>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">seccomp</h2>
+
+                <p>
+                    For network restrictions, we need a different tool. seccomp is a kernel mechanism that filters
+                    syscalls. We write a BPF program that runs on every syscall and decides whether to allow or reject
+                    it. Docker, Chrome, and systemd all use it.
+                </p>
+
+                <p>
+                    seccomp closes the network gap that Landlock leaves open. But it can only inspect syscall numbers
+                    and their immediate argument values, not pointers to user memory.
+                </p>
+
+                <p>
+                    It can&#x2019;t filter by destination address. Unlike Seatbelt&#x2019;s per-endpoint rules, seccomp
+                    is all or nothing: block network syscalls entirely, or allow them.
+                </p>
+
+                <p>
+                    Even with Landlock and seccomp, a process can still signal other processes, consume unlimited
+                    memory, and fork without limit.
+                </p>
+
+                <p>The filter below blocks syscalls: socket, connect, and bind.</p>
+
+                <pre><code><span class="cm">// block_network.c - minimal seccomp example</span>
+<span class="kw">#include</span> <span class="st">&lt;linux/seccomp.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;linux/filter.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;linux/audit.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;sys/prctl.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;sys/syscall.h&gt;</span>
+
+<span class="cm">// BPF program: if syscall is socket/connect/bind, return EPERM</span>
+<span class="kw">struct</span> <span class="nb">sock_filter</span> <span class="va">filter</span>[] <span class="op">=</span> {
+    <span class="cm">// Load syscall number</span>
+    BPF_STMT(BPF_LD <span class="op">|</span> BPF_W <span class="op">|</span> BPF_ABS, <span class="fn">offsetof</span>(<span class="kw">struct</span> <span class="nb">seccomp_data</span>, nr)),
+
+    <span class="cm">// If socket(), return EPERM</span>
+    BPF_JUMP(BPF_JMP <span class="op">|</span> BPF_JEQ <span class="op">|</span> BPF_K, SYS_socket, <span class="nu">0</span>, <span class="nu">1</span>),
+    BPF_STMT(BPF_RET <span class="op">|</span> BPF_K, SECCOMP_RET_ERRNO <span class="op">|</span> EPERM),
+
+    <span class="cm">// If connect(), return EPERM</span>
+    BPF_JUMP(BPF_JMP <span class="op">|</span> BPF_JEQ <span class="op">|</span> BPF_K, SYS_connect, <span class="nu">0</span>, <span class="nu">1</span>),
+    BPF_STMT(BPF_RET <span class="op">|</span> BPF_K, SECCOMP_RET_ERRNO <span class="op">|</span> EPERM),
+
+    <span class="cm">// If bind(), return EPERM</span>
+    BPF_JUMP(BPF_JMP <span class="op">|</span> BPF_JEQ <span class="op">|</span> BPF_K, SYS_bind, <span class="nu">0</span>, <span class="nu">1</span>),
+    BPF_STMT(BPF_RET <span class="op">|</span> BPF_K, SECCOMP_RET_ERRNO <span class="op">|</span> EPERM),
+
+    <span class="cm">// Allow everything else</span>
+    BPF_STMT(BPF_RET <span class="op">|</span> BPF_K, SECCOMP_RET_ALLOW),
+};
+
+<span class="kw">struct</span> <span class="nb">sock_fprog</span> <span class="va">prog</span> <span class="op">=</span> {
+    .<span class="va">len</span> <span class="op">=</span> <span class="kw">sizeof</span>(filter) <span class="op">/</span> <span class="kw">sizeof</span>(filter[<span class="nu">0</span>]),
+    .<span class="va">filter</span> <span class="op">=</span> filter,
+};
+
+<span class="cm">// Apply the filter</span>
+<span class="fn">prctl</span>(PR_SET_NO_NEW_PRIVS, <span class="nu">1</span>, <span class="nu">0</span>, <span class="nu">0</span>, <span class="nu">0</span>);
+<span class="fn">prctl</span>(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, <span class="op">&</span>prog);</code></pre>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">cgroups</h2>
+
+                <p>
+                    Landlock and seccomp together cover filesystem and network. But neither limits resources. A process
+                    can still spin up thousands of threads, balloon its memory, or saturate disk I/O.
+                </p>
+
+                <p>
+                    Control groups (cgroups) solve this. They’re a kernel mechanism for limiting CPU, memory, and I/O
+                    per process group. The interface to create cgroups is the filesystem: create a directory under
+                    <code>/sys/fs/cgroup/</code>, write limits into it, and move processes in.
+                </p>
+
+                <p>
+                    If the process exceeds 256MB, the kernel kills it. If it tries to fork more than 50 processes, the
+                    fork fails. If it tries to use more than one core, the scheduler throttles it. The limits are
+                    enforced by the kernel and inherited by all child processes.
+                </p>
+
+                <p>
+                    Resources are now capped. But without namespace isolation, the process still shares the
+                    host&#x2019;s process table and mount tree.
+                </p>
+
+                <pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># cgroup.sh - Apply resource limits</span>
+
+<span class="fn">mkdir</span> <span class="op">-p</span> /sys/fs/cgroup/sandbox
+<span class="fn">echo</span> <span class="st">"256M"</span>          <span class="op">></span> /sys/fs/cgroup/sandbox/memory.max   <span class="cm"># max 256MB memory</span>
+<span class="fn">echo</span> <span class="st">"100000 100000"</span> <span class="op">></span> /sys/fs/cgroup/sandbox/cpu.max      <span class="cm"># max 1 CPU core</span>
+<span class="fn">echo</span> <span class="st">"50"</span>            <span class="op">></span> /sys/fs/cgroup/sandbox/pids.max     <span class="cm"># max 50 processes (stops fork bombs)</span>
+<span class="fn">echo</span> <span class="va">$$</span>              <span class="op">></span> /sys/fs/cgroup/sandbox/cgroup.procs <span class="cm"># move this process in</span>
+
+<span class="cm"># Run the command</span>
+<span class="fn">exec</span> <span class="st">"$@"</span></code></pre>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Namespaces and Bubblewrap</h2>
+
+                <p>
+                    Together, Landlock restricts the filesystem, seccomp restricts syscalls and network, and cgroups
+                    restrict resources. Add namespace isolation to these three primitives and we have a Linux container.
+                    That’s what Docker does under the hood with runc.
+                </p>
+
+                <p>
+                    But containers carry a large overhead: a daemon, image layers, storage drivers, per-container
+                    networking. Container startup takes several seconds. We need millions of sandboxes in milliseconds.
+                    Containers can&#x2019;t get us there. We need namespace isolation without the rest.
+                </p>
+
+                <p>
+                    Namespaces work differently from everything we&#x2019;ve seen so far. Landlock, seccomp, and cgroups
+                    deny access to things that exist. Namespaces make the things not exist at all.
+                </p>
+
+                <p>
+                    A mount namespace hides the host filesystem. A PID namespace hides other processes. A network
+                    namespace hides the host network. What isn&#x2019;t in the namespace doesn&#x2019;t exist.
+                </p>
+
+                <p>
+                    Bubblewrap is a single binary that does exactly this. It wraps a process in its own set of Linux
+                    namespaces: mount, PID, network, IPC. No daemon, no container image, no storage driver.
+                </p>
+
+                <p>
+                    The entire setup takes milliseconds. It starts with an empty mount namespace, then selectively
+                    bind-mounts only the paths we explicitly allow. The process can&#x2019;t see paths that
+                    weren&#x2019;t mounted. It&#x2019;s an allowlist, not a denylist.
+                </p>
+
+                <pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># bubblewrap.sh - Run a command in isolated namespaces</span>
+
+<span class="fn">mkdir</span> <span class="op">-p</span> /workspace/sandbox_a
+
+<span class="va">bwrap</span> \
+  <span class="op">--ro-bind</span> /usr /usr \
+  <span class="op">--ro-bind</span> /lib /lib \
+  <span class="op">--ro-bind</span> /lib64 /lib64 \
+  <span class="op">--ro-bind</span> /bin /bin \
+  <span class="op">--bind</span> /workspace/sandbox_a /workspace \
+  <span class="op">--tmpfs</span> /tmp \
+  <span class="op">--proc</span> /proc \
+  <span class="op">--dev</span> /dev \
+  <span class="op">--unshare-pid</span> \
+  <span class="op">--unshare-net</span> \
+  <span class="op">--unshare-ipc</span> \
+  <span class="op">--new-session</span> \
+  <span class="op">--die-with-parent</span> \
+  <span class="st">"$@"</span></code></pre>
+
+                <p>
+                    Run it with <code>./bubblewrap.sh /bin/bash</code>. Inside, the process sees only <code>/usr</code>,
+                    <code>/lib</code>, <code>/bin</code>, and its <code>/workspace</code>. Another workspace at
+                    <code>/workspace/sandbox_b</code>? Doesn’t exist. The host’s <code>/etc/passwd</code>? Doesn’t
+                    exist. <code>--unshare-pid</code> gives it its own PID namespace, so it can’t see or signal other
+                    processes. <code>--unshare-net</code> gives it its own network namespace with only a loopback
+                    interface. No network access unless we proxy it through a Unix socket.
+                </p>
+
+                <p>
+                    This is the key difference from Landlock. With Landlock, a path like
+                    <code>/etc/shadow</code> exists but access is denied. With Bubblewrap, we never mount that path.
+                    There’s nothing to block because there’s nothing there.
+                </p>
+
+                <p>
+                    Bubblewrap gives us strong agent-to-agent isolation. But isolating agents from each other
+                    isn&#x2019;t enough. We also need to isolate customers from each other and from our infrastructure.
+                </p>
+
+                <p>
+                    Autonomy runs on Amazon EKS. Customers define zones with pods and containers. A container runs many
+                    agents, and each agent’s workspace can be wrapped in Bubblewrap. But Bubblewrap needs
+                    <code>CLONE_NEWUSER</code> to create user namespaces without root. Inside a container, this requires
+                    <code>CAP_SYS_ADMIN</code>, the capability behind most container escape exploits. Granting it would
+                    strengthen the agent boundary but weaken the container boundary.
+                </p>
+
+                <p>
+                    Customers bring their own code to run in these containers. The container boundary is what stands
+                    between that code and our infrastructure. It shares the host kernel with every other container on
+                    that Kubernetes node. We need to strengthen it, not weaken it.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Virtual Hardware: Firecracker</h2>
+
+                <p>
+                    Next, I considered running each customer&#x2019;s pod inside a virtual machine. A dedicated EC2
+                    instance per customer would start too slowly and add too much overhead. Firecracker is a lightweight
+                    virtual machine built for exactly this. It&#x2019;s what AWS Lambda and Fargate use.
+                </p>
+
+                <p>
+                    Instead of sharing the host kernel, each Firecracker VM gets its own Linux kernel. The isolation is
+                    hardware-enforced via Intel VT-x/AMD-V. To escape, an attacker must exploit the guest kernel, then
+                    the Firecracker process or KVM, then gain access to the host. Three independent bugs, in different
+                    codebases.
+                </p>
+
+                <p>Firecracker requires Linux with KVM. The script below downloads it and boots a minimal VM:</p>
+
+                <pre><code><span class="cm">#!/bin/bash</span>
+<span class="kw">set</span> -e
+
+<span class="cm"># Check KVM</span>
+<span class="kw">if</span> [ ! -e /dev/kvm ]; <span class="kw">then</span>
+    <span class="kw">echo</span> <span class="st">"KVM not available. Firecracker requires hardware virtualization."</span>
+    <span class="kw">exit</span> <span class="nu">1</span>
+<span class="kw">fi</span>
+
+<span class="cm"># Download Firecracker</span>
+<span class="va">ARCH</span><span class="op">=</span>$(<span class="kw">uname</span> -m)
+<span class="va">VERSION</span><span class="op">=</span><span class="st">"v1.6.0"</span>
+<span class="va">curl</span> -fsSL -o firecracker \
+  <span class="st">"https://github.com/firecracker-microvm/firecracker/releases/download/</span><span class="op">${</span><span class="va">VERSION</span><span class="op">}</span><span class="st">/firecracker-</span><span class="op">${</span><span class="va">VERSION</span><span class="op">}</span><span class="st">-</span><span class="op">${</span><span class="va">ARCH</span><span class="op">}</span><span class="st">"</span>
+<span class="kw">chmod</span> +x firecracker
+
+<span class="cm"># Download a minimal kernel and rootfs</span>
+<span class="va">curl</span> -fsSL -o vmlinux.bin <span class="st">"https://s3.amazonaws.com/spec.ccfc.min/img/quickstart_guide/</span><span class="op">${</span><span class="va">ARCH</span><span class="op">}</span><span class="st">/kernels/vmlinux.bin"</span>
+<span class="va">curl</span> -fsSL -o rootfs.ext4 <span class="st">"https://s3.amazonaws.com/spec.ccfc.min/img/quickstart_guide/</span><span class="op">${</span><span class="va">ARCH</span><span class="op">}</span><span class="st">/rootfs/bionic.rootfs.ext4"</span>
+
+<span class="cm"># Create a config file</span>
+<span class="va">cat</span> <span class="op">></span> vmconfig.json <span class="op"><<</span>EOF
+{
+  <span class="st">"boot-source"</span>: {
+    <span class="st">"kernel_image_path"</span>: <span class="st">"vmlinux.bin"</span>,
+    <span class="st">"boot_args"</span>: <span class="st">"console=ttyS0 reboot=k panic=1 pci=off"</span>
+  },
+  <span class="st">"drives"</span>: [
+    {
+      <span class="st">"drive_id"</span>: <span class="st">"rootfs"</span>,
+      <span class="st">"path_on_host"</span>: <span class="st">"rootfs.ext4"</span>,
+      <span class="st">"is_root_device"</span>: <span class="kw">true</span>,
+      <span class="st">"is_read_only"</span>: <span class="kw">false</span>
+    }
+  ],
+  <span class="st">"machine-config"</span>: {
+    <span class="st">"vcpu_count"</span>: <span class="nu">1</span>,
+    <span class="st">"mem_size_mib"</span>: <span class="nu">128</span>
+  }
+}
+EOF
+
+<span class="kw">echo</span> <span class="st">"Starting Firecracker VM..."</span>
+<span class="kw">echo</span> <span class="st">"You'll get a login prompt. Default: root (no password)"</span>
+<span class="kw">echo</span> <span class="st">"Type 'poweroff' to exit."</span>
+<span class="kw">echo</span> <span class="st">""</span>
+
+<span class="cm"># Run Firecracker</span>
+./firecracker <span class="op">--no-api</span> <span class="op">--config-file</span> vmconfig.json</code></pre>
+
+                <p>
+                    Save as <code>run-firecracker.sh</code> and run with
+                    <code>chmod +x run-firecracker.sh && sudo ./run-firecracker.sh</code>. We see a Linux boot sequence
+                    and get a login prompt. This is a complete, isolated Linux system. It has its own kernel, its own
+                    init, its own view of the world.
+                </p>
+
+                <p>
+                    Fargate would be a natural choice. It runs on Firecracker under the hood: ~125ms boot time, ~5 MiB
+                    memory overhead, an attack surface much smaller than a shared kernel.
+                </p>
+
+                <p>
+                    The ideal combination would be Fargate for hardware isolation between customers, Bubblewrap for
+                    namespace isolation between agents. But Fargate&#x2019;s seccomp profile blocks
+                    <code>CLONE_NEWUSER</code>, and Fargate doesn&#x2019;t allow <code>CAP_SYS_ADMIN</code>.
+                </p>
+
+                <p>Firecracker and Bubblewrap can&#x2019;t work together on Fargate.</p>
+
+                <p>
+                    We could run Firecracker ourselves. Kata Containers integrates it with Kubernetes as a container
+                    runtime. But Kata needs KVM. On AWS, that means bare metal instances or nested virtualization, and
+                    neither works with EKS auto mode.
+                </p>
+
+                <p>
+                    We use EKS auto mode. AWS manages node infrastructure: scaling, health checks, draining, AMI
+                    updates. Choosing Kata would mean giving all of that up. We would have to provision instances with
+                    KVM access, self-manage node lifecycle, install and update Kata on every node, and maintain guest
+                    kernel images. We&#x2019;d end up rebuilding Fargate ourselves, just without the restrictions.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Virtual Kernel: gVisor</h2>
+
+                <p>Firecracker virtualizes the hardware. gVisor virtualizes the kernel.</p>
+
+                <p>
+                    gVisor intercepts every syscall and reimplements Linux kernel behavior in user space. The sandboxed
+                    process talks to gVisor&#x2019;s Sentry, not the real kernel. Even if the process exploits a kernel
+                    vulnerability, it&#x2019;s exploiting gVisor&#x2019;s Go implementation, not the host. The attack
+                    surface shifts from ~260 Linux syscalls in C to ~40 host syscalls in memory-safe Go.
+                </p>
+
+                <p>
+                    gVisor is an OCI-compatible container runtime, a drop-in replacement for runc. In Autonomy, we run
+                    it on EKS auto mode nodes. No Fargate restrictions. No blocked capabilities.
+                </p>
+
+                <pre><code><span class="cm"># Install gVisor</span>
+<span class="va">curl</span> <span class="op">-fsSL</span> https://gvisor.dev/archive.key <span class="op">|</span> <span class="kw">sudo</span> gpg <span class="op">--dearmor</span> -o /usr/share/keyrings/gvisor.gpg
+<span class="kw">echo</span> <span class="st">"deb [arch=amd64 signed-by=/usr/share/keyrings/gvisor.gpg] \
+  https://storage.googleapis.com/gvisor/releases release main"</span> \
+  <span class="op">|</span> <span class="kw">sudo</span> tee /etc/apt/sources.list.d/gvisor.list
+<span class="kw">sudo</span> apt-get update <span class="op">&&</span> <span class="kw">sudo</span> apt-get install -y runsc
+
+<span class="cm"># Configure Docker to use gVisor</span>
+<span class="kw">sudo</span> mkdir -p /etc/docker
+<span class="kw">sudo</span> tee /etc/docker/daemon.json <span class="op"><<</span>EOF
+{
+  <span class="st">"runtimes"</span>: {
+    <span class="st">"runsc"</span>: {
+      <span class="st">"path"</span>: <span class="st">"/usr/bin/runsc"</span>
+    }
+  }
+}
+EOF
+<span class="kw">sudo</span> systemctl restart docker</code></pre>
+
+                <p>
+                    The only change is <code>--runtime=runsc</code>. The Sentry intercepts every syscall: file reads,
+                    process forks, network calls. The entire syscall surface changes. The host kernel is unreachable.
+                </p>
+
+                <p>
+                    When Bubblewrap requests <code>CAP_SYS_ADMIN</code> inside gVisor, the Sentry grants it virtually.
+                    The capability never reaches the host.
+                </p>
+
+                <p>
+                    gVisor isolates customers from each other and from infrastructure. Bubblewrap isolates agents from
+                    each other. This is the combination that works.
+                </p>
+
+                <p>Run the same container with and without <code>--runtime=runsc</code>:</p>
+
+                <pre><code><span class="cm"># Standard container runtime (runc)</span>
+<span class="va">docker</span> run --rm ubuntu uname -r
+<span class="cm"># 6.1.109-118.189.amzn2023.x86_64</span>
+
+<span class="cm"># gVisor container runtime (runsc)</span>
+<span class="va">docker</span> run --rm <span class="op">--runtime=runsc</span> ubuntu uname -r
+<span class="cm"># 4.4.0</span></code></pre>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Customer Isolation</h2>
+
+                <p>
+                    The techniques above protect two boundaries: an outer boundary between customers and our
+                    infrastructure, and an inner boundary between agents.
+                </p>
+
+                <p>
+                    A customer&#x2019;s container shares the host kernel with every other container on that node. We
+                    considered three approaches to strengthening it.
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Shared Kernel (runc)</th>
+                            <th>Virtual Hardware (Firecracker)</th>
+                            <th>Virtual Kernel (gVisor)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Kernel</td>
+                            <td>Shared host kernel</td>
+                            <td>Own kernel per VM</td>
+                            <td>Reimplemented in Go</td>
+                        </tr>
+                        <tr>
+                            <td>Host syscall surface</td>
+                            <td>~260</td>
+                            <td>~25</td>
+                            <td>~40</td>
+                        </tr>
+                        <tr>
+                            <td>Escape requires</td>
+                            <td>1 kernel bug</td>
+                            <td>KVM + Firecracker chain</td>
+                            <td>Sentry bug (Go, not kernel)</td>
+                        </tr>
+                        <tr>
+                            <td>After escape</td>
+                            <td>❌ Host node, all containers exposed</td>
+                            <td>✅ Sandboxed Firecracker process</td>
+                            <td>✅ Sandboxed Sentry process</td>
+                        </tr>
+                        <tr>
+                            <td>Bubblewrap inside</td>
+                            <td>⚠️ Needs <code>CAP_SYS_ADMIN</code></td>
+                            <td>❌ <code>CLONE_NEWUSER</code> blocked</td>
+                            <td>✅ Virtual <code>CAP_SYS_ADMIN</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    The &#x201c;after escape&#x201d; row matters most. With a shared kernel, escaping one container puts
+                    the attacker on the host node. Every other container on that node is exposed. The kubelet has
+                    credentials to the Kubernetes API server. The node&#x2019;s IAM role may grant access to cloud
+                    resources. One kernel exploit can cascade from container to node to cluster to cloud account.
+                </p>
+
+                <p>
+                    With Firecracker or gVisor, escaping the boundary lands the attacker in a sandboxed process with
+                    minimal privileges. They need a second, independent exploit just to reach the host. The first gets
+                    them nowhere.
+                </p>
+
+                <p>
+                    gVisor is the strongest option where both layers work together. It provides a virtual kernel
+                    boundary comparable to Fargate&#x2019;s hardware boundary, without blocking Bubblewrap inside.
+                </p>
+
+                <p>
+                    If Fargate lifts its restrictions, hardware-enforced isolation becomes available without changing
+                    the agent layer. If we later choose to manage Kata Containers ourselves, we can add Firecracker
+                    underneath. gVisor is the right choice today. The others remain open.
+                </p>
+            </div>
+
+            <div class="columns-divider"></div>
+
+            <div class="content">
+                <h2 class="section-heading">Millions of Sandboxes</h2>
+
+                <p>
+                    The inner boundary is between agents. One container per agent would provide filesystem, process,
+                    network, and resource isolation out of the box. But containers are slow to start, complex to
+                    maintain, and they impose an upper bound. Past a certain scale, creating more is impossible.
+                </p>
+
+                <p>
+                    Kubernetes supports a maximum of
+                    <a href="https://kubernetes.io/docs/setup/best-practices/cluster-large/"
+                        >150,000 pods per cluster, across 5,000 nodes</a
+                    >. That ceiling requires the best DevOps teams in the world. Practically, clusters become hard to
+                    maintain in the tens of thousands of pods. Every pod is an object in etcd. Every pod needs an IP
+                    address, a containerd-shim process, kubelet health monitoring. The orchestration overhead per pod
+                    compounds until the cluster hits a wall.
+                </p>
+
+                <p>
+                    Bubblewrap and cgroups have no such constraint. They are kernel primitives. A single container can
+                    spawn millions of Bubblewrap sandboxes without the Kubernetes control plane knowing they exist. No
+                    etcd entries, no IP addresses, no API server watches.
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Landlock</th>
+                            <th>seccomp</th>
+                            <th>cgroups</th>
+                            <th>Container</th>
+                            <th>Bubblewrap + cgroups</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Filesystem</td>
+                            <td>✅ Kernel blocks</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>✅ Isolated</td>
+                            <td>✅ Isolated</td>
+                        </tr>
+                        <tr>
+                            <td>Processes</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>✅ Own PID ns</td>
+                            <td>✅ Own PID ns</td>
+                        </tr>
+                        <tr>
+                            <td>Network</td>
+                            <td>—</td>
+                            <td>✅ Blocks syscalls</td>
+                            <td>—</td>
+                            <td>✅ Own net ns</td>
+                            <td>✅ Own net ns</td>
+                        </tr>
+                        <tr>
+                            <td>Resources</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>✅ CPU, memory, I/O</td>
+                            <td>✅ cgroups</td>
+                            <td>✅ cgroups</td>
+                        </tr>
+                        <tr>
+                            <td>Startup</td>
+                            <td>Negligible</td>
+                            <td>Negligible</td>
+                            <td>Negligible</td>
+                            <td>❌ ~5 seconds</td>
+                            <td>✅ ~5 milliseconds</td>
+                        </tr>
+                        <tr>
+                            <td>Memory per sandbox</td>
+                            <td>None</td>
+                            <td>None</td>
+                            <td>None</td>
+                            <td>❌ ~10 MiB</td>
+                            <td>✅ Negligible</td>
+                        </tr>
+                        <tr>
+                            <td>Max per cluster</td>
+                            <td>No limit</td>
+                            <td>No limit</td>
+                            <td>No limit</td>
+                            <td>❌ 150,000</td>
+                            <td>✅ No limit</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content">
+                <p>
+                    In Autonomy, none of this complexity is visible to a developer. Each agent gets a sandboxed
+                    workspace through a tool definition: <code>Workspace</code>.
+                </p>
+
+                <p>
+                    Each <code>Workspace()</code> spawns a Bubblewrap sandbox in about five milliseconds. The agent gets
+                    a mount namespace where only its workspace is visible, a PID namespace where it&#x2019;s PID 1, and
+                    an isolated <code>/tmp</code>. seccomp filters its syscalls. cgroups cap its CPU, memory, and
+                    process count. The customer&#x2019;s gVisor container intercepts every syscall underneath,
+                    reimplements Linux in Go, and exposes ~40 host syscalls instead of ~260.
+                </p>
+
+                <p>
+                    By default, each workspace is isolated to a single agent. But agents that need to coordinate can
+                    also share a workspace. The filesystem then becomes a shared surface: one agent writes a plan,
+                    another refines it.
+                </p>
+
+                <pre><code><span class="kw">from</span> <span class="nb">autonomy</span> <span class="kw">import</span> <span class="nb">Agent</span>, <span class="nb">Model</span>, <span class="nb">Node</span>, <span class="nb">Zone</span>, <span class="nb">Workspace</span>
+
+<span class="cm"># Discover runner machines and distribute work</span>
+<span class="va">runners</span> = <span class="kw">await</span> <span class="nb">Zone</span>.<span class="fn">nodes</span>(<span class="va">node</span>, filter=<span class="st">"runner"</span>)
+<span class="va">batches</span> = <span class="fn">split_list_into_n_parts</span>(<span class="va">pull_requests</span>, <span class="nb">len</span>(<span class="va">runners</span>))
+
+<span class="kw">for</span> <span class="va">runner</span>, <span class="va">batch</span> <span class="kw">in</span> <span class="nb">zip</span>(<span class="va">runners</span>, <span class="va">batches</span>):
+    <span class="kw">await</span> <span class="va">runner</span>.<span class="fn">start_worker</span>(<span class="st">"reviewer"</span>, <span class="nb">ReviewWorker</span>())
+    <span class="kw">for</span> <span class="va">pr</span> <span class="kw">in</span> <span class="va">batch</span>:
+        <span class="kw">await</span> <span class="va">node</span>.<span class="fn">send</span>(<span class="st">"reviewer"</span>, <span class="va">pr</span>, node=<span class="va">runner</span>.name)
+
+<span class="cm">...</span>
+
+<span class="cm"># Each worker spawns an agent with its own sandboxed workspace</span>
+<span class="kw">class</span> <span class="nb">ReviewWorker</span>:
+    <span class="kw">async def</span> <span class="fn">review</span>(<span class="va">self</span>, <span class="va">pr</span>):
+        <span class="kw">await</span> <span class="nb">Agent</span>.<span class="fn">start</span>(
+            node=<span class="va">self</span>.node,
+            instructions=<span class="st">"Review ..."</span>,
+            model=<span class="nb">Model</span>(<span class="st">"claude-opus-4-5"</span>),
+            tools=[<span class="nb">Workspace</span>()],
+        )</code></pre>
+            </div>
+
+            <div class="content">
+                <p>
+                    The agent gets a <code>terminal</code>, <code>read_file</code>, <code>write_file</code>,
+                    <code>edit_file</code>, and a few other tools to work with its filesystem. It sees what looks like a
+                    full Linux environment. It runs shell commands, writes scripts, installs packages. But the
+                    boundaries are invisible and absolute.
+                </p>
+
+                <p>
+                    A prompt injection that tells the agent to read another workspace fails: the path doesn&#x2019;t
+                    exist in its namespace. A fork bomb hits the cgroup process limit and stops. An attempt to signal or
+                    kill another agent&#x2019;s process fails: the process doesn&#x2019;t exist in its namespace.
+                </p>
+
+                <p>
+                    Sandboxing is one layer of control. I wrote about the other in
+                    <a href="/articles/agent-identities/">Agent Identities</a>. Both create gates, not guardrails:
+                    deterministic controls the agent cannot bypass.
+                </p>
+
+                <p>
+                    This is how we create millions of sandboxes for
+                    <a href="/articles/agent-swarms-like-the-one-cursor-created/">swarms</a> of agents.
+                </p>
+            </div>
+
+            <hr class="divider" />
+
+            <p class="discussion-link">
+                <a
+                    href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fmrinal.com%2Farticles%2Fagent-sandboxes%2F&t=Agent%20Sandboxes"
+                >
+                    Discuss on Hacker News
+                </a>
+            </p>
+        </div>
+
+        <script>
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "g" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                    document.body.classList.toggle("baseline-grid-visible");
+                }
+            });
+        </script>
+    </body>
+</html>

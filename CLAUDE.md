@@ -2,6 +2,26 @@
 
 This is a static personal website for Mrinal Wadhwa at mrinal.com. It uses pure HTML/CSS with no build system or templating.
 
+## Viewing Webpages
+
+Always use `agent-browser` CLI to view and interact with webpages, not the puppeteer tools:
+
+```bash
+# Open a page
+agent-browser open "http://127.0.0.1:5555/articles/your-post-slug/"
+
+# Set viewport size
+agent-browser set viewport 1200 630
+
+# Execute JavaScript
+agent-browser eval "document.querySelector('.title').style.color = 'red';"
+
+# Take a screenshot
+agent-browser screenshot path/to/output.png
+```
+
+The `agent-browser` CLI is more reliable than puppeteer tools and should be the default choice for any browser automation tasks.
+
 ## Adding a New Article
 
 1. **Create the post directory and file:**

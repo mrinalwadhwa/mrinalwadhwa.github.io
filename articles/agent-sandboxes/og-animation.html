@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Agent Sandboxes – OG Animation</title>
+        <link rel="stylesheet" href="https://use.typekit.net/biy2rlh.css" />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                width: 1200px;
+                height: 630px;
+                overflow: hidden;
+                background: #e6f4f8;
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+            }
+
+            .top-half {
+                height: 280px;
+                padding: 48px 64px 0;
+                position: relative;
+                z-index: 2;
+            }
+
+            .meta {
+                font-size: 16px;
+                line-height: 1.5;
+                color: rgba(0, 0, 0, 0.4);
+                margin-bottom: 16px;
+            }
+
+            .meta a {
+                color: rgba(0, 0, 0, 0.6);
+                text-decoration: none;
+            }
+
+            .title {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 700;
+                font-style: normal;
+                text-transform: uppercase;
+                font-size: 86px;
+                line-height: 0.9;
+                margin: 0;
+                color: #e33a42;
+                text-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+            }
+
+            .kicker {
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+                font-size: 30px;
+                line-height: 1.5;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: rgba(0, 0, 0, 0.4);
+                margin: 6px 0 0;
+            }
+
+            .bottom-half {
+                height: 350px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            canvas {
+                display: block;
+                width: 1200px;
+                height: 350px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="top-half">
+            <p class="meta">Mrinal Wadhwa · February 2026</p>
+            <h1 class="title">Agent Sandboxes</h1>
+            <p class="kicker">how to create millions of them</p>
+        </div>
+
+        <div class="bottom-half">
+            <canvas id="cascade" width="2400" height="700"></canvas>
+        </div>
+
+        <script>
+            const canvas = document.getElementById("cascade");
+            const ctx = canvas.getContext("2d");
+            const W = canvas.width;
+            const H = canvas.height;
+
+            // Sandbox cell properties
+            const CELL_SIZE = 18;
+            const GAP = 4;
+            const STEP = CELL_SIZE + GAP;
+            const COLS = Math.floor((W - 80) / STEP);
+            const ROWS = Math.floor((H - 40) / STEP);
+            const OFFSET_X = (W - COLS * STEP + GAP) / 2;
+            const OFFSET_Y = 20;
+
+            // Colors for sandbox cells
+            const colors = [
+                { bg: "rgba(227, 58, 66, 0.35)", border: "rgba(227, 58, 66, 0.60)" },
+                { bg: "rgba(227, 58, 66, 0.25)", border: "rgba(227, 58, 66, 0.50)" },
+                { bg: "rgba(128, 26, 26, 0.25)", border: "rgba(128, 26, 26, 0.45)" },
+                { bg: "rgba(40, 120, 160, 0.25)", border: "rgba(40, 120, 160, 0.45)" },
+                { bg: "rgba(40, 120, 160, 0.18)", border: "rgba(40, 120, 160, 0.38)" },
+                { bg: "rgba(180, 60, 70, 0.20)", border: "rgba(180, 60, 70, 0.42)" },
+            ];
+
+            // State
+            const cells = [];
+            const totalCells = COLS * ROWS;
+            let spawnQueue = [];
+            let sandboxCount = 0;
+            let elapsedMs = 0;
+            let startTime = null;
+            let phase = "waiting"; // waiting, spawning, done
+
+            // Build spawn order: ripple from center-left
+            function buildSpawnOrder() {
+                const originCol = Math.floor(COLS * 0.15);
+                const originRow = Math.floor(ROWS * 0.5);
+                const items = [];
+
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        const dist = Math.sqrt(Math.pow(c - originCol, 2) + Math.pow(r - originRow, 2));
+                        items.push({
+                            row: r,
+                            col: c,
+                            dist: dist + Math.random() * 2.5,
+                        });
+                    }
+                }
+
+                items.sort((a, b) => a.dist - b.dist);
+                return items;
+            }
+
+            // Initialize grid state
+            function initGrid() {
+                for (let r = 0; r < ROWS; r++) {
+                    cells[r] = [];
+                    for (let c = 0; c < COLS; c++) {
+                        cells[r][c] = {
+                            alive: false,
+                            opacity: 0,
+                            color: colors[Math.floor(Math.random() * colors.length)],
+                            spawnTime: 0,
+                            pulsePhase: Math.random() * Math.PI * 2,
+                        };
+                    }
+                }
+                spawnQueue = buildSpawnOrder();
+            }
+
+            function drawCell(col, row, cell, time) {
+                if (!cell.alive) return;
+
+                const x = OFFSET_X + col * STEP;
+                const y = OFFSET_Y + row * STEP;
+
+                // Fade in
+                const age = time - cell.spawnTime;
+                const fadeIn = Math.min(1, age / 300);
+                const alpha = fadeIn * cell.opacity;
+
+                if (alpha < 0.01) return;
+
+                // Subtle pulse
+                const pulse = 0.85 + 0.15 * Math.sin(cell.pulsePhase + time * 0.002);
+
+                ctx.globalAlpha = alpha * pulse;
+
+                // Fill
+                ctx.fillStyle = cell.color.bg;
+                ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+
+                // Border
+                ctx.strokeStyle = cell.color.border;
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(x + 0.5, y + 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
+
+                // Inner glow on recently spawned
+                if (age < 500) {
+                    const glowAlpha = (1 - age / 500) * 0.4;
+                    ctx.fillStyle = `rgba(227, 58, 66, ${glowAlpha})`;
+                    const inset = 3;
+                    ctx.fillRect(x + inset, y + inset, CELL_SIZE - inset * 2, CELL_SIZE - inset * 2);
+                }
+
+                ctx.globalAlpha = 1;
+            }
+
+            // Spawn rate curve: starts moderate, accelerates, then eases
+            function getSpawnRate(progress) {
+                // progress: 0 to 1
+                if (progress < 0.1) return 3;
+                if (progress < 0.3) return 8 + progress * 40;
+                if (progress < 0.7) return 25 + progress * 30;
+                if (progress < 0.9) return 40;
+                return 15; // slow down at end
+            }
+
+            let lastFrame = 0;
+            let spawnAccum = 0;
+
+            function animate(timestamp) {
+                if (!startTime) {
+                    startTime = timestamp;
+                    lastFrame = timestamp;
+                    phase = "waiting";
+                }
+
+                const dt = timestamp - lastFrame;
+                lastFrame = timestamp;
+                const totalTime = timestamp - startTime;
+
+                // Wait 800ms before starting
+                if (phase === "waiting" && totalTime > 800) {
+                    phase = "spawning";
+                }
+
+                ctx.clearRect(0, 0, W, H);
+
+                // Spawn cells
+                if (phase === "spawning" && spawnQueue.length > 0) {
+                    const progress = 1 - spawnQueue.length / totalCells;
+                    const rate = getSpawnRate(progress);
+                    spawnAccum += rate * (dt / 16.67);
+
+                    const toSpawn = Math.floor(spawnAccum);
+                    spawnAccum -= toSpawn;
+
+                    for (let i = 0; i < toSpawn && spawnQueue.length > 0; i++) {
+                        const item = spawnQueue.shift();
+                        const cell = cells[item.row][item.col];
+                        cell.alive = true;
+                        cell.opacity = 0.6 + Math.random() * 0.4;
+                        cell.spawnTime = timestamp;
+                        sandboxCount++;
+                    }
+
+                    if (spawnQueue.length === 0) {
+                        phase = "done";
+                    }
+                }
+
+                // Draw all cells
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        drawCell(c, r, cells[r][c], timestamp);
+                    }
+                }
+
+                // Fade edges
+                const grad = ctx.createLinearGradient(0, 0, 0, H);
+                grad.addColorStop(0, "rgba(230, 244, 248, 0.8)");
+                grad.addColorStop(0.08, "rgba(230, 244, 248, 0)");
+                grad.addColorStop(0.92, "rgba(230, 244, 248, 0)");
+                grad.addColorStop(1, "rgba(230, 244, 248, 0.6)");
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, W, H);
+
+                // Side fades
+                const gradL = ctx.createLinearGradient(0, 0, 80, 0);
+                gradL.addColorStop(0, "rgba(230, 244, 248, 0.7)");
+                gradL.addColorStop(1, "rgba(230, 244, 248, 0)");
+                ctx.fillStyle = gradL;
+                ctx.fillRect(0, 0, 80, H);
+
+                const gradR = ctx.createLinearGradient(W - 80, 0, W, 0);
+                gradR.addColorStop(0, "rgba(230, 244, 248, 0)");
+                gradR.addColorStop(1, "rgba(230, 244, 248, 0.7)");
+                ctx.fillStyle = gradR;
+                ctx.fillRect(W - 80, 0, 80, H);
+
+                requestAnimationFrame(animate);
+            }
+
+            initGrid();
+            requestAnimationFrame(animate);
+        </script>
+    </body>
+</html>
