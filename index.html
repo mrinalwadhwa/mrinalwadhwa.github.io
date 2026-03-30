@@ -164,8 +164,9 @@
             .talk-tiles {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 2em;
+                gap: 3em 2em; /* 2 units row gap, 2em column gap */
                 text-align: left;
+                margin-top: 3em; /* 2 units below heading */
             }
 
             .talk-tile {
@@ -592,6 +593,62 @@
                             leaders.
                         </h3>
                     </a>
+                    <!-- Tile 5: 1Password — Swarms of on-call agents -->
+                    <div class="talk-tile talk-tile--video" data-videoid="ZXSKPnBnV3w">
+                        <div class="tile-thumb">
+                            <img
+                                src="https://i.ytimg.com/vi/ZXSKPnBnV3w/hqdefault.jpg"
+                                alt="Swarms of on-call agents with 1Password"
+                            />
+                        </div>
+                        <div class="tile-player"></div>
+                        <button class="tile-close" aria-label="Close video">&times; Close</button>
+                        <h3>
+                            Cryptographic identities and how to build secure agent swarms. A chat with GM of AI at
+                            1Password.
+                        </h3>
+                    </div>
+
+                    <!-- Tile 6: Snyk — Identities and secure communication -->
+                    <div class="talk-tile talk-tile--video" data-videoid="SF1arse7B5M">
+                        <div class="tile-thumb">
+                            <img
+                                src="/images/talks/snyk-danny-allen-mrinal-wadhwa-cto-web.jpg"
+                                alt="Cryptographic identities and secure communication with the CTO of Snyk"
+                            />
+                        </div>
+                        <div class="tile-player"></div>
+                        <button class="tile-close" aria-label="Close video">&times; Close</button>
+                        <h3>
+                            Trustful communication in distributed systems, a conversation with Snyk's CTO on their
+                            podcast.
+                        </h3>
+                    </div>
+
+                    <!-- Tile 7: Snowflake — Context engineering -->
+                    <div class="talk-tile talk-tile--video" data-videoid="t9jTkEhcNUg">
+                        <div class="tile-thumb">
+                            <img
+                                src="https://i.ytimg.com/vi/t9jTkEhcNUg/hqdefault.jpg"
+                                alt="Context engineering for autonomous agents at Snowflake"
+                            />
+                        </div>
+                        <div class="tile-player"></div>
+                        <button class="tile-close" aria-label="Close video">&times; Close</button>
+                        <h3>
+                            Context engineering and how to make autonomous agents that succeed, a talk at Snowflake.
+                        </h3>
+                    </div>
+
+                    <!-- Tile 8: WorkOS demo night -->
+                    <div class="talk-tile talk-tile--video" data-videoid="ZJVcOy9QNp4">
+                        <div class="tile-thumb">
+                            <img src="https://i.ytimg.com/vi/ZJVcOy9QNp4/hqdefault.jpg" alt="Demo night at WorkOS" />
+                        </div>
+                        <div class="tile-player"></div>
+                        <button class="tile-close" aria-label="Close video">&times; Close</button>
+                        <h3>Shipping an AI product live, in 10 minutes, at the MCP demo night at WorkOS.</h3>
+                    </div>
                 </div>
             </section>
 

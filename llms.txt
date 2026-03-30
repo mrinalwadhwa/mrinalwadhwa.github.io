@@ -14,6 +14,10 @@ Some things I've created:
 - [Talk at Snowflake on how to create long-horizon agents that can autonomously do complex work.](https://www.youtube.com/watch?v=0Ifm-W2Frv0)
 - [Software engineering is getting harder, a conversation with ScaleKit's CTO on their podcast.](https://www.youtube.com/watch?v=rkXnJkkvnks)
 - [Guest lectures at IIM Bangalore on how AI agents are disrupting industries, and my advice for leaders.](https://www.linkedin.com/posts/mrinalwadhwa_guest-lectures-on-agents-at-iim-bangalore-activity-7390975540800811008-l0k2)
+- [Cryptographic identities and how to build secure agent swarms. A chat with GM of AI at 1Password.](https://www.youtube.com/watch?v=ZXSKPnBnV3w)
+- [Trustful communication in distributed systems, a conversation with Snyk's CTO on their podcast.](https://www.youtube.com/watch?v=SF1arse7B5M)
+- [Context engineering and how to make autonomous agents that succeed, a talk at Snowflake.](https://www.youtube.com/watch?v=t9jTkEhcNUg)
+- [Shipping an AI product live, in 10 minutes, at the MCP demo night at WorkOS.](https://www.youtube.com/watch?v=ZJVcOy9QNp4)
 
 ## Background
 
