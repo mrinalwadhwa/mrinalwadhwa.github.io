@@ -63,6 +63,382 @@
         />
         <link rel="stylesheet" href="https://use.typekit.net/biy2rlh.css" />
         <link rel="stylesheet" type="text/css" href="styles.css" />
+        <link rel="stylesheet" type="text/css" href="/scripts/lite-yt-embed.css" />
+        <script src="/scripts/lite-yt-embed.js" defer></script>
+
+        <style>
+            /* Lede List */
+            .lede-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                padding-top: 0;
+                padding-bottom: 7.5em; /* 5 units — plus 1 unit lede-created margin = 6 units gap */
+                max-width: 52em;
+                margin: 0 auto;
+            }
+
+            .lede-wrapper .lede {
+                margin-bottom: 0;
+            }
+
+            .lede-cto {
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-size: 2.1em;
+                line-height: 1.43;
+                text-align: center;
+                color: #444;
+                margin: -0.75em 0 1.5em;
+            }
+
+            .lede-created {
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-size: 1.375em;
+                color: #555;
+                margin: 1.090909em 0 1.090909em;
+                text-align: left;
+                line-height: 1.5;
+                background: rgba(0, 0, 0, 0.035);
+                width: fit-content;
+                padding: 0.1em 0.4em;
+                border-radius: 3px;
+            }
+
+            .lede-list {
+                list-style: disc;
+                padding: 0 0 0 1em;
+                margin: 0;
+                text-align: left;
+            }
+
+            .lede-list li {
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-size: 1.375em;
+                line-height: 1.5;
+                margin: 0 0 1.1em;
+                color: #555;
+            }
+
+            .lede-list li:last-child {
+                margin-bottom: 0;
+            }
+
+            .lede-list a {
+                color: #555;
+            }
+
+            .lede-list a:hover {
+                color: #900;
+            }
+
+            /* Talk Tiles — 4-column grid with expand-on-click */
+            .talk-tiles-section {
+                margin: 0 auto;
+                padding: 0 0 4.5em; /* 3 units bottom */
+                text-align: center;
+            }
+
+            .divider {
+                margin-top: calc(4.5em - 1px); /* 3 units minus border */
+                margin-bottom: 4.5em; /* 3 units */
+            }
+
+            .talk-tiles {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2em;
+                text-align: left;
+            }
+
+            .talk-tile {
+                display: block;
+                position: relative;
+            }
+
+            /* Thumbnail */
+            .tile-thumb {
+                aspect-ratio: 16 / 9;
+                border-radius: 8px;
+                overflow: hidden;
+                background: #e8e7e3;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .tile-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+            .tile-thumb-placeholder {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: Baskerville, "Palatino Linotype", Palatino, Georgia, Utopia, serif;
+                font-style: italic;
+                font-size: 1.25em;
+                color: #aaa;
+            }
+
+            /* Play button overlay for video tiles */
+            .talk-tile--video .tile-thumb::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 3em;
+                height: 3em;
+                background: rgba(0, 0, 0, 0.55);
+                border-radius: 50%;
+                z-index: 1;
+                transition: background 0.2s ease;
+            }
+
+            .talk-tile--video .tile-thumb:hover::before {
+                background: rgba(200, 0, 0, 0.8);
+            }
+
+            .talk-tile--video .tile-thumb::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-35%, -50%);
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 0.5em 0 0.5em 0.85em;
+                border-color: transparent transparent transparent #fff;
+                z-index: 2;
+            }
+
+            .talk-tile h3 {
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-style: normal;
+                font-weight: 400;
+                font-size: 1.25em;
+                line-height: 1.5;
+                margin: 0.6em 0 0;
+            }
+
+            .tile-desc {
+                font-size: 1em;
+                color: #555;
+                margin: 0.25em 0 0;
+                line-height: 1.5;
+            }
+
+            /* Link tiles */
+            a.talk-tile--link {
+                border-bottom: none;
+                color: inherit;
+                display: block;
+            }
+
+            a.talk-tile--link:hover {
+                color: inherit;
+            }
+
+            a.talk-tile--link:hover h3 {
+                color: #900;
+            }
+
+            /* Expanded video state */
+            .talk-tile.expanded {
+                grid-column: 1 / -1;
+            }
+
+            .tile-player {
+                display: none;
+                aspect-ratio: 16 / 9;
+                border-radius: 8px;
+                overflow: hidden;
+                background: #000;
+                position: relative;
+            }
+
+            .talk-tile.expanded .tile-player {
+                display: block;
+            }
+
+            .talk-tile.expanded .tile-thumb {
+                display: none;
+            }
+
+            .tile-player iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+
+            .tile-close {
+                display: none;
+                position: absolute;
+                top: -1.75em;
+                right: 0;
+                background: none;
+                border: none;
+                color: #888;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 0.875em;
+                cursor: pointer;
+                padding: 0;
+                line-height: 1.5;
+            }
+
+            .tile-close:hover {
+                color: #900;
+            }
+
+            .talk-tile.expanded .tile-close {
+                display: block;
+            }
+
+            /* See all link */
+            .talk-tiles-more {
+                margin: 1.5em 0 0; /* 1 unit above */
+                font-size: 1em;
+                line-height: 1.5;
+            }
+
+            .talk-tiles-more a {
+                color: #888;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .talk-tiles-more a:hover {
+                color: #900;
+                border-bottom-color: #900;
+            }
+
+            @media (max-width: 768px) {
+                .talk-tiles {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1.5em;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .talk-tiles {
+                    grid-template-columns: 1fr;
+                    gap: 1.5em;
+                }
+            }
+
+            /* Article Cards — alternating thumbnail left/right */
+            .article-cards-section {
+                max-width: 52em;
+                margin: 0 auto;
+                padding: 0 0 4.5em; /* 3 units — matches gap between articles */
+            }
+
+            .article-cards {
+                display: flex;
+                flex-direction: column;
+                gap: 4.5em; /* 3 units */
+                text-align: left;
+                margin-top: 3em; /* 2 units below heading */
+            }
+
+            .article-card {
+                display: grid;
+                grid-template-columns: 1fr 2fr;
+                gap: 2em;
+                align-items: start;
+            }
+
+            .article-card:nth-child(even) {
+                grid-template-columns: 2fr 1fr;
+            }
+
+            .article-card:nth-child(even) .article-card-img {
+                order: 2;
+            }
+
+            .article-card-img a {
+                display: block;
+                border-bottom: none;
+            }
+
+            .article-card-text a.article-card-title {
+                border-bottom: none;
+                color: inherit;
+            }
+
+            .article-card-text a.article-card-title:hover h3 {
+                color: #900;
+            }
+
+            .article-card-img {
+                border-radius: 8px;
+                overflow: hidden;
+                background: #e8e7e3;
+            }
+
+            .article-card-img img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            .article-card h3 {
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-style: normal;
+                font-weight: 400;
+                font-size: 1.25em;
+                line-height: 1.5;
+                margin: 0;
+            }
+
+            .article-card-date {
+                font-size: 1em;
+                color: #888;
+                margin: 0.25em 0 0;
+                line-height: 1.5;
+            }
+
+            .article-card-desc {
+                font-size: 1em;
+                color: #555;
+                margin: 0.25em 0 0;
+                line-height: 1.5;
+            }
+
+            .article-card-social {
+                font-size: 0.875em;
+                color: #888;
+                margin: 0.5em 0 0;
+                line-height: 1.5;
+            }
+
+            .article-card-social a {
+                color: #888;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .article-card-social a:hover {
+                color: #900;
+                border-bottom-color: #900;
+            }
+
+            @media (max-width: 600px) {
+                .article-card,
+                .article-card:nth-child(even) {
+                    grid-template-columns: 1fr;
+                }
+
+                .article-card:nth-child(even) .article-card-img {
+                    order: 0;
+                }
+            }
+        </style>
     </head>
     <body>
         <!--
@@ -107,12 +483,100 @@
                 <h1 class="name">Mrinal Wadhwa</h1>
             </div>
 
+            <p class="lede-cto">CTO at Autonomy, Ockam, and Fybr.</p>
+
             <div class="lede-wrapper">
-                <p class="lede">
-                    I&#8217;m founder and CTO of <a href="https://autonomy.computer">Autonomy</a>, a platform that gives
-                    you the ability to create products that can autonomously perform long and complex tasks.
-                </p>
+                <p class="lede-created">Some things I've created:</p>
+                <ul class="lede-list">
+                    <li>
+                        <a href="https://github.com/build-trust/autonomy">Autonomy</a>, a platform to create AI products
+                        that use swarms of intelligent agents to autonomously get deep, complex work done.
+                    </li>
+                    <li>
+                        <a href="https://github.com/build-trust/ockam">Ockam</a>, open source protocols and libraries to
+                        add cryptographic identities, mutual authentication, fine-grained authorization, and end-to-end
+                        encryption to autonomous and distributed systems.
+                    </li>
+                    <li>
+                        <a href="https://github.com/build-trust/freeflow">FreeFlow</a>, an open source app that makes it
+                        fast and simple to type with your voice.
+                    </li>
+                </ul>
             </div>
+
+            <section class="talk-tiles-section">
+                <p class="lede-created">Recent talks and interviews:</p>
+                <div class="talk-tiles">
+                    <!-- Tile 1: Agent Swarms at GitHub HQ -->
+                    <div class="talk-tile talk-tile--video" data-videoid="uDby5FKQN9k">
+                        <div class="tile-thumb">
+                            <img
+                                src="https://i.ytimg.com/vi/uDby5FKQN9k/hqdefault.jpg"
+                                alt="Agent Swarms at GitHub HQ"
+                            />
+                        </div>
+                        <div class="tile-player"></div>
+                        <button class="tile-close" aria-label="Close video">&times; Close</button>
+                        <h3>
+                            Agent Swarms: live demo at GitHub HQ of 5000 parallel AI agents collaborating on a deep code
+                            review.
+                        </h3>
+                    </div>
+
+                    <!-- Tile 2: Deep Work Agents at Snowflake -->
+                    <div class="talk-tile talk-tile--video" data-videoid="0Ifm-W2Frv0">
+                        <div class="tile-thumb">
+                            <img
+                                src="https://i.ytimg.com/vi/0Ifm-W2Frv0/hqdefault.jpg"
+                                alt="Deep Work Agents at Snowflake"
+                            />
+                        </div>
+                        <div class="tile-player"></div>
+                        <button class="tile-close" aria-label="Close video">&times; Close</button>
+                        <h3>
+                            Talk at Snowflake on how to create long-horizon agents that can autonomously do complex
+                            work.
+                        </h3>
+                    </div>
+
+                    <!-- Tile 3: Software Engineering is getting harder (ScaleKit) -->
+                    <div class="talk-tile talk-tile--video" data-videoid="rkXnJkkvnks">
+                        <div class="tile-thumb">
+                            <img
+                                src="https://i.ytimg.com/vi/rkXnJkkvnks/hqdefault.jpg"
+                                alt="Software Engineering is getting harder"
+                            />
+                        </div>
+                        <div class="tile-player"></div>
+                        <button class="tile-close" aria-label="Close video">&times; Close</button>
+                        <h3>
+                            Software engineering is getting harder, a conversation with ScaleKit's CTO on their podcast.
+                        </h3>
+                    </div>
+
+                    <!-- Tile 4: Guest Lectures at IIM Bangalore -->
+                    <a
+                        href="https://www.linkedin.com/posts/mrinalwadhwa_guest-lectures-on-agents-at-iim-bangalore-activity-7390975540800811008-l0k2"
+                        class="talk-tile talk-tile--link"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <div class="tile-thumb">
+                            <img
+                                src="/images/talks/iim-bangalore.jpg"
+                                alt="Guest Lectures at IIM Bangalore"
+                                loading="lazy"
+                            />
+                        </div>
+                        <h3>
+                            Guest lectures at IIM Bangalore: How AI agents are disrupting industries, and my advice for
+                            leaders.
+                        </h3>
+                    </a>
+                </div>
+            </section>
+
+            <hr class="divider" />
 
             <div class="content">
                 <p>
@@ -167,152 +631,128 @@
 
             <hr class="divider" />
 
-            <div class="video-carousel">
-                <button class="carousel-btn prev" aria-label="Previous video">&#8249;</button>
-                <div class="carousel-container">
-                    <div class="carousel-track">
-                        <div class="carousel-slide">
-                            <iframe
-                                src="https://www.youtube.com/embed/0Ifm-W2Frv0"
-                                title="Video 4"
-                                frameborder="0"
-                                allow="
-                                    accelerometer;
-                                    autoplay;
-                                    clipboard-write;
-                                    encrypted-media;
-                                    gyroscope;
-                                    picture-in-picture;
-                                "
-                                allowfullscreen
-                            ></iframe>
+            <section id="articles" class="article-cards-section">
+                <p class="lede-created">Recent articles:</p>
+                <div class="article-cards">
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/agent-sandboxes/">
+                                <img
+                                    src="/articles/agent-sandboxes/agent-sandboxes.gif"
+                                    alt="Agent Sandboxes"
+                                    loading="lazy"
+                                />
+                            </a>
                         </div>
-                        <div class="carousel-slide">
-                            <iframe
-                                src="https://www.youtube.com/embed/-fPcRCgqluk"
-                                title="Video 5"
-                                frameborder="0"
-                                allow="
-                                    accelerometer;
-                                    autoplay;
-                                    clipboard-write;
-                                    encrypted-media;
-                                    gyroscope;
-                                    picture-in-picture;
-                                "
-                                allowfullscreen
-                            ></iframe>
+                        <div class="article-card-text">
+                            <a href="/articles/agent-sandboxes/" class="article-card-title">
+                                <h3>Agent Sandboxes, how to create millions of them</h3>
+                            </a>
+                            <p class="article-card-date">February 21, 2026</p>
+                            <p class="article-card-desc">
+                                Long-horizon agents need their own workspace: a filesystem and a shell. A journey
+                                through linux isolation primitives and how we create millions of sandboxed workspaces in
+                                milliseconds.
+                            </p>
+                            <p class="article-card-social">
+                                <a
+                                    href="https://www.linkedin.com/posts/mrinalwadhwa_agent-sandboxes-how-to-create-millions-of-activity-7432490677017661440-dzn2"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >61 reactions, 32 comments, 9 reposts on LinkedIn</a
+                                >
+                            </p>
                         </div>
-                        <div class="carousel-slide">
-                            <iframe
-                                src="https://www.youtube.com/embed/t9jTkEhcNUg"
-                                title="Video 7"
-                                frameborder="0"
-                                allow="
-                                    accelerometer;
-                                    autoplay;
-                                    clipboard-write;
-                                    encrypted-media;
-                                    gyroscope;
-                                    picture-in-picture;
-                                "
-                                allowfullscreen
-                            ></iframe>
+                    </div>
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/agent-identities/">
+                                <img
+                                    src="/articles/agent-identities/agent-identities.gif"
+                                    alt="Agent Identities"
+                                    loading="lazy"
+                                />
+                            </a>
                         </div>
-                        <div class="carousel-slide">
-                            <iframe
-                                src="https://www.youtube.com/embed/rkXnJkkvnks"
-                                title="Video 2"
-                                frameborder="0"
-                                allow="
-                                    accelerometer;
-                                    autoplay;
-                                    clipboard-write;
-                                    encrypted-media;
-                                    gyroscope;
-                                    picture-in-picture;
-                                "
-                                allowfullscreen
-                            ></iframe>
+                        <div class="article-card-text">
+                            <a href="/articles/agent-identities/" class="article-card-title">
+                                <h3>Agent Identities, everything you need to know</h3>
+                            </a>
+                            <p class="article-card-date">February 8, 2026</p>
+                            <p class="article-card-desc">
+                                Agents have raised the stakes: they take autonomous actions. Without cryptographic
+                                identity, we can't authenticate requests, authorize actions, or attribute decisions.
+                            </p>
+                            <p class="article-card-social">
+                                <a
+                                    href="https://www.linkedin.com/posts/mrinalwadhwa_tls-authenticates-domains-oauth-authenticates-activity-7427822917612273664-Jf8C/"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >109 reactions, 49 comments, 11 reposts on LinkedIn</a
+                                >
+                            </p>
                         </div>
-                        <div class="carousel-slide">
-                            <iframe
-                                src="https://www.youtube.com/embed/ZJVcOy9QNp4"
-                                title="Video 6"
-                                frameborder="0"
-                                allow="
-                                    accelerometer;
-                                    autoplay;
-                                    clipboard-write;
-                                    encrypted-media;
-                                    gyroscope;
-                                    picture-in-picture;
-                                "
-                                allowfullscreen
-                            ></iframe>
+                    </div>
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/agent-swarms-like-the-one-cursor-created/">
+                                <img
+                                    src="/articles/agent-identities/graph_of_code_review_agents4.gif"
+                                    alt="Agent Swarms"
+                                    loading="lazy"
+                                />
+                            </a>
                         </div>
-                        <div class="carousel-slide">
-                            <iframe
-                                src="https://www.youtube.com/embed/m_cyw8Mfjuw"
-                                title="Video 3"
-                                frameborder="0"
-                                allow="
-                                    accelerometer;
-                                    autoplay;
-                                    clipboard-write;
-                                    encrypted-media;
-                                    gyroscope;
-                                    picture-in-picture;
-                                "
-                                allowfullscreen
-                            ></iframe>
+                        <div class="article-card-text">
+                            <a href="/articles/agent-swarms-like-the-one-cursor-created/" class="article-card-title">
+                                <h3>Agent Swarms, like the one Cursor created</h3>
+                            </a>
+                            <p class="article-card-date">January 25, 2026</p>
+                            <p class="article-card-desc">
+                                Swarms that coordinate thousands of long-horizon agents will soon tackle problems too
+                                complex for simple agents. An example of 5,000+ agents in Autonomy conducting a deep
+                                code review of Vue.js core.
+                            </p>
+                            <p class="article-card-social">
+                                <a
+                                    href="https://www.linkedin.com/feed/update/urn:li:activity:7421959799707291649"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >168 reactions, 55 comments, 14 reposts on LinkedIn</a
+                                >
+                            </p>
                         </div>
-                        <div class="carousel-slide">
-                            <iframe
-                                src="https://www.youtube.com/embed/SF1arse7B5M"
-                                title="Video 1"
-                                frameborder="0"
-                                allow="
-                                    accelerometer;
-                                    autoplay;
-                                    clipboard-write;
-                                    encrypted-media;
-                                    gyroscope;
-                                    picture-in-picture;
-                                "
-                                allowfullscreen
-                            ></iframe>
+                    </div>
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/how-to-make-agents-that-succeed/">
+                                <img
+                                    src="/articles/how-to-make-agents-that-succeed/og.png"
+                                    alt="How to make agents that succeed"
+                                    loading="lazy"
+                                />
+                            </a>
+                        </div>
+                        <div class="article-card-text">
+                            <a href="/articles/how-to-make-agents-that-succeed/" class="article-card-title">
+                                <h3>How to make agents that succeed</h3>
+                            </a>
+                            <p class="article-card-date">January 23, 2026</p>
+                            <p class="article-card-desc">
+                                Controlled iteration is the only way to ship a reliable autonomous product and actually
+                                improve it over time.
+                            </p>
+                            <p class="article-card-social">
+                                <a
+                                    href="https://www.linkedin.com/posts/mrinalwadhwa_how-to-make-agents-succeed-most-software-activity-7379629143954599936-Msae"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >25 reactions, 6 comments, 6 reposts on LinkedIn</a
+                                >
+                            </p>
                         </div>
                     </div>
                 </div>
-                <button class="carousel-btn next" aria-label="Next video">&#8250;</button>
-            </div>
-
-            <hr class="divider" />
-
-            <section id="articles" class="articles-listing">
-                <h2>Articles</h2>
-                <ul class="article-list">
-                    <!-- Add new articles below this line, newest first -->
-                    <li>
-                        <a href="/articles/agent-sandboxes/">Agent Sandboxes, how to create millions of them</a>
-                        <span class="article-date">February 21, 2026</span>
-                    </li>
-                    <li>
-                        <a href="/articles/agent-identities/">Agent Identities, everything you need to know</a>
-                        <span class="article-date">February 8, 2026</span>
-                    </li>
-                    <li>
-                        <a href="/articles/agent-swarms-like-the-one-cursor-created/"
-                            >Agent Swarms, like the one Cursor created</a
-                        >
-                        <span class="article-date">January 25, 2026</span>
-                    </li>
-                    <li>
-                        <a href="/articles/how-to-make-agents-that-succeed/">How to make agents that succeed</a>
-                        <span class="article-date">January 23, 2026</span>
-                    </li>
-                </ul>
             </section>
 
             <div class="links">
@@ -348,44 +788,47 @@
         </div>
 
         <script>
-            (function () {
-                const container = document.querySelector(".carousel-container");
-                const slides = document.querySelectorAll(".carousel-slide");
-                const prevBtn = document.querySelector(".carousel-btn.prev");
-                const nextBtn = document.querySelector(".carousel-btn.next");
-
-                function getSlideWidth() {
-                    if (slides.length === 0) return 0;
-                    const track = document.querySelector(".carousel-track");
-                    return slides[0].offsetWidth + parseFloat(getComputedStyle(track).gap);
-                }
-
-                prevBtn.addEventListener("click", () => {
-                    container.scrollBy({ left: -getSlideWidth(), behavior: "smooth" });
-                });
-
-                nextBtn.addEventListener("click", () => {
-                    container.scrollBy({ left: getSlideWidth(), behavior: "smooth" });
-                });
-
-                // Convert vertical scroll to horizontal when hovering over carousel
-                container.addEventListener(
-                    "wheel",
-                    (e) => {
-                        if (e.deltaY !== 0) {
-                            e.preventDefault();
-                            container.scrollBy({ left: e.deltaY, behavior: "auto" });
-                        }
-                    },
-                    { passive: false },
-                );
-            })();
-
             // Baseline grid debug tool - press 'g' to toggle
             document.addEventListener("keydown", function (e) {
                 if (e.key === "g" && !e.metaKey && !e.ctrlKey && !e.altKey) {
                     document.body.classList.toggle("baseline-grid-visible");
                 }
+            });
+
+            // Talk tile expand/collapse — click thumbnail to expand video
+            document.querySelectorAll(".talk-tile--video").forEach(function (tile) {
+                var thumb = tile.querySelector(".tile-thumb");
+                var player = tile.querySelector(".tile-player");
+                var closeBtn = tile.querySelector(".tile-close");
+                var videoId = tile.getAttribute("data-videoid");
+
+                thumb.addEventListener("click", function () {
+                    // Collapse any other expanded tile first
+                    var already = document.querySelector(".talk-tile.expanded");
+                    if (already && already !== tile) {
+                        already.classList.remove("expanded");
+                        already.querySelector(".tile-player").innerHTML = "";
+                    }
+
+                    // Expand this tile and load the iframe
+                    tile.classList.add("expanded");
+                    var iframe = document.createElement("iframe");
+                    iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&modestbranding=1&rel=0";
+                    iframe.allow =
+                        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                    iframe.allowFullscreen = true;
+                    player.innerHTML = "";
+                    player.appendChild(iframe);
+
+                    // Scroll the expanded tile into view
+                    tile.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                });
+
+                closeBtn.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    tile.classList.remove("expanded");
+                    player.innerHTML = "";
+                });
             });
         </script>
     </body>
