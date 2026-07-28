@@ -1,4 +1,4 @@
-# Articles
+# Recent articles
 
 - [How I built a self-improving software factory](/articles/how-i-built-a-self-improving-software-factory/) - July 27, 2026
 - [Agent Sandboxes, how to create millions of them](/articles/agent-sandboxes/) - February 21, 2026
