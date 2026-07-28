@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>How I built a self-improving software factory – Mrinal Wadhwa</title>
+        <meta name="description" content="How I built Fluent, an open-source factory that turns observations into reviewed software and learns from every change." />
+        <meta name="author" content="Mrinal Wadhwa" />
+        <link rel="canonical" href="https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/" />
+
+        <meta property="og:title" content="How I built a self-improving software factory – Mrinal Wadhwa" />
+        <meta property="og:description" content="How I built Fluent, an open-source factory that turns observations into reviewed software and learns from every change." />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/" />
+        <meta property="og:image" content="https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/og.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@mrinal" />
+        <meta name="twitter:title" content="How I built a self-improving software factory – Mrinal Wadhwa" />
+        <meta name="twitter:description" content="How I built Fluent, an open-source factory that turns observations into reviewed software and learns from every change." />
+        <meta name="twitter:image" content="https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/og.png" />
+
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Mrinal Wadhwa"
+            href="https://mrinal.com/follow/rss.xml"
+        />
+        <link rel="stylesheet" href="https://use.typekit.net/biy2rlh.css" />
+        <link rel="stylesheet" type="text/css" href="/styles.css" />
+
+        <style>
+            body {
+                background: #fff;
+                color: #222;
+                overflow-x: hidden;
+                position: relative;
+            }
+
+            ::selection {
+                background: #e99c1f;
+                color: #fff;
+            }
+
+            .container {
+                background: #fff;
+                margin-left: 0;
+            }
+
+            .body-header {
+                margin: 0 auto 4.5em;
+                max-width: 76.5em;
+                text-align: left;
+            }
+
+            .article-meta {
+                color: #888;
+                font-size: 1em;
+                line-height: 1.5;
+                margin: 1.5em 0;
+                text-align: left;
+            }
+
+            .article-meta a {
+                color: #888;
+            }
+
+            .article-title {
+                color: #000;
+                font-family: "tgn-soft-round-comp", sans-serif;
+                font-size: 4.291em;
+                font-style: normal;
+                font-weight: 700;
+                line-height: 0.9;
+                margin: 0;
+                max-width: 14em;
+                text-transform: uppercase;
+            }
+
+            .content {
+                color: #333;
+            }
+
+            .content > p,
+            .install-grid p {
+                break-inside: avoid;
+            }
+
+            .content p.lead {
+                column-span: all;
+                font-size: 1.5em;
+                line-height: 1.333333;
+                margin-bottom: calc(1.333333em + 4px);
+                max-width: 28em;
+                text-align: left;
+            }
+
+            .install-grid {
+                column-span: all;
+                display: grid;
+                gap: 3em;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .install-grid > div {
+                min-width: 0;
+            }
+
+            .install-action pre {
+                max-width: 100%;
+                margin-top: 0;
+            }
+
+            .content p.column-start {
+                break-before: column;
+            }
+
+            .content strong {
+                border-bottom: 1px solid #e99c1f;
+                color: #e99c1f;
+                font-variant: small-caps;
+                font-weight: normal;
+                letter-spacing: 0.05em;
+            }
+
+            .content a {
+                border-bottom: 1px solid #999;
+                color: #000;
+                text-decoration: none;
+            }
+
+            .content a:hover {
+                border-bottom-color: #e99c1f;
+            }
+
+            .section-heading {
+                color: #000;
+                column-span: all;
+                font-family: "adobe-garamond-pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+                font-size: 1.3205em;
+                font-style: italic;
+                font-weight: 400;
+                line-height: 1.781856;
+                margin: 0.389781em 0 0.649635em;
+            }
+
+            .columns-divider {
+                border-bottom: 1px solid #ddd;
+                margin: 1.5em 0 calc(3em - 1px);
+            }
+
+            .content code {
+                background: #f6f8fa;
+                border: 1px solid #d0d7de;
+                border-radius: 3px;
+                font-size: 0.82em;
+                padding: 0.08em 0.28em;
+            }
+
+            .content pre {
+                background: #f6f8fa;
+                border: 1px solid #d0d7de;
+                border-radius: 4px;
+                break-inside: avoid;
+                color: #24292f;
+                font-size: 0.82em;
+                line-height: 1.43472;
+                margin: 0 0 1.43472em;
+                overflow-x: auto;
+                padding: calc(1.43472em - 1px) 1.43472em;
+            }
+
+            .content pre code {
+                background: transparent;
+                border: 0;
+                border-radius: 0;
+                font-size: inherit;
+                padding: 0;
+            }
+
+            .content figure {
+                box-sizing: border-box;
+                break-inside: avoid;
+                column-span: all;
+                margin: 3em 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            .content figure img {
+                display: block;
+                height: auto;
+                width: 100%;
+            }
+
+            .content .diagram-link {
+                border: 0;
+                cursor: zoom-in;
+                display: block;
+            }
+
+            .content figcaption {
+                clip: rect(0 0 0 0);
+                clip-path: inset(50%);
+                height: 1px;
+                overflow: hidden;
+                position: absolute;
+                white-space: nowrap;
+                width: 1px;
+            }
+
+            .baseline-grid-visible .container {
+                background: transparent;
+            }
+
+            @media (max-width: 900px) {
+                .container {
+                    padding: 1.5em;
+                }
+
+                .content {
+                    column-count: 1;
+                }
+
+                .install-grid {
+                    gap: 0;
+                    grid-template-columns: 1fr;
+                }
+
+                .article-title {
+                    font-size: 2.641em;
+                    line-height: 1;
+                    max-width: none;
+                }
+
+                .content p.lead {
+                    font-size: 1.3em;
+                    line-height: 1.538462;
+                    margin-bottom: calc(1.538462em + 12px);
+                    text-align: left;
+                }
+
+                .content p.column-start {
+                    break-before: auto;
+                }
+
+                .content figure {
+                    margin-left: -1.5em;
+                    margin-right: -1.5em;
+                    margin-top: 3em;
+                    margin-bottom: 3em;
+                    width: calc(100% + 3em);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <a href="/" class="home-link" aria-label="Home"
+            ><svg class="icon" viewBox="0 0 576 512" fill="currentColor" aria-hidden="true">
+                <path
+                    d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 0 160c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-160-32 0c-18 0-32-14.3-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 11 15 11 24z"
+                />
+            </svg>
+        </a>
+        <div class="container">
+            <article>
+                <header class="body-header">
+                    <p class="article-meta"><a href="/">Mrinal Wadhwa</a> &middot; July 27, 2026</p>
+                    <h1 class="article-title">How I built a self-improving<br />software factory</h1>
+                </header>
+
+<div class="content opening-content">
+<p class="lead article-deck"><a href="https://github.com/mrinalwadhwa/fluent">Fluent</a> is an open-source factory that autonomously turns your team&#x27;s vision, ideas, bug reports, user feedback, production logs, and agent traces into working software.</p>
+<p>At some point in the past few months, I crossed a threshold with coding agents. If I clearly defined a task, specified how a new feature needed to behave, and identified upfront the tests that would verify that behavior, the resulting code usually worked the way I wanted and passed those tests.</p>
+<p>If I also gave the agent a clear, written set of coding conventions, the implementation was often close to what I would have written myself. When it needed clarification or started going off course, a short answer or correction was usually enough to bring it back, especially if it was tracking its progress in a file. At first, I still inspected every line. After seeing this happen repeatedly, I stopped feeling the need to.</p>
+<p>At the same time, I found myself operating in two modes: waiting for agents to finish, or leaving agents waiting until I came back online or worked through a difficult question. That mismatch in cadence makes the bigger problem clear: How do we organize teams of people and agents working independently on different timelines?</p>
+<p>The idea of organizing software delivery as an autonomous factory is not new, but this is the first time we have all the pieces needed to build one.</p>
+<p>Once software can be delivered this way, the factory itself becomes the product. Between two teams competing in the same market, the one that can deliver complex features sooner, build more secure software, and fix problems faster wins.</p>
+<div class="install-grid">
+<div class="install-context"><p>In May, I started building Fluent, a self-improving software factory. I now use it to build Fluent itself and two other complex projects.</p>
+<p>You use the factory through the Fluent skill in Codex, Claude Code, Pi, or another coding agent that supports skills. The skill lets you operate the factory through conversation and handles Fluent’s command-line machinery for you.</p></div>
+<div class="install-action"><p>Install the skill with:</p>
+<pre class="shell"><code>npx skills add mrinalwadhwa/fluent --skill fluent</code></pre>
+<p>Then start your coding agent in a project folder and ask it to use Fluent. The first invocation sets up Fluent for that project and starts shaping the work with you.</p></div>
+</div>
+<figure>
+<a class="diagram-link" href="fluent-at-a-glance-light.gif"><img src="fluent-at-a-glance-light.gif" alt="Fluent turns observations into work for agents, reviewed software, and new learning that feeds the next cycle." /></a>
+<figcaption aria-hidden="true">Fluent turns observations into work for agents, reviewed software, and new learning that feeds the next cycle.</figcaption>
+</figure>
+</div>
+
+<div class="columns-divider"></div>
+
+<div class="content">
+<h2 class="section-heading" id="how-fluent-works">How Fluent works</h2>
+<p>Fluent separates work that needs human attention from work agents can do on their own. You can think of it as two conceptual queues. The first queue waits for people with the right context, judgment, expertise, or authority.</p>
+<p>The second waits on both agent and compute capacity: room to run an agent within subscription, rate, and budget limits, and a suitable environment with the models, tools, and hardware the work needs.</p>
+<figure>
+<a class="diagram-link" href="fluent-overall-flow-light.svg"><img src="fluent-overall-flow-light.svg" alt="Human work and agent work move through separate queues and can advance on different timelines." /></a>
+<figcaption aria-hidden="true">Human work and agent work move through separate queues and can advance on different timelines.</figcaption>
+</figure>
+<p>Whenever you encounter something to explore, build, fix, or improve, ask Fluent to record it as an Observation. Add whatever context you have in the moment; you do not need to know the solution or have worked out every detail. Agents and connected systems can record Observations too. You can return to any Observation later and refine it on your own timeline, bringing in someone with the right expertise or authority when needed.</p>
+<p>When you want to act on an Observation, ask Fluent to start shaping it. Once shaping produces a Work Item, ask Fluent to run it directly or add it to the queue. A queued Work Item waits until suitable agent and compute capacity is available. If its Attempt needs human context or a decision, Fluent places the question in the human queue for you or someone with the right expertise or authority to answer. The Attempt waits for that answer while other ready Work Items can continue.</p>
+</div>
+
+<div class="columns-divider"></div>
+
+<div class="content">
+<h2 class="section-heading" id="how-you-tell-fluent-what-to-build">How you tell Fluent what to build</h2>
+<p>Ask Fluent to help shape what you want to build as a small slice of functionality. You can start from an Observation you recorded earlier or begin directly with a Brief. Fluent is designed to help you turn that slice into working software without first specifying the entire system. It reads the relevant project code along with the reusable conventions, constraints, and lessons captured as project Expertise.</p>
+<p>You do not need to arrive with a finished specification. Fluent collaborates with you as the slice takes shape.</p>
+<p>It grounds the conversation in the code and project Expertise, checks that it understands what you mean, and asks one focused question at a time. It uses structured methods for problem framing, behavior design, architecture, and planning to challenge assumptions, find missing cases, research technical choices, and present options with their tradeoffs. You provide context and judgment and make each decision.</p>
+<p>The conversation produces four layers of shared context:</p>
+<figure>
+<a class="diagram-link" href="how-you-tell-fluent-light.svg"><img src="how-you-tell-fluent-light.svg" alt="You and Fluent shape a brief, behavior specifications, technical approach, and implementation plan through conversation." /></a>
+<figcaption aria-hidden="true">You and Fluent shape a brief, behavior specifications, technical approach, and implementation plan through conversation.</figcaption>
+</figure>
+<p><strong>Brief.</strong> A Brief describes one small slice of functionality. It captures, in your words, what you want and why, grounded in the relevant project context. It keeps constraints, assumptions, and unknowns explicit without choosing a solution.</p>
+<p><strong>Behavior Specifications.</strong> A Behavior Specification precisely describes how the software must behave in a particular situation. It is written so the specified observable behavior can be verified without prescribing its implementation.</p>
+<p>For the slice described in the Brief, Fluent reads the project’s existing Behavior Specifications and relevant code to understand what the software already guarantees. It then works with you to define the additions, changes, or removals needed for that slice. The result is a behavior diff, not a restatement of the entire system. If the project has no existing Behavior Specifications, the first slice starts them.</p>
+<p>Fluent first makes the important terms precise and identifies the people, systems, events, and states affected by the slice. It proposes the core behaviors, then works through gaps, edge cases, and any behavior inferred from the Brief that needs your approval. Decisions about libraries, protocols, storage, and other implementation choices wait for the Technical Approach conversation.</p>
+<p>Fluent writes each Behavior Specification in a consistent form that names the situation and the required response. For example:</p>
+<pre class="text"><code>WHEN a user selects Save on a draft,
+THE SYSTEM SHALL show a `Saved` status beside the draft title.
+Test: tests/drafts.spec.ts (shows_saved_status_after_save)</code></pre>
+<p>It describes something a person can observe and a test can verify, without choosing a UI framework, component structure, or persistence mechanism.</p>
+<p>Fluent writes Behavior Specifications in EARS, the Easy Approach to Requirements Syntax. EARS uses a small set of patterns that make the triggering event or condition and the required response explicit.</p>
+<p>Every new behavior includes either a <code>Test:</code> reference or an <code>Untestable:</code> reason. While defining the behavior, Fluent inspects nearby tests and names the intended test in the project’s existing style. The referenced test may not exist yet. The Writer creates or updates it during implementation, and the Tester runs it.</p>
+<p class="column-start">When the test passes, the Behavior Reviewer uses that as evidence that the behavior was delivered.</p>
+<p><strong>Technical Approach.</strong> The Technical Approach document captures your technical expertise and judgment before the work is delegated to agents. You and Fluent decide the key technical choices that should guide implementation, including structure, interfaces, protocols, libraries, storage, and integrations. The document gives the Writer both the decisions and the reasoning behind them, while leaving implementation details that agents can safely determine during the work.</p>
+<p><strong>Implementation Plan.</strong> The Implementation Plan turns the confirmed behaviors and technical decisions into work that agents can carry out. You and Fluent decide whether the slice should become one Work Item or several independently reviewable Work Items that can run in parallel.</p>
+<p>When steps help the Writer, the Implementation Plan divides a Work Item into steps that state what will become observably true, which behaviors each step delivers, and how the result will be verified. Fluent orders those steps by what must be built first. A small mechanical Work Item can use a minimal plan without inventing steps. When Work Items depend on one another, the plan pins the interfaces they share and the points at which their work must come together.</p>
+<p>You confirm each layer before Fluent uses it as the foundation for the next. The conversation can also move backward. If the Technical Approach reveals missing behavior, you return to the Behavior Specifications. If the Implementation Plan exposes an unresolved technical decision, you return to the Technical Approach rather than leaving the Writer to guess.</p>
+<p>When you confirm the Implementation Plan, Fluent creates one Work Item for each independently reviewable part of the slice. Each Work Item carries the approved Brief, Behavior Specifications, Technical Approach, and its part of the Implementation Plan. Creating it records the handoff. You can run the Work Item immediately or add it to the queue.</p>
+<p>Each time Fluent runs a Work Item, it creates an Attempt, a record of that Work Item’s execution through the Writer, Tester, Reviewers, and Learner. The Attempt tracks revisions, test runs, review findings, and pauses. The Writer keeps a checklist of plan steps, review follow-ups, and evidence as it works. Separate Work Items can proceed independently.</p>
+</div>
+
+<div class="columns-divider"></div>
+
+<div class="content">
+<h2 class="section-heading" id="how-fluent-builds-it">How Fluent builds it</h2>
+<figure>
+<a class="diagram-link" href="how-fluent-builds-light.svg"><img src="how-fluent-builds-light.svg" alt="A Writer, Tester, independent Reviewers, and Learner build and review each attempt." /></a>
+<figcaption aria-hidden="true">A Writer, Tester, independent Reviewers, and Learner build and review each attempt.</figcaption>
+</figure>
+<p>Fluent gives each Attempt an isolated Git worktree, keeping its changes separate from your working copy. It can run the Writer, Tester, Reviewer, and Learner tasks in a local sandbox or delegate them to a remote machine, currently through AWS Fargate. If the Attempt needs human context or a decision, Fluent returns the question to the human queue.</p>
+<p>Within the Attempt, the Writer receives the approved Brief, Behavior Specifications, Technical Approach, and its assigned part of the Implementation Plan, along with the relevant code, project Expertise, and instructions. It implements the change, writes or updates its tests, and commits its changes for the Tester and Reviewers.</p>
+<p>Fluent does not rely on the Writer’s own test report, and it does not make every Reviewer rerun the same test suite. Instead, a separate Tester produces one independent test record that all Reviewers share.</p>
+<p>The Tester is a deterministic runner, not a coding agent. It runs the project’s declared test commands in the candidate workspace and records the outcome of the suite and its individual tests. The Behavior Reviewer can match this evidence against the Test: references in the Behavior Specifications, while any Reviewer can still run a targeted check to answer a specific question.</p>
+<p>Once the Tester completes, Fluent runs independent Reviewers in parallel. Every Reviewer reads the approved planning documents, the Writer’s progress checklist, the proposed changes, the Tester evidence, and recorded decisions.</p>
+<p>The checklist tracks any Implementation Plan steps and review follow-ups across rounds, recording completion evidence, divergences, and notes for what comes next. Each Reviewer also loads relevant general and project Expertise, so its judgment reflects both Fluent’s review methods and what the project has learned. The built-in Reviewers include:</p>
+<p>The Behavior Reviewer checks that the Behavior Specifications are clear and consistent, and that the candidate delivers each behavior with passing test evidence.</p>
+<p>The Architecture Reviewer checks that the change fits the codebase, follows the Technical Approach, and preserves clear, maintainable boundaries and dependencies.</p>
+<p>The Tests Reviewer checks that the tests cover the required behavior, boundaries, and failures at the right level, with enough confidence to ship and refactor safely.</p>
+<p>The Documentation Reviewer checks that the change is explained accurately at every level its readers need, using clear structure and consistent vocabulary.</p>
+<p>More specialist Reviewers can be added for concerns such as security, performance, or deployment safety.</p>
+<p>Each Reviewer writes a report that records its evidence, classifies each finding as blocking or minor, and returns <code>pass</code>, <code>fail</code>, or <code>uncertain</code>. <code>pass</code> means no blocking findings remain. <code>fail</code> means the Writer must address at least one blocking finding. <code>uncertain</code> means the Reviewer cannot confidently decide from the approved context and returns the question to the human queue.</p>
+<p>After a <code>fail</code>, Fluent starts another round. The Writer receives the failed review reports and any Tester regressions, revises the candidate, and commits the revision. The Tester reruns all declared test commands, then the affected Reviewers inspect the revision and mark earlier findings as addressed or still open. If the Attempt reaches its configured review-round limit, Fluent pauses with the evidence collected rather than continuing indefinitely.</p>
+<p>Once the Tester and every Reviewer pass, the Learner captures reusable lessons and possible follow-up work before the Attempt produces a ready Merge Candidate.</p>
+<p>A ready Merge Candidate contains the reviewed change and any Expertise captured by the Learner, but it has not changed the target branch. Ask Fluent to show you the candidate so you can inspect it and decide whether to land it. By default, Fluent waits for your decision. Projects that want automatic landing can opt into a separate auto-merge process.</p>
+<p>Before landing, Fluent brings the candidate up to date with the target branch. It uses an agent to resolve merge conflicts, then runs the project’s pre-merge checks. When a check fails, Fluent can run a project-provided repair step and check again. It updates the target branch only after the checks pass. Conflicts or failures it cannot resolve return to you.</p>
+</div>
+
+<div class="columns-divider"></div>
+
+<div class="content">
+<h2 class="section-heading" id="how-fluent-keeps-improving-your-code">How Fluent keeps improving your code</h2>
+<p>While working on a Work Item, Fluent can identify related problems and possible improvements beyond the Brief it was asked to deliver. Problems with the current change, such as Tester regressions and blocking review findings, return to the Writer inside the current Attempt. The Learner records the additional improvements as follow-ups in its handoff. After the candidate lands, Fluent turns each follow-up into an Observation that you can shape and run later.</p>
+<p>You can return to one of these Observations later and shape it through the usual conversation. If the Learner captured a complete, testable correction grounded in a current Behavior Specification, project instruction, or project Expertise, Fluent can turn the Observation into a corrective Work Item without repeating the full shaping process. If the correction is incomplete or still requires a decision, the Observation waits for you to shape it.</p>
+<p>When Fluent creates one of these corrective Work Items, it waits for your approval by default. A project can instead allow Fluent to authorize and queue complete corrections automatically. Once queued, the Work Item runs when the required agent and compute capacity are available. It goes through the same Writer, Tester, Reviewer, and Learner loop, and its Merge Candidate follows the same inspection and landing policy as any other.</p>
+<p>Fluent can also inspect code after it lands. An optional post-merge review runs the Tester and every Reviewer against the cumulative change on the target branch. If a Reviewer fails or is uncertain, Fluent creates and runs a corrective Work Item from the findings. Any Merge Candidate it produces follows the same inspection and landing policy as any other.</p>
+</div>
+
+<div class="columns-divider"></div>
+
+<div class="content">
+<h2 class="section-heading" id="how-fluent-learns-your-project">How Fluent learns your project</h2>
+<p>Each completed change can teach Fluent something about the project: a convention to follow, an architectural constraint to preserve, a testing pattern to reuse, or a gotcha to avoid. The Learner records reusable lessons as Expertise under <code>.fluent/expertise/</code>. Fluent draws on that Expertise when it shapes, builds, and reviews future work.</p>
+<p>After the Tester and every Reviewer pass, the Learner examines the accepted change, existing Expertise, and the Tester and Reviewer evidence from every round. The Learner updates Expertise when the Attempt reveals project-specific knowledge that future agents should reuse. If the Attempt taught Fluent nothing worth carrying forward, Expertise remains unchanged.</p>
+<p>Any Expertise the Learner adds becomes part of the Merge Candidate and lands with the change that produced it. Over time, lessons from many Work Items accumulate in project Expertise, where future shaping conversations, Writers, and Reviewers can build on them. You can inspect and edit Expertise directly when a convention changes or a recorded lesson no longer applies.</p>
+<p>Fluent learns from both the change and the process of producing it, then applies those lessons to future work.</p>
+</div>
+
+<div class="columns-divider"></div>
+
+<div class="content">
+<h2 class="section-heading" id="evaluating-the-factory">Evaluating the factory</h2>
+<p>A self-improving software factory is <a href="/articles/how-to-make-agents-that-succeed/">only as good as its evaluation infrastructure</a>. Passing the tests for the current Work Item provides evidence that the requested behavior works, but does not show whether repeated changes are making the codebase harder to maintain and extend.</p>
+<p>A factory can keep shipping changes that pass every check while duplication, coupling, and structural complexity accumulate, eventually turning future work into an automated game of whack-a-mole.</p>
+<p>Behavior Specifications, independent tests, specialist reviews, and production observations give Fluent several ways to evaluate each change. But evaluating a sequence of changes is harder.</p>
+<p>The next area I am exploring in Fluent is cross-change evaluation: looking across Work Items to detect when a change makes later work harder, when tests lose signal, or when local fixes erode the larger design. The goal is to establish not only that each change works, but that repeated changes leave the software safer to extend.</p>
+<p>Fluent is open source. If you are thinking about software factories or building one inside your company, explore <a href="https://github.com/mrinalwadhwa/fluent">Fluent on GitHub</a>. You can use it as the foundation for your own factory, reuse parts of its workflow, or take ideas from its design. The project is still early. If you want to compare notes or help build it with me, <a href="https://discord.gg/dygEVzG3gf">join me on Discord</a>.</p>
+</div>
+            </article>
+        </div>
+
+        <script>
+            document.addEventListener("keydown", function (event) {
+                if (event.key.toLowerCase() === "g") {
+                    document.body.classList.toggle("baseline-grid-visible");
+                }
+            });
+        </script>
+    </body>
+</html>

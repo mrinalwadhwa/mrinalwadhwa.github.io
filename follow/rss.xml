@@ -9,6 +9,13 @@
 
     <!-- Add new items below this line, newest first -->
     <item>
+      <title>How I built a self-improving software factory</title>
+      <link>https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/</link>
+      <guid>https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/</guid>
+      <pubDate>Mon, 27 Jul 2026 00:00:00 GMT</pubDate>
+      <description>Fluent is an open-source factory that autonomously turns your team's vision, ideas, bug reports, user feedback, production logs, and agent traces into working software.</description>
+    </item>
+    <item>
       <title>Agent Sandboxes, how to create millions of them</title>
       <link>https://mrinal.com/articles/agent-sandboxes/</link>
       <guid>https://mrinal.com/articles/agent-sandboxes/</guid>

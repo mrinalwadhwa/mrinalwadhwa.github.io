@@ -15,6 +15,12 @@
 
     <!-- Add new articles below this line -->
     <url>
+        <loc>https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/</loc>
+        <lastmod>2026-07-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
         <loc>https://mrinal.com/articles/agent-sandboxes/</loc>
         <lastmod>2026-02-21</lastmod>
         <changefreq>monthly</changefreq>
