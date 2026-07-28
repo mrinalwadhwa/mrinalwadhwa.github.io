@@ -42,33 +42,152 @@
                 <h1 class="page-title">Articles</h1>
             </header>
 
-            <ul class="article-list article-list-page">
-                <!-- Add new articles below this line, newest first -->
-                <li>
-                    <a href="/articles/how-i-built-a-self-improving-software-factory/"
-                        >How I built a self-improving software factory</a
-                    >
-                    <span class="article-date">July 27, 2026</span>
-                </li>
-                <li>
-                    <a href="/articles/agent-sandboxes/">Agent Sandboxes, how to create millions of them</a>
-                    <span class="article-date">February 21, 2026</span>
-                </li>
-                <li>
-                    <a href="/articles/agent-identities/">Agent Identities, everything you need to know</a>
-                    <span class="article-date">February 8, 2026</span>
-                </li>
-                <li>
-                    <a href="/articles/agent-swarms-like-the-one-cursor-created/"
-                        >Agent Swarms, like the one Cursor created</a
-                    >
-                    <span class="article-date">January 25, 2026</span>
-                </li>
-                <li>
-                    <a href="/articles/how-to-make-agents-that-succeed/">How to make agents that succeed</a>
-                    <span class="article-date">January 23, 2026</span>
-                </li>
-            </ul>
+            <section class="article-cards-section" aria-label="All articles">
+                <div class="article-cards">
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/how-i-built-a-self-improving-software-factory/">
+                                <img
+                                    src="/articles/how-i-built-a-self-improving-software-factory/fluent-social-header-light.png"
+                                    alt="The Fluent software factory workflow"
+                                    loading="lazy"
+                                />
+                            </a>
+                        </div>
+                        <div class="article-card-text">
+                            <a
+                                href="/articles/how-i-built-a-self-improving-software-factory/"
+                                class="article-card-title"
+                            >
+                                <h3>How I built a self-improving software factory</h3>
+                            </a>
+                            <p class="article-card-date">July 27, 2026</p>
+                            <p class="article-card-desc">
+                                Fluent is an open-source factory that autonomously turns your team's vision, ideas, bug
+                                reports, user feedback, production logs, and agent traces into working software.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/agent-sandboxes/">
+                                <img
+                                    src="/articles/agent-sandboxes/agent-sandboxes.gif"
+                                    alt="Agent Sandboxes"
+                                    loading="lazy"
+                                />
+                            </a>
+                        </div>
+                        <div class="article-card-text">
+                            <a href="/articles/agent-sandboxes/" class="article-card-title">
+                                <h3>Agent Sandboxes, how to create millions of them</h3>
+                            </a>
+                            <p class="article-card-date">February 21, 2026</p>
+                            <p class="article-card-desc">
+                                Long-horizon agents need their own workspace: a filesystem and a shell. A journey
+                                through linux isolation primitives and how we create millions of sandboxed workspaces in
+                                milliseconds.
+                            </p>
+                            <p class="article-card-social">
+                                <a
+                                    href="https://www.linkedin.com/posts/mrinalwadhwa_agent-sandboxes-how-to-create-millions-of-activity-7432490677017661440-dzn2"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >61 reactions, 32 comments, 9 reposts on LinkedIn</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/agent-identities/">
+                                <img
+                                    src="/articles/agent-identities/agent-identities.gif"
+                                    alt="Agent Identities"
+                                    loading="lazy"
+                                />
+                            </a>
+                        </div>
+                        <div class="article-card-text">
+                            <a href="/articles/agent-identities/" class="article-card-title">
+                                <h3>Agent Identities, everything you need to know</h3>
+                            </a>
+                            <p class="article-card-date">February 8, 2026</p>
+                            <p class="article-card-desc">
+                                Agents have raised the stakes: they take autonomous actions. Without cryptographic
+                                identity, we can't authenticate requests, authorize actions, or attribute decisions.
+                            </p>
+                            <p class="article-card-social">
+                                <a
+                                    href="https://www.linkedin.com/posts/mrinalwadhwa_tls-authenticates-domains-oauth-authenticates-activity-7427822917612273664-Jf8C/"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >109 reactions, 49 comments, 11 reposts on LinkedIn</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/agent-swarms-like-the-one-cursor-created/">
+                                <img
+                                    src="/articles/agent-identities/graph_of_code_review_agents4.gif"
+                                    alt="Agent Swarms"
+                                    loading="lazy"
+                                />
+                            </a>
+                        </div>
+                        <div class="article-card-text">
+                            <a href="/articles/agent-swarms-like-the-one-cursor-created/" class="article-card-title">
+                                <h3>Agent Swarms, like the one Cursor created</h3>
+                            </a>
+                            <p class="article-card-date">January 25, 2026</p>
+                            <p class="article-card-desc">
+                                Swarms that coordinate thousands of long-horizon agents will soon tackle problems too
+                                complex for simple agents. An example of 5,000+ agents in Autonomy conducting a deep
+                                code review of Vue.js core.
+                            </p>
+                            <p class="article-card-social">
+                                <a
+                                    href="https://www.linkedin.com/feed/update/urn:li:activity:7421959799707291649"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >168 reactions, 55 comments, 14 reposts on LinkedIn</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                    <div class="article-card">
+                        <div class="article-card-img">
+                            <a href="/articles/how-to-make-agents-that-succeed/">
+                                <img
+                                    src="/articles/how-to-make-agents-that-succeed/og.png"
+                                    alt="How to make agents that succeed"
+                                    loading="lazy"
+                                />
+                            </a>
+                        </div>
+                        <div class="article-card-text">
+                            <a href="/articles/how-to-make-agents-that-succeed/" class="article-card-title">
+                                <h3>How to make agents that succeed</h3>
+                            </a>
+                            <p class="article-card-date">January 23, 2026</p>
+                            <p class="article-card-desc">
+                                Controlled iteration is the only way to ship a reliable autonomous product and actually
+                                improve it over time.
+                            </p>
+                            <p class="article-card-social">
+                                <a
+                                    href="https://www.linkedin.com/posts/mrinalwadhwa_how-to-make-agents-succeed-most-software-activity-7379629143954599936-Msae"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >25 reactions, 6 comments, 6 reposts on LinkedIn</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <div class="links">
                 <a href="/">Home</a>
