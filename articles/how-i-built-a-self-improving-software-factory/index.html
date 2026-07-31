@@ -83,8 +83,7 @@
                 color: #333;
             }
 
-            .content > p,
-            .install-grid p {
+            .content > p {
                 break-inside: avoid;
             }
 
@@ -95,22 +94,6 @@
                 margin-bottom: calc(1.333333em + 4px);
                 max-width: 28em;
                 text-align: left;
-            }
-
-            .install-grid {
-                column-span: all;
-                display: grid;
-                gap: 3em;
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .install-grid > div {
-                min-width: 0;
-            }
-
-            .install-action pre {
-                max-width: 100%;
-                margin-top: 0;
             }
 
             .content p.column-start {
@@ -224,11 +207,6 @@
                     column-count: 1;
                 }
 
-                .install-grid {
-                    gap: 0;
-                    grid-template-columns: 1fr;
-                }
-
                 .article-title {
                     font-size: 2.641em;
                     line-height: 1;
@@ -279,12 +257,10 @@
 <p>The idea of organizing software delivery as an autonomous factory is not new, but this is the first time we have all the pieces needed to build one.</p>
 <p>Once software can be delivered this way, the factory itself becomes the product. Between two teams competing in the same market, the one that can deliver complex features sooner, build more secure software, and fix problems faster wins.</p>
 <p>In May, I started building Fluent, a self-improving software factory. I now use it to build Fluent itself and two other complex projects.</p>
-<div class="install-grid">
-<div class="install-context"><p>You use the factory through the Fluent skill in Codex, Claude Code, Pi, or another coding agent that supports skills. The skill lets you operate the factory through conversation and handles Fluent’s command-line machinery for you.</p></div>
-<div class="install-action"><p>Install the skill with:</p>
+<p>You use the factory through the Fluent skill in Codex, Claude Code, Pi, or another coding agent that supports skills. The skill lets you operate the factory through conversation and handles Fluent’s command-line machinery for you.</p>
+<p>Install the skill with:</p>
 <pre class="shell"><code>npx skills add mrinalwadhwa/fluent --skill fluent</code></pre>
-<p>Then start your coding agent in a project folder and ask it to use Fluent. The first invocation sets up Fluent for that project and starts shaping the work with you.</p></div>
-</div>
+<p>Then start your coding agent in a project folder and ask it to use Fluent. The first invocation sets up Fluent for that project and starts shaping the work with you.</p>
 <figure>
 <a class="diagram-link" href="fluent-at-a-glance-light.gif"><img src="fluent-at-a-glance-light.gif" alt="Fluent turns observations into work for agents, reviewed software, and new learning that feeds the next cycle." /></a>
 <figcaption aria-hidden="true">Fluent turns observations into work for agents, reviewed software, and new learning that feeds the next cycle.</figcaption>
