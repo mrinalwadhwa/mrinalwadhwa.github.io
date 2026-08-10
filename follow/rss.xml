@@ -9,6 +9,13 @@
 
     <!-- Add new items below this line, newest first -->
     <item>
+      <title>The flywheels of a software factory</title>
+      <link>https://mrinal.com/articles/the-flywheels-of-a-software-factory/</link>
+      <guid>https://mrinal.com/articles/the-flywheels-of-a-software-factory/</guid>
+      <pubDate>Sun, 09 Aug 2026 00:00:00 GMT</pubDate>
+      <description>A software factory begins by separating work that needs human attention from work agents can carry out autonomously. But orchestration alone only increases throughput. The deeper advantage comes from reinforcing loops that use product behavior, failures, agent traces, and engineering review to improve both the product and the factory.</description>
+    </item>
+    <item>
       <title>How I built a self-improving software factory</title>
       <link>https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/</link>
       <guid>https://mrinal.com/articles/how-i-built-a-self-improving-software-factory/</guid>
